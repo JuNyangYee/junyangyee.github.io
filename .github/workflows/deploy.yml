@@ -3,7 +3,7 @@ name: Blog Publish
 on:
   push:
     branches:
-      - dev
+      - master
 
 jobs:
   build:
