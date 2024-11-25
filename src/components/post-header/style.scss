@@ -21,13 +21,18 @@
   }
 
   .categories {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     font-family: 'Montserrat';
 
     .category {
-      margin-right: 4px;
+      margin-right: 8px;
       font-weight: 400;
       color: var(--primary-text-color);
+
+      // border-radius: 12px;
+
+      // border: 1px #0000001a solid;
+      // padding: 4px 20px;
 
       &:hover {
         text-decoration: underline;
@@ -47,10 +52,11 @@
     display: flex;
     width: 100%;
     flex-wrap: wrap;
-    line-height: 1.5;
+    line-height: 1.8;
     font-size: 16px;
     font-weight: 300;
     color: var(--secondary-text-color);
+    
 
     .author {
       margin-right: 4px;
@@ -60,6 +66,10 @@
       color: var(--primary-text-color);
       font-weight: 400;
       font-size: 16px;
+    }
+
+    .date {
+      margin-bottom: 12px;
     }
   }
 }

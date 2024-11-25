@@ -660,10 +660,23 @@
   margin-bottom: 28px;
 }
 
+.markdown li {
+  font-size: 14px;
+}
+
+.markdown li>p {
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+.markdown p+ul {
+  margin-top: -15px;
+}
+
 .markdown hr {
   height: 0.05em;
   padding: 0;
-  margin: 24px 0;
+  margin: 48px 0;
   background-color: var(--markdown-border-color);
   border: 0;
 }
@@ -688,7 +701,7 @@
 .markdown h4,
 .markdown h5,
 .markdown h6 {
-  margin-top: 24px;
+  margin-top: 48px;
   margin-bottom: 16px;
   font-weight: 600;
   line-height: 1.25;
@@ -750,7 +763,7 @@
   margin-top: 16px;
 }
 
-.markdown li+li {
+.markdown li {
   margin-top: 0.25em;
 }
 
@@ -826,7 +839,7 @@
 .markdown pre>code {
   padding: 0;
   margin: 0;
-  font-size: 100%;
+  font-size: 85%;
   word-break: normal;
   white-space: pre;
   background: transparent;
@@ -1082,4 +1095,13 @@
   font-style: italic;
   font-size: 15px;
   color: #6a737d;
+}
+
+.markdown .gatsby-highlight {
+  margin-bottom: 20px;
+}
+
+.markdown em {
+  color: #6a737d;
+  font-style: italic;
 }
