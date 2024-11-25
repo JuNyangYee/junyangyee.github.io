@@ -1,0 +1,30 @@
+@use '../../styles/mixins'as *;
+
+.category-page-header-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-family: 'Montserrat';
+  letter-spacing: -0.025em;
+
+  .category-page-title {
+    width: fit-content;
+    padding-bottom: 7px;
+    margin-bottom: 15px;
+    font-size: 36px;
+    font-weight: 500;
+    text-align: center;
+    border-bottom: 2px solid var(--primary-text-color);
+    text-transform: uppercase;
+  }
+
+  .category-page-subtitle {
+    padding-bottom: 10px;
+    font-size: 18px;
+    font-weight: 300;
+    text-align: center;
+  }
+}

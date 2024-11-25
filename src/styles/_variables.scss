@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Pretendard.woff2') format('woff2-variations');
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url('/fonts/Montserrat.woff2') format('woff2-variations');
+}
+
+$font-family: Pretendard, -apple-system, BlinkMacSystemFont, Segoe UI, Noto Sans KR, Helvetica, Arial, sans-serif,
+  Apple Color Emoji, Segoe UI Emoji;
+
+$content-max-width: 720px;
+$content-horizontal-padding: 15px;
+$content-image-max-height: 560px;
+
+$screen-sm-min: 576px;
+$screen-md-min: 768px;
+$screen-lg-min: 1080px;
