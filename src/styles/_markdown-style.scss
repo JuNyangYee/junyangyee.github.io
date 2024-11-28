@@ -70,6 +70,8 @@
   line-height: 170%;
   letter-spacing: -0.025em;
   word-wrap: break-word;
+  word-break: break-all;
+  text-align: justify;
 }
 
 .markdown details {
@@ -1086,6 +1088,12 @@
     box-shadow: 0 0 12px #2020205b !important;
     border-radius: 4px !important;
   }
+}
+
+.markdown img {
+  margin-bottom: 8px !important;
+  box-shadow: 0 0 12px #2020205b !important;
+  border-radius: 4px !important;
 }
 
 // caption

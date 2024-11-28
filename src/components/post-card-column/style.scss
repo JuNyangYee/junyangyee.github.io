@@ -15,9 +15,12 @@
     }
 
     .more-post-card-button {
-      height: 40px;
-      font-weight: 500;
+      margin-top: 20px;
+      height: 42px;
+      font-family: 'Montserrat';
+      font-weight: 400;
       font-size: 15px;
+      letter-spacing: -0.025em;
       background-color: var(--button-background-color);
       color: var(--tab-hover-text-color);
     }
