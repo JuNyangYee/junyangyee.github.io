@@ -1,0 +1,937 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.7"/><meta data-react-helmet="true" property="og:title" content="DEV 03. 메인페이지 만들기"/><meta data-react-helmet="true" property="og:site_title" content="DEV 03. 메인페이지 만들기"/><meta data-react-helmet="true" name="description" content="메인 페이지를 제작하였습니다. 배포까지 진행해 바로바로 수정사항이 배포될 수 있도록 설정하였습니다. 기존코드 오류 수정 예전에 윈도우를 예쁘게 써보겠다고 MacType을 사용해서 윈도우 전체 폰트를 Pretendard로 변경했었습니다. (예쁘게 쓰긴 했습니다.) 다만 이런 상태로 폰트를 변경하는 작업을 하다보니, 기존에 Pretendard 를 적용했던 게 잘 적용된 것으로 보였습니다. 혹시 몰라 MacType 해제 후 다시 확인해보니, 적용이 안된 채로 맑은 고딕으로 보이고 있었습니다. 확인해보니  이렇게 코드를 작성했었는데, 해당 부분이 전역으로 폰트를 설정하는 것이 아닌 포인트를 줄 수있도록 된 것이었습니다.  부분을  으로 변경하면 전역으로 사용되게 됩니다. 해당 부분에 대한 이해는 아직 잘 되지 않습니다. 사실 기존 css 에 font-family 로 하는 것이 더 익숙하지만, 폰트 최적화에서는 해당 방법이 더 좋다고 하기에 이 방법으로 계속 진행해보려 합니다. 추가로  표…"/><meta data-react-helmet="true" property="og:description" content="메인 페이지를 제작하였습니다. 배포까지 진행해 바로바로 수정사항이 배포될 수 있도록 설정하였습니다. 기존코드 오류 수정 예전에 윈도우를 예쁘게 써보겠다고 MacType을 사용해서 윈도우 전체 폰트를 Pretendard로 변경했었습니다. (예쁘게 쓰긴 했습니다.) 다만 이런 상태로 폰트를 변경하는 작업을 하다보니, 기존에 Pretendard 를 적용했던 게 잘 적용된 것으로 보였습니다. 혹시 몰라 MacType 해제 후 다시 확인해보니, 적용이 안된 채로 맑은 고딕으로 보이고 있었습니다. 확인해보니  이렇게 코드를 작성했었는데, 해당 부분이 전역으로 폰트를 설정하는 것이 아닌 포인트를 줄 수있도록 된 것이었습니다.  부분을  으로 변경하면 전역으로 사용되게 됩니다. 해당 부분에 대한 이해는 아직 잘 되지 않습니다. 사실 기존 css 에 font-family 로 하는 것이 더 익숙하지만, 폰트 최적화에서는 해당 방법이 더 좋다고 하기에 이 방법으로 계속 진행해보려 합니다. 추가로  표…"/><meta data-react-helmet="true" property="og:author" content="문준형"/><meta data-react-helmet="true" property="og:image" content="/og-image.png"/><meta data-react-helmet="true" property="og:type" content="website"/><style data-href="/styles.e851103c674b343de861.css" data-identity="gatsby-global-css">@import url(https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;200;300;400;500;600;700;800;900&display=swap);@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:100;src:local("Montserrat Thin "),local("Montserrat-Thin"),url(/static/montserrat-latin-100-8d7d79679b70dbe27172b6460e7a7910.woff2) format("woff2"),url(/static/montserrat-latin-100-ec38980a9e0119a379e2a9b3dbb1901a.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:100;src:local("Montserrat Thin italic"),local("Montserrat-Thinitalic"),url(/static/montserrat-latin-100italic-e279051046ba1286706adc886cf1c96b.woff2) format("woff2"),url(/static/montserrat-latin-100italic-3b325a3173c8207435cd1b76e19bf501.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:200;src:local("Montserrat Extra Light "),local("Montserrat-Extra Light"),url(/static/montserrat-latin-200-9d266fbbfa6cab7009bd56003b1eeb67.woff2) format("woff2"),url(/static/montserrat-latin-200-2d8ba08717110d27122e54c34b8a5798.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:200;src:local("Montserrat Extra Light italic"),local("Montserrat-Extra Lightitalic"),url(/static/montserrat-latin-200italic-6e5b3756583bb2263eb062eae992735e.woff2) format("woff2"),url(/static/montserrat-latin-200italic-a0d6f343e4b536c582926255367a57da.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:300;src:local("Montserrat Light "),local("Montserrat-Light"),url(/static/montserrat-latin-300-00b3e893aab5a8fd632d6342eb72551a.woff2) format("woff2"),url(/static/montserrat-latin-300-ea303695ceab35f17e7d062f30e0173b.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:300;src:local("Montserrat Light italic"),local("Montserrat-Lightitalic"),url(/static/montserrat-latin-300italic-56f34ea368f6aedf89583d444bbcb227.woff2) format("woff2"),url(/static/montserrat-latin-300italic-54b0bf2c8c4c12ffafd803be2466a790.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:400;src:local("Montserrat Regular "),local("Montserrat-Regular"),url(/static/montserrat-latin-400-b71748ae4f80ec8c014def4c5fa8688b.woff2) format("woff2"),url(/static/montserrat-latin-400-0659a9f4e90db5cf51b50d005bff1e41.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:400;src:local("Montserrat Regular italic"),local("Montserrat-Regularitalic"),url(/static/montserrat-latin-400italic-6eed6b4cbb809c6efc7aa7ddad6dbe3e.woff2) format("woff2"),url(/static/montserrat-latin-400italic-7583622cfde30ae49086d18447ab28e7.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:500;src:local("Montserrat Medium "),local("Montserrat-Medium"),url(/static/montserrat-latin-500-091b209546e16313fd4f4fc36090c757.woff2) format("woff2"),url(/static/montserrat-latin-500-edd311588712a96bbf435fad264fff62.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:500;src:local("Montserrat Medium italic"),local("Montserrat-Mediumitalic"),url(/static/montserrat-latin-500italic-c90ced68b46050061d1a41842d6dfb43.woff2) format("woff2"),url(/static/montserrat-latin-500italic-5146cbfe02b1deea5dffea27a5f2f998.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:600;src:local("Montserrat SemiBold "),local("Montserrat-SemiBold"),url(/static/montserrat-latin-600-0480d2f8a71f38db8633b84d8722e0c2.woff2) format("woff2"),url(/static/montserrat-latin-600-b77863a375260a05dd13f86a1cee598f.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:600;src:local("Montserrat SemiBold italic"),local("Montserrat-SemiBolditalic"),url(/static/montserrat-latin-600italic-cf46ffb11f3a60d7df0567f8851a1d00.woff2) format("woff2"),url(/static/montserrat-latin-600italic-c4fcfeeb057724724097167e57bd7801.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:700;src:local("Montserrat Bold "),local("Montserrat-Bold"),url(/static/montserrat-latin-700-7dbcc8a5ea2289d83f657c25b4be6193.woff2) format("woff2"),url(/static/montserrat-latin-700-99271a835e1cae8c76ef8bba99a8cc4e.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:700;src:local("Montserrat Bold italic"),local("Montserrat-Bolditalic"),url(/static/montserrat-latin-700italic-c41ad6bdb4bd504a843d546d0a47958d.woff2) format("woff2"),url(/static/montserrat-latin-700italic-6779372f04095051c62ed36bc1dcc142.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:800;src:local("Montserrat ExtraBold "),local("Montserrat-ExtraBold"),url(/static/montserrat-latin-800-db9a3e0ba7eaea32e5f55328ace6cf23.woff2) format("woff2"),url(/static/montserrat-latin-800-4e3c615967a2360f5db87d2f0fd2456f.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:800;src:local("Montserrat ExtraBold italic"),local("Montserrat-ExtraBolditalic"),url(/static/montserrat-latin-800italic-bf45bfa14805969eda318973947bc42b.woff2) format("woff2"),url(/static/montserrat-latin-800italic-fe82abb0bcede51bf724254878e0c374.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:900;src:local("Montserrat Black "),local("Montserrat-Black"),url(/static/montserrat-latin-900-e66c7edc609e24bacbb705175669d814.woff2) format("woff2"),url(/static/montserrat-latin-900-8211f418baeb8ec880b80ba3c682f957.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:900;src:local("Montserrat Black italic"),local("Montserrat-Blackitalic"),url(/static/montserrat-latin-900italic-4454c775e48152c1a72510ceed3603e2.woff2) format("woff2"),url(/static/montserrat-latin-900italic-efcaa0f6a82ee0640b83a0916e6e8d68.woff) format("woff")}.search-input-wrapper{align-items:center;display:none;margin-top:3px;width:160px}@media(min-width:768px){.search-input-wrapper{display:flex}}.search-icon{color:var(--primary-text-color);margin-right:2px}.search-input{height:100%;width:100%}.search-input .MuiAutocomplete-inputRoot{padding-left:5px;padding-right:0!important}.search-input .MuiInputBase-input{color:var(--primary-text-color)!important;font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans KR,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;font-size:14px;font-weight:400;margin-bottom:3px;padding-bottom:2px!important}.search-input .MuiInput-underline:before{border-bottom-color:var(--primary-text-color);border-bottom-width:1px}.search-input .MuiInput-underline:after{border-bottom-color:var(--primary-text-color)}.page-header-wrapper{display:flex;height:60px;justify-content:center;width:100%}.page-header-wrapper .page-header{align-items:center;display:flex;font-family:Montserrat;justify-content:space-between;max-width:720px;width:100%}.page-header-wrapper .page-header .link{color:var(--primary-text-color);font-size:17px;font-weight:540;letter-spacing:.15em}.page-header-wrapper .page-header .trailing-section{align-items:center;display:flex;justify-content:space-around}.page-header-wrapper .page-header .trailing-section .link{border-right:1px solid rgba(32,32,32,.165);font-size:14px;font-weight:400;letter-spacing:0;padding-left:6px;padding-right:6px}@media(min-width:768px){.page-header-wrapper .page-header .trailing-section .link{font-size:15px;padding-left:10px;padding-right:10px}}.page-header-wrapper .page-header .trailing-section .link:nth-last-child(2){border-right:none}.page-footer-wrapper{align-items:center;display:flex;height:62px;justify-content:center;margin-top:auto;opacity:.75;width:100%}.page-footer-wrapper .page-footer{font-size:11px;font-weight:300;letter-spacing:-.025em;max-width:720px;text-align:center;width:100%}.page-footer-wrapper .page-footer .link{color:var(--primary-text-color);font-size:15px;font-weight:700;margin-right:20px}.page-footer-wrapper .page-footer a{color:#3a95ff}.dark-mode-button-wrapper{align-items:center;bottom:20px;display:flex;justify-content:center;position:fixed;right:20px}.dark-mode-button{-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);background-color:#363f47!important;border-radius:50px;box-shadow:0 5px 25px rgba(0,0,0,.12);cursor:pointer;height:50px;width:50px;z-index:3}.dark-mode-icon{color:#fff}*{-ms-overflow-style:none}::-webkit-scrollbar{display:none}a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{border:0;font-size:100%;font:inherit;margin:0;padding:0;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:"";content:none}table{border-collapse:collapse;border-spacing:0}a{outline:none;text-decoration:none}li{font-family:Pretendard;font-size:13px;font-weight:500}html{--background-color:#fff;--primary-text-color:#202020;--secondary-text-color:#9e9e9e;--content-text-color:#37352f;--button-background-color:#f3f3f4;--button-text-color:#363f47;--tab-text-color:#6e6d7a;--tab-hover-text-color:#0d0c22;--tab-selected-background-color:rgba(13,12,34,.05);--bio-link-icon-color:rgba(0,0,0,.54);--about-link-icon-color:#a8a8a8;--chip-background-color:#f3f3f4;--link-text-color:rgba(55,53,47,.7);--post-card-border-color:rgba(0,0,0,.12);--markdown-table-even-cell-background-color:#f6f8fa;--markdown-table-border-color:#dfe2e5;--markdown-blockquote-border-color:#dfe2e5;--markdown-border-color:#e1e4e8}html[data-theme=dark]{--background-color:#232326;--primary-text-color:#e6e6e6;--secondary-text-color:#768390;--content-text-color:#e6e6e6;--button-background-color:#444c56;--button-text-color:#363f47;--tab-text-color:#768390;--tab-hover-text-color:#acbac7;--tab-selected-background-color:#373e47;--chip-background-color:#323a42;--bio-link-icon-color:#e6e6e6;--about-link-icon-color:#a8a8a8;--link-text-color:#90b0ec;--post-card-border-color:#363f47;--markdown-table-even-cell-background-color:#2d333b;--markdown-table-border-color:#444c56;--markdown-blockquote-border-color:#4f5864;--markdown-border-color:#e1e4e8}*{-webkit-appearance:none;appearance:none;box-sizing:border-box}html{font-size:14px;height:100%;overflow-y:scroll;width:100%}body{background-color:var(--background-color)!important}a{color:var(--link-text-color)}.page-wrapper{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;color:var(--primary-text-color);font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans KR,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;justify-content:center;min-height:100vh;padding-left:15px;padding-right:15px;word-break:keep-all}.page-wrapper,.page-wrapper .page-content{align-items:center;display:flex;flex-direction:column;width:100%}.page-wrapper .page-content{max-width:720px}.icon{color:var(--about-link-icon-color);font-size:20px}.social-links .icon{color:var(--bio-link-icon-color);font-size:30px}@-webkit-keyframes blinking-cursor{0%{opacity:0}50%{opacity:1}to{opacity:0}}@keyframes blinking-cursor{0%{opacity:0}50%{opacity:1}to{opacity:0}}.bio{color:var(--primary-text-color);display:flex;flex-direction:column;justify-content:space-between;margin-bottom:120px;margin-top:120px;width:100%}@media(min-width:768px){.bio{align-items:center;flex-direction:row}}.bio .introduction{display:flex;flex-direction:column;letter-spacing:-.05em;word-break:keep-all}.bio .introduction .react-rotating-text-cursor{-webkit-animation:blinking-cursor 1.2s cubic-bezier(.68,.01,.01,.99) 0s infinite;animation:blinking-cursor 1.2s cubic-bezier(.68,.01,.01,.99) 0s infinite}.bio .introduction strong{display:inline-block;font-weight:600;letter-spacing:-.05em}.bio .introduction strong.en_role{font-family:Montserrat;font-weight:300;letter-spacing:-.05em}.bio .introduction.korean{font-size:32px;font-weight:200;line-height:1.2}.bio .introduction.korean .title .react-rotating-text-cursor{font-size:35px;line-height:35px}@media(min-width:768px){.bio .introduction.korean{font-size:40px}.bio .introduction.korean .title .react-rotating-text-cursor{font-size:45px;line-height:45px}}.bio .introduction.korean .social-links{display:flex;margin-top:15px}@media(min-width:768px){.bio .introduction.korean{margin-top:30px}}.bio .introduction.english{font-family:Montserrat;font-size:25px;line-height:1.2}@media(min-width:768px){.bio .introduction.english{font-size:45px}}.bio .introduction.english .name{font-size:35px;font-weight:600}.bio .introduction.english .job{font-size:35px}.bio .introduction.english .description{font-size:20px;font-weight:200;margin-top:8px}.bio .introduction.english .social-links{display:flex;margin-top:20px}.bio .thumbnail-wrapper{display:none}.section-header-wrapper{display:flex;justify-content:center;margin-bottom:32px;width:100%}.section-header-wrapper .section-header{border-bottom:2px solid var(--primary-text-color);color:var(--primary-text-color);font-family:Montserrat;font-size:23px;font-weight:550;letter-spacing:-.02em;padding-bottom:5px}.timestamp-section{align-items:center;display:flex;flex-direction:column;justify-content:center;margin-bottom:100px;width:100%;word-break:keep-all}.timestamp-section .body{padding:0 10px;width:100%}.timestamp-section .body .timestamp{border-left:2px solid #bdbdbd;display:flex;font-family:Pretendard;font-size:15px;font-weight:400;justify-items:center;letter-spacing:-.035em;margin-left:5px;padding:15px 0;width:100%}.timestamp-section .body .timestamp:first-child{padding-top:7px}.timestamp-section .body .timestamp:last-child{padding-bottom:7px}.timestamp-section .body .timestamp:before{align-self:center;background-color:var(--background-color);border:2px solid #828282;border-radius:10px;content:"";height:10px;left:-1px;position:relative;-webkit-transform:translatex(-50%);transform:translatex(-50%);width:10px}.timestamp-section .body .timestamp .date{align-self:center;color:#828282;margin-left:5px;margin-right:5px;min-width:115px;width:115px}@media(min-width:768px){.timestamp-section .body .timestamp .date{min-width:200px;width:200px}}.timestamp-section .body .timestamp .activity{font-weight:500;line-height:23px;width:100%}.project-section{align-items:center;justify-content:center}.project-section,.project-section .project{display:flex;flex-direction:column;width:100%}.project-section .project{margin-bottom:30px;padding:15px}.project-section .project .head{font-size:20px;font-weight:700;line-height:30px;margin-bottom:10px}.project-section .project .body{display:flex;flex-direction:column;width:100%}.project-section .project .body .thumbnail{margin-bottom:10px;width:100%}.project-section .project .body .tech-stack{display:flex;margin-bottom:10px}.project-section .project .body .tech-stack .tech{background-color:var(--chip-background-color);border-radius:10px;font-size:15px;font-weight:500;margin-right:5px;padding:5px 7px}.project-section .project .body .description{font-size:16px;font-weight:400;line-height:1.4}@media(min-width:768px){.project-section .project .body{flex-direction:column}.project-section .project .body .content{margin-top:0}}.awards-section{align-items:center;display:flex;flex-direction:column;justify-content:center;margin-bottom:100px;width:100%;word-break:keep-all}.awards-section .body{padding:0 10px;width:100%}.awards-section .body .awards{border-left:2px solid #bdbdbd;display:flex;font-family:Pretendard;font-size:15px;font-weight:400;justify-items:center;letter-spacing:-.035em;margin-left:5px;padding:20px 0;white-space:pre-wrap;width:100%}.awards-section .body .awards:first-child{padding-top:7px}.awards-section .body .awards:last-child{padding-bottom:7px}.awards-section .body .awards:before{align-self:center;background-color:var(--background-color);border:2px solid #828282;border-radius:10px;content:"";height:10px;left:-1px;position:relative;-webkit-transform:translatex(-50%);transform:translatex(-50%);width:10px}.awards-section .body .awards .date{align-self:center;color:#828282;margin-left:5px;margin-right:5px;min-width:115px;width:115px}@media(min-width:768px){.awards-section .body .awards .date{min-width:200px;width:200px}}.awards-section .body .awards .activity{color:#464646;font-size:12px;line-height:20px;width:100%}.awards-section .body .awards strong{color:var(--primary-text-color);font-size:15px;font-weight:500}.certification-section{align-items:center;display:flex;flex-direction:column;justify-content:center;margin-bottom:100px;width:100%;word-break:keep-all}.certification-section .body{padding:0 10px;width:100%}.certification-section .body .certification{border-left:2px solid #bdbdbd;display:flex;font-family:Pretendard;font-size:15px;font-weight:400;justify-items:center;letter-spacing:-.035em;margin-left:5px;padding:15px 0;width:100%}.certification-section .body .certification:first-child{padding-top:7px}.certification-section .body .certification:last-child{padding-bottom:7px}.certification-section .body .certification:before{align-self:center;background-color:var(--background-color);border:2px solid #828282;border-radius:10px;content:"";height:10px;left:-1px;position:relative;-webkit-transform:translatex(-50%);transform:translatex(-50%);width:10px}.certification-section .body .certification .date{align-self:center;color:#828282;margin-left:5px;margin-right:5px;min-width:115px;width:115px}@media(min-width:768px){.certification-section .body .certification .date{min-width:200px;width:200px}}.certification-section .body .certification .activity{font-weight:500;line-height:23px;width:100%}.post-header{border-bottom:1px solid var(--post-card-border-color);display:flex;flex-direction:column;justify-content:center;letter-spacing:-.025em;margin-bottom:50px;margin-top:50px;padding-bottom:10px;width:100%;word-break:keep-all}.post-header .emoji{font-size:78px;margin-bottom:40px}.post-header .categories{font-family:Montserrat;margin-bottom:8px}.post-header .categories .category{color:var(--primary-text-color);font-weight:400;margin-right:8px}.post-header .categories .category:hover{text-decoration:underline}.post-header .title{color:var(--primary-text-color);font-size:32px;font-weight:700;line-height:1.3;margin-bottom:6px}.post-header .info{color:var(--secondary-text-color);display:flex;flex-wrap:wrap;font-size:16px;font-weight:300;line-height:1.8;width:100%}.post-header .info .author{margin-right:4px}.post-header .info strong{color:var(--primary-text-color);font-size:16px;font-weight:400}.post-header .info .date{margin-bottom:12px}.post-navigator{-webkit-column-gap:1.4%;column-gap:1.4%;display:grid;grid-template-columns:49.3% 49.3%;margin-bottom:80px;width:100%}.post-navigator .post-card{border:1px solid var(--post-card-border-color);border-radius:18px;color:var(--primary-text-color);cursor:pointer;display:flex;flex-direction:column;letter-spacing:-.025em;padding:30px 20px 20px;transition:-webkit-transform .2s;transition:transform .2s;transition:transform .2s,-webkit-transform .2s;width:100%}.post-navigator .post-card:hover .title{text-decoration:underline}.post-navigator .post-card.prev{margin-right:auto}.post-navigator .post-card.next{margin-left:auto}.post-navigator .post-card .direction{color:gray;font-size:11px;font-weight:300;margin-bottom:5px}.post-navigator .post-card .title{font-size:14px;font-weight:600;line-height:1.4;margin-bottom:7px}.markdown .octicon{fill:currentColor;display:inline-block;vertical-align:text-bottom}.markdown .anchor{float:left;line-height:1;margin-left:-20px;padding-right:4px}.markdown .anchor:focus{outline:none}.markdown h1 .octicon-link,.markdown h2 .octicon-link,.markdown h3 .octicon-link,.markdown h4 .octicon-link,.markdown h5 .octicon-link,.markdown h6 .octicon-link{color:#1b1f23;vertical-align:middle;visibility:hidden}.markdown h1:hover .anchor,.markdown h2:hover .anchor,.markdown h3:hover .anchor,.markdown h4:hover .anchor,.markdown h5:hover .anchor,.markdown h6:hover .anchor{text-decoration:none}.markdown h1:hover .anchor .octicon-link,.markdown h2:hover .anchor .octicon-link,.markdown h3:hover .anchor .octicon-link,.markdown h4:hover .anchor .octicon-link,.markdown h5:hover .anchor .octicon-link,.markdown h6:hover .anchor .octicon-link{visibility:visible}.markdown h1:hover .anchor .octicon-link:before,.markdown h2:hover .anchor .octicon-link:before,.markdown h3:hover .anchor .octicon-link:before,.markdown h4:hover .anchor .octicon-link:before,.markdown h5:hover .anchor .octicon-link:before,.markdown h6:hover .anchor .octicon-link:before{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' aria-hidden='true' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z'/%3E%3C/svg%3E");content:" ";display:inline-block;height:16px;width:16px}.markdown{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;word-wrap:break-word;color:var(--content-text-color);font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans KR,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;font-size:16px;font-weight:400;letter-spacing:-.025em;line-height:1.5;line-height:170%;text-align:justify;word-break:break-all}.markdown details{display:block}.markdown summary{display:list-item}.markdown a{background-color:initial}.markdown a:active,.markdown a:hover{outline-width:0}.markdown strong{font-weight:inherit;font-weight:bolder}.markdown h1{margin:.67em 0}.markdown img{border-style:none}.markdown code,.markdown kbd,.markdown pre{font-family:monospace,monospace;font-size:1em}.markdown hr{box-sizing:initial;overflow:visible}.markdown input{font:inherit;margin:0;overflow:visible}.markdown [type=checkbox]{box-sizing:border-box;padding:0}.markdown *{box-sizing:border-box}.markdown input{font-family:inherit;font-size:inherit;line-height:inherit}.markdown a{border-bottom:.05em solid;border-color:var(--link-text-color);color:var(--link-text-color);text-decoration:none}.markdown a.anchor{border-bottom:none}.markdown strong{font-weight:700}.markdown hr{background:transparent;border-bottom:1px solid var(--markdown-blockquote-border-color);height:0;margin:15px 0;overflow:hidden}.markdown hr:after,.markdown hr:before{content:"";display:table}.markdown hr:after{clear:both}.markdown table{border-collapse:collapse;border-spacing:0}.markdown td,.markdown th{padding:0}.markdown details summary{cursor:pointer}.markdown h1,.markdown h2,.markdown h3,.markdown h4,.markdown h5,.markdown h6{margin-bottom:0;margin-top:0}.markdown h1{font-size:32px}.markdown h1,.markdown h2{font-weight:600}.markdown h2{font-size:24px}.markdown h3{font-size:20px}.markdown h3,.markdown h4{font-weight:600}.markdown h4{font-size:16px}.markdown h5{font-size:14px}.markdown h5,.markdown h6{font-weight:600}.markdown h6{font-size:12px}.markdown p{margin-bottom:10px;margin-top:0}.markdown blockquote{margin:0}.markdown ol,.markdown ul{margin-bottom:0;margin-top:0;padding-left:0}.markdown ol ol,.markdown ul ol{list-style-type:lower-roman}.markdown ol ol ol,.markdown ol ul ol,.markdown ul ol ol,.markdown ul ul ol{list-style-type:lower-alpha}.markdown dd{margin-left:0}.markdown code,.markdown pre{font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;font-size:12px}.markdown code.language-text{border-radius:3px;font-size:85%;padding:.2em .4em}.markdown :not(pre)>code.language-text{background:hsla(44,6%,50%,.15);color:#eb5757;overflow-wrap:break-word}.markdown pre{margin-bottom:0;margin-top:0}.markdown input::-webkit-inner-spin-button,.markdown input::-webkit-outer-spin-button{-webkit-appearance:none;appearance:none;margin:0}.markdown :checked+.radio-label{border-color:#0366d6;position:relative;z-index:1}.markdown .border{border:1px solid var(--markdown-border-color)!important}.markdown .border-0{border:0!important}.markdown .border-bottom{border-bottom:1px solid var(--markdown-border-color)!important}.markdown .rounded-1{border-radius:3px!important}.markdown .bg-white{background-color:transparent!important}.markdown .bg-gray-light{background-color:#fafbfc!important}.markdown .text-gray-light{color:#6a737d!important}.markdown .pl-3,.markdown .px-3{padding-left:16px!important}.markdown .px-3{padding-right:16px!important}.markdown .f6{font-size:12px!important}.markdown .lh-condensed{line-height:1.25!important}.markdown .text-bold{font-weight:600!important}.markdown .pl-c{color:#6a737d}.markdown .pl-c1,.markdown .pl-s .pl-v{color:#005cc5}.markdown .pl-e,.markdown .pl-en{color:#6f42c1}.markdown .pl-s .pl-s1,.markdown .pl-smi{color:#24292e}.markdown .pl-ent{color:#22863a}.markdown .pl-k{color:#d73a49}.markdown .pl-pds,.markdown .pl-s,.markdown .pl-s .pl-pse .pl-s1,.markdown .pl-sr,.markdown .pl-sr .pl-cce,.markdown .pl-sr .pl-sra,.markdown .pl-sr .pl-sre{color:#032f62}.markdown .pl-smw,.markdown .pl-v{color:#e36209}.markdown .pl-bu{color:#b31d28}.markdown .pl-ii{background-color:#b31d28;color:#fafbfc}.markdown .pl-c2{background-color:#d73a49;color:#fafbfc}.markdown .pl-c2:before{content:"^M"}.markdown .pl-sr .pl-cce{color:#22863a;font-weight:700}.markdown .pl-ml{color:#735c0f}.markdown .pl-mh,.markdown .pl-mh .pl-en,.markdown .pl-ms{color:#005cc5;font-weight:700}.markdown .pl-mi{color:#24292e;font-style:italic}.markdown .pl-mb{color:#24292e;font-weight:700}.markdown .pl-md{background-color:#ffeef0;color:#b31d28}.markdown .pl-mi1{background-color:#f0fff4;color:#22863a}.markdown .pl-mc{background-color:#ffebda;color:#e36209}.markdown .pl-mi2{background-color:#005cc5;color:#f6f8fa}.markdown .pl-mdr{color:#6f42c1;font-weight:700}.markdown .pl-ba{color:#586069}.markdown .pl-sg{color:#959da5}.markdown .pl-corl{color:#032f62;text-decoration:underline}.markdown .mb-0{margin-bottom:0!important}.markdown .my-2{margin-bottom:8px!important;margin-top:8px!important}.markdown .pl-0{padding-left:0!important}.markdown .py-0{padding-bottom:0!important;padding-top:0!important}.markdown .pl-1{padding-left:4px!important}.markdown .pl-2{padding-left:8px!important}.markdown .py-2{padding-bottom:8px!important;padding-top:8px!important}.markdown .pl-3{padding-left:16px!important}.markdown .pl-4{padding-left:24px!important}.markdown .pl-5{padding-left:32px!important}.markdown .pl-6{padding-left:40px!important}.markdown .pl-7{padding-left:48px!important}.markdown .pl-8{padding-left:64px!important}.markdown .pl-9{padding-left:80px!important}.markdown .pl-10{padding-left:96px!important}.markdown .pl-11{padding-left:112px!important}.markdown .pl-12{padding-left:128px!important}.markdown hr{border-bottom-color:#eee}.markdown kbd{background-color:#fafbfc;border:1px solid #d1d5da;border-radius:3px;box-shadow:inset 0 -1px 0 #d1d5da;color:#444d56;display:inline-block;font:11px SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;line-height:10px;padding:3px 5px;vertical-align:middle}.markdown:after,.markdown:before{content:"";display:table}.markdown:after{clear:both}.markdown>:first-child{margin-top:0!important}.markdown>:last-child{margin-bottom:0!important}.markdown a:not([href]){color:inherit;text-decoration:none}.markdown blockquote,.markdown details,.markdown dl,.markdown ol,.markdown p,.markdown pre,.markdown table,.markdown ul{margin-bottom:28px;margin-top:0}.markdown li{font-size:14px}.markdown li>p{margin-bottom:4px;margin-top:0}.markdown p+ol,.markdown p+ul{margin-top:-15px}.markdown hr{background-color:var(--markdown-border-color);border:0;height:.05em;margin:48px 0;padding:0}.markdown blockquote{border-left:.25em solid var(--markdown-blockquote-border-color);color:#6a737d;padding:0 1em}.markdown blockquote>:first-child{margin-top:0}.markdown blockquote>:last-child{margin-bottom:0}.markdown h1,.markdown h2,.markdown h3,.markdown h4,.markdown h5,.markdown h6{font-weight:600;line-height:1.25;margin-bottom:16px;margin-top:48px}.markdown h1{font-size:2em}.markdown h2{font-size:1.5em}.markdown h3{font-size:1.25em}.markdown h4{font-size:1em}.markdown h5{font-size:.875em}.markdown h6{color:#6a737d;font-size:.85em}.markdown ol,.markdown ul{padding-left:2em}.markdown ol ol,.markdown ol ul,.markdown ul ol,.markdown ul ul{margin-bottom:0;margin-top:0}.markdown ol{list-style-type:decimal}.markdown ul{list-style-type:disc}.markdown li{word-wrap:break-all;display:list-item;text-align:-webkit-match-parent}.markdown li>p{margin-top:16px}.markdown li{margin-top:.25em}.markdown dl{padding:0}.markdown dl dt{font-size:1em;font-style:italic;font-weight:600;margin-top:16px;padding:0}.markdown dl dd{margin-bottom:16px;padding:0 16px}.markdown table{display:block;overflow:auto;width:100%}.markdown table th{font-weight:600}.markdown table td,.markdown table th{border:1px solid var(--markdown-table-border-color);padding:6px 13px}.markdown table tr{border-top:1px solid var(--markdown-table-border-color)}.markdown table tr:nth-child(2n){background-color:var(--markdown-table-even-cell-background-color)}.markdown img{background-color:transparent;box-sizing:initial;display:block;margin:0 auto;max-width:100%}.markdown img[align=right]{padding-left:20px}.markdown img[align=left]{padding-right:20px}.markdown code{background-color:rgba(27,31,35,.05);border-radius:3px;font-size:85%;margin:0;padding:.2em .4em}.markdown pre{word-wrap:normal}.markdown pre>code{background:transparent;border:0;font-size:85%;margin:0;padding:0;white-space:pre;word-break:normal}.markdown .highlight{margin-bottom:16px}.markdown .highlight pre{margin-bottom:0;word-break:normal}.markdown .highlight pre,.markdown pre{background-color:#f6f8fa;border-radius:3px;font-size:85%;line-height:1.45;overflow:auto;padding:16px}.markdown pre code{word-wrap:normal;background-color:initial;border:0;display:inline;line-height:inherit;margin:0;max-width:auto;overflow:visible;padding:0}.markdown .commit-tease-sha{color:#444d56;display:inline-block;font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;font-size:90%}.markdown .full-commit .btn-outline:not(:disabled):hover{border-color:#005cc5;color:#005cc5}.markdown .blob-wrapper{overflow-x:auto;overflow-y:hidden}.markdown .blob-wrapper-embedded{max-height:240px;overflow-y:auto}.markdown .blob-num{color:rgba(27,31,35,.3);cursor:pointer;font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;font-size:12px;line-height:20px;min-width:50px;padding-left:10px;padding-right:10px;text-align:right;-webkit-user-select:none;user-select:none;vertical-align:top;white-space:nowrap;width:1%}.markdown .blob-num:hover{color:rgba(27,31,35,.6)}.markdown .blob-num:before{content:attr(data-line-number)}.markdown .blob-code{line-height:20px;padding-left:10px;padding-right:10px;position:relative;vertical-align:top}.markdown .blob-code-inner{word-wrap:normal;color:#24292e;font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;font-size:12px;overflow:visible;white-space:pre}.markdown .pl-token.active,.markdown .pl-token:hover{background:#ffea7f;cursor:pointer}.markdown .tab-size[data-tab-size="1"]{-o-tab-size:1;tab-size:1}.markdown .tab-size[data-tab-size="2"]{-o-tab-size:2;tab-size:2}.markdown .tab-size[data-tab-size="3"]{-o-tab-size:3;tab-size:3}.markdown .tab-size[data-tab-size="4"]{-o-tab-size:4;tab-size:4}.markdown .tab-size[data-tab-size="5"]{-o-tab-size:5;tab-size:5}.markdown .tab-size[data-tab-size="6"]{-o-tab-size:6;tab-size:6}.markdown .tab-size[data-tab-size="7"]{-o-tab-size:7;tab-size:7}.markdown .tab-size[data-tab-size="8"]{-o-tab-size:8;tab-size:8}.markdown .tab-size[data-tab-size="9"]{-o-tab-size:9;tab-size:9}.markdown .tab-size[data-tab-size="10"]{-o-tab-size:10;tab-size:10}.markdown .tab-size[data-tab-size="11"]{-o-tab-size:11;tab-size:11}.markdown .tab-size[data-tab-size="12"]{-o-tab-size:12;tab-size:12}.markdown .task-list-item{list-style-type:none}.markdown .task-list-item+.task-list-item{margin-top:3px}.markdown .task-list-item input{margin:0 .2em .25em -1.6em;vertical-align:middle}.markdown .table-of-contents{align-items:flex-start;display:flex;flex-direction:column;justify-content:center;position:fixed;right:0;top:120px;width:320px}@media(max-width:1400px){.markdown .table-of-contents{display:none}}.markdown .table-of-contents ul{cursor:pointer;list-style-type:none}.markdown .table-of-contents ul li a{border-bottom:none;color:var(--secondary-text-color);display:block;font-size:15px;font-weight:400;height:36px;letter-spacing:-.025em;padding:6px 2px;width:100%}.markdown .table-of-contents ul p{margin:0}.markdown .gatsby-resp-image-wrapper{display:flex!important;justify-content:center!important;max-height:560px!important;width:100%!important}.markdown .gatsby-resp-image-wrapper img{height:auto!important;max-height:560px!important;max-width:100%!important;position:relative!important;width:auto!important}.markdown .gatsby-resp-image-wrapper img,.markdown img{border-radius:4px!important;box-shadow:0 0 12px rgba(32,32,32,.357)!important;margin-bottom:8px!important}.markdown .gatsby-resp-image-wrapper+em{color:#6a737d;display:block;font-size:15px;font-style:italic;text-align:center}.markdown .gatsby-highlight{margin-bottom:20px}.markdown em{color:#6a737d;font-style:italic}.markdown pre::-webkit-scrollbar{display:block;height:1em;width:auto}.markdown pre::-webkit-scrollbar-track{background-color:transparent}.markdown pre::-webkit-scrollbar-thumb{background-clip:padding-box;background-color:hsla(0,0%,100%,.267);border:5px solid transparent;border-radius:999px}code[class*=language-],pre[class*=language-]{word-wrap:normal;background:none;color:#ccc;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background:#2d2d2d}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em;white-space:normal}.token.block-comment,.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#999}.token.punctuation{color:#ccc}.token.attr-name,.token.deleted,.token.namespace,.token.tag{color:#e2777a}.token.function-name{color:#6196cc}.token.boolean,.token.function,.token.number{color:#f08d49}.token.class-name,.token.constant,.token.property,.token.symbol{color:#f8c555}.token.atrule,.token.builtin,.token.important,.token.keyword,.token.selector{color:#cc99cd}.token.attr-value,.token.char,.token.regex,.token.string,.token.variable{color:#7ec699}.token.entity,.token.operator,.token.url{color:#67cdcc}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.token.entity{cursor:help}.token.inserted{color:green}.post-content{width:100%}.category-page-header-wrapper,.post-content{display:flex;flex-direction:column;justify-content:center;margin-bottom:30px}.category-page-header-wrapper{align-items:center;font-family:Montserrat;letter-spacing:-.025em;margin-top:30px}.category-page-header-wrapper .category-page-title{border-bottom:2px solid var(--primary-text-color);font-size:36px;font-weight:500;margin-bottom:15px;padding-bottom:7px;text-align:center;text-transform:uppercase;width:-webkit-fit-content;width:-moz-fit-content;width:fit-content}.category-page-header-wrapper .category-page-subtitle{font-size:18px;font-weight:300;padding-bottom:10px;text-align:center}.post-card-wrapper{display:flex;justify-content:center;min-height:150px;width:100%}.post-card-wrapper .post-card{border:1px solid var(--post-card-border-color);border-radius:18px;color:var(--primary-text-color);cursor:pointer;display:flex;flex-direction:column;height:100%;margin-bottom:15px;max-width:720px;padding:36px 30px 42px;transition:-webkit-transform .2s;transition:transform .2s;transition:transform .2s,-webkit-transform .2s;width:100%}.post-card-wrapper .post-card:hover .title{text-decoration:underline}@media(min-width:768px){.post-card-wrapper .post-card{margin-bottom:0}}.post-card-wrapper .post-card .title{font-size:18px;font-weight:600;letter-spacing:-.025em;line-height:1.4;margin-bottom:10px}.post-card-wrapper .post-card .description{-webkit-line-clamp:2;-webkit-box-orient:vertical;color:var(--primary-text-color);display:-webkit-box;font-size:13px;letter-spacing:-.025em;line-height:150%;margin-bottom:14px;overflow:hidden;text-overflow:ellipsis}.post-card-wrapper .post-card .info{color:var(--about-link-icon-color);display:flex;font-size:13px;font-weight:400;justify-content:space-between;letter-spacing:-.04em;margin-top:auto}.post-card-wrapper .post-card .info .date{font-family:Montserrat;letter-spacing:-.0625em}.post-card-wrapper .post-card .info .categories{display:flex;font-family:Montserrat}.post-card-wrapper .post-card .info .categories .category{font-size:12px;margin-left:4px}.post-card-wrapper .post-card .info .categories .category:hover{text-decoration:underline}.post-card-column-wrapper{display:flex;justify-content:center;width:100%}.post-card-column-wrapper .post-card-column{align-items:center;display:flex;flex-direction:column;width:100%}.post-card-column-wrapper .post-card-column .post-card-wrapper{margin-bottom:10px}.post-card-column-wrapper .post-card-column .more-post-card-button{background-color:var(--button-background-color);color:var(--tab-hover-text-color);font-family:Montserrat;font-size:15px;font-weight:400;height:42px;letter-spacing:-.025em;margin-top:20px}@font-face{font-display:swap;font-family:Pretendard;font-style:normal;font-weight:45 920;src:url(/fonts/Pretendard.woff2) format("woff2-variations")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:45 920;src:url(/fonts/Montserrat.woff2) format("woff2-variations")}.post-tabs-wrapper{align-self:flex-start;display:flex;flex-direction:column;justify-content:center;top:0;width:100%}.post-tabs-wrapper .post-tabs{display:flex;height:40px;justify-content:center;margin-bottom:12px;max-width:760px;width:100%}.post-tabs-wrapper .post-tabs .mui-tabs .MuiTab-root{color:var(--tab-text-color);font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans KR,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;font-family:Montserrat;font-size:15px;font-weight:400;height:40px;letter-spacing:-.03em;min-height:auto;min-width:auto;padding:10px 24px;transition:all .2s ease}.post-tabs-wrapper .post-tabs .mui-tabs .Mui-selected,.post-tabs-wrapper .post-tabs .mui-tabs .MuiTab-root :hover{color:var(--tab-hover-text-color);transition:all .2s ease}.post-tabs-wrapper .post-tabs .mui-tabs .Mui-selected{background-color:var(--tab-selected-background-color);border-radius:12px;font-size:17px;font-weight:600}.post-tabs-wrapper .post-tabs .mui-tabs .MuiTabScrollButton-root{height:40px;width:20px}.post-tabs-wrapper .post-tabs .mui-tabs .MuiTabs-scrollable{height:40px}.post-tabs-wrapper .post-tabs .mui-tabs .MuiTabs-indicator{display:none}</style><style data-emotion="css-global o6gwfi">html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;box-sizing:border-box;-webkit-text-size-adjust:100%;}*,*::before,*::after{box-sizing:inherit;}strong,b{font-weight:700;}body{margin:0;color:rgba(0, 0, 0, 0.87);font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:400;font-size:1rem;line-height:1.5;letter-spacing:0.00938em;background-color:#fff;}@media print{body{background-color:#fff;}}body::backdrop{background-color:#fff;}</style><style data-emotion="css-global 1prfaxn">@-webkit-keyframes mui-auto-fill{from{display:block;}}@keyframes mui-auto-fill{from{display:block;}}@-webkit-keyframes mui-auto-fill-cancel{from{display:block;}}@keyframes mui-auto-fill-cancel{from{display:block;}}</style><style data-emotion="css 18nc3u2 feqhe6 12rx5qu mnn31 vubbuv 1yxmbwk 6flbmm">.css-18nc3u2.Mui-focused .MuiAutocomplete-clearIndicator{visibility:visible;}@media (pointer: fine){.css-18nc3u2:hover .MuiAutocomplete-clearIndicator{visibility:visible;}}.css-18nc3u2 .MuiAutocomplete-tag{margin:3px;max-width:calc(100% - 6px);}.css-18nc3u2 .MuiAutocomplete-inputRoot{-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;}.MuiAutocomplete-hasPopupIcon.css-18nc3u2 .MuiAutocomplete-inputRoot,.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiAutocomplete-inputRoot{padding-right:30px;}.MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiAutocomplete-inputRoot{padding-right:56px;}.css-18nc3u2 .MuiAutocomplete-inputRoot .MuiAutocomplete-input{width:0;min-width:30px;}.css-18nc3u2 .MuiInput-root{padding-bottom:1px;}.css-18nc3u2 .MuiInput-root .MuiInput-input{padding:4px 4px 4px 0px;}.css-18nc3u2 .MuiInput-root.MuiInputBase-sizeSmall .MuiInput-input{padding:2px 4px 3px 0;}.css-18nc3u2 .MuiOutlinedInput-root{padding:9px;}.MuiAutocomplete-hasPopupIcon.css-18nc3u2 .MuiOutlinedInput-root,.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiOutlinedInput-root{padding-right:39px;}.MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiOutlinedInput-root{padding-right:65px;}.css-18nc3u2 .MuiOutlinedInput-root .MuiAutocomplete-input{padding:7.5px 4px 7.5px 5px;}.css-18nc3u2 .MuiOutlinedInput-root .MuiAutocomplete-endAdornment{right:9px;}.css-18nc3u2 .MuiOutlinedInput-root.MuiInputBase-sizeSmall{padding-top:6px;padding-bottom:6px;padding-left:6px;}.css-18nc3u2 .MuiOutlinedInput-root.MuiInputBase-sizeSmall .MuiAutocomplete-input{padding:2.5px 4px 2.5px 8px;}.css-18nc3u2 .MuiFilledInput-root{padding-top:19px;padding-left:8px;}.MuiAutocomplete-hasPopupIcon.css-18nc3u2 .MuiFilledInput-root,.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiFilledInput-root{padding-right:39px;}.MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiFilledInput-root{padding-right:65px;}.css-18nc3u2 .MuiFilledInput-root .MuiFilledInput-input{padding:7px 4px;}.css-18nc3u2 .MuiFilledInput-root .MuiAutocomplete-endAdornment{right:9px;}.css-18nc3u2 .MuiFilledInput-root.MuiInputBase-sizeSmall{padding-bottom:1px;}.css-18nc3u2 .MuiFilledInput-root.MuiInputBase-sizeSmall .MuiFilledInput-input{padding:2.5px 4px;}.css-18nc3u2 .MuiInputBase-hiddenLabel{padding-top:8px;}.css-18nc3u2 .MuiFilledInput-root.MuiInputBase-hiddenLabel{padding-top:0;padding-bottom:0;}.css-18nc3u2 .MuiFilledInput-root.MuiInputBase-hiddenLabel .MuiAutocomplete-input{padding-top:16px;padding-bottom:17px;}.css-18nc3u2 .MuiFilledInput-root.MuiInputBase-hiddenLabel.MuiInputBase-sizeSmall .MuiAutocomplete-input{padding-top:8px;padding-bottom:9px;}.css-18nc3u2 .MuiAutocomplete-input{-webkit-box-flex:1;-webkit-flex-grow:1;-ms-flex-positive:1;flex-grow:1;text-overflow:ellipsis;opacity:1;}.css-feqhe6{display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;position:relative;min-width:0;padding:0;margin:0;border:0;vertical-align:top;width:100%;}.css-12rx5qu{font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:400;font-size:1rem;line-height:1.4375em;letter-spacing:0.00938em;color:rgba(0, 0, 0, 0.87);box-sizing:border-box;position:relative;cursor:text;display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;width:100%;position:relative;}.css-12rx5qu.Mui-disabled{color:rgba(0, 0, 0, 0.38);cursor:default;}label+.css-12rx5qu{margin-top:16px;}.css-12rx5qu:after{border-bottom:2px solid #1976d2;left:0;bottom:0;content:"";position:absolute;right:0;-webkit-transform:scaleX(0);-moz-transform:scaleX(0);-ms-transform:scaleX(0);transform:scaleX(0);-webkit-transition:-webkit-transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;transition:transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;pointer-events:none;}.css-12rx5qu.Mui-focused:after{-webkit-transform:scaleX(1) translateX(0);-moz-transform:scaleX(1) translateX(0);-ms-transform:scaleX(1) translateX(0);transform:scaleX(1) translateX(0);}.css-12rx5qu.Mui-error:before,.css-12rx5qu.Mui-error:after{border-bottom-color:#d32f2f;}.css-12rx5qu:before{border-bottom:1px solid rgba(0, 0, 0, 0.42);left:0;bottom:0;content:"\00a0";position:absolute;right:0;-webkit-transition:border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;pointer-events:none;}.css-12rx5qu:hover:not(.Mui-disabled, .Mui-error):before{border-bottom:2px solid rgba(0, 0, 0, 0.87);}@media (hover: none){.css-12rx5qu:hover:not(.Mui-disabled, .Mui-error):before{border-bottom:1px solid rgba(0, 0, 0, 0.42);}}.css-12rx5qu.Mui-disabled:before{border-bottom-style:dotted;}.css-mnn31{font:inherit;letter-spacing:inherit;color:currentColor;padding:4px 0 5px;border:0;box-sizing:content-box;background:none;height:1.4375em;margin:0;-webkit-tap-highlight-color:transparent;display:block;min-width:0;width:100%;-webkit-animation-name:mui-auto-fill-cancel;animation-name:mui-auto-fill-cancel;-webkit-animation-duration:10ms;animation-duration:10ms;}.css-mnn31::-webkit-input-placeholder{color:currentColor;opacity:0.42;-webkit-transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}.css-mnn31::-moz-placeholder{color:currentColor;opacity:0.42;-webkit-transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}.css-mnn31:-ms-input-placeholder{color:currentColor;opacity:0.42;-webkit-transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}.css-mnn31::-ms-input-placeholder{color:currentColor;opacity:0.42;-webkit-transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}.css-mnn31:focus{outline:0;}.css-mnn31:invalid{box-shadow:none;}.css-mnn31::-webkit-search-decoration{-webkit-appearance:none;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31::-webkit-input-placeholder{opacity:0!important;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31::-moz-placeholder{opacity:0!important;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31:-ms-input-placeholder{opacity:0!important;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31::-ms-input-placeholder{opacity:0!important;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31:focus::-webkit-input-placeholder{opacity:0.42;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31:focus::-moz-placeholder{opacity:0.42;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31:focus:-ms-input-placeholder{opacity:0.42;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31:focus::-ms-input-placeholder{opacity:0.42;}.css-mnn31.Mui-disabled{opacity:1;-webkit-text-fill-color:rgba(0, 0, 0, 0.38);}.css-mnn31:-webkit-autofill{-webkit-animation-duration:5000s;animation-duration:5000s;-webkit-animation-name:mui-auto-fill;animation-name:mui-auto-fill;}.css-vubbuv{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;width:1em;height:1em;display:inline-block;fill:currentColor;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;-webkit-transition:fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;font-size:1.5rem;}.css-1yxmbwk{display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;position:relative;box-sizing:border-box;-webkit-tap-highlight-color:transparent;background-color:transparent;outline:0;border:0;margin:0;border-radius:0;padding:0;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;vertical-align:middle;-moz-appearance:none;-webkit-appearance:none;-webkit-text-decoration:none;text-decoration:none;color:inherit;text-align:center;-webkit-flex:0 0 auto;-ms-flex:0 0 auto;flex:0 0 auto;font-size:1.5rem;padding:8px;border-radius:50%;overflow:visible;color:rgba(0, 0, 0, 0.54);-webkit-transition:background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}.css-1yxmbwk::-moz-focus-inner{border-style:none;}.css-1yxmbwk.Mui-disabled{pointer-events:none;cursor:default;}@media print{.css-1yxmbwk{-webkit-print-color-adjust:exact;color-adjust:exact;}}.css-1yxmbwk:hover{background-color:rgba(0, 0, 0, 0.04);}@media (hover: none){.css-1yxmbwk:hover{background-color:transparent;}}.css-1yxmbwk.Mui-disabled{background-color:transparent;color:rgba(0, 0, 0, 0.26);}.css-6flbmm{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;width:1em;height:1em;display:inline-block;fill:currentColor;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;-webkit-transition:fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;font-size:2.1875rem;}</style><link rel="preconnect" href="https://www.google-analytics.com"/><link rel="dns-prefetch" href="https://www.google-analytics.com"/><script>
+  
+  function gaOptout(){document.cookie=disableStr+'=true; expires=Thu, 31 Dec 2099 23:59:59 UTC;path=/',window[disableStr]=!0}var gaProperty='0',disableStr='ga-disable-'+gaProperty;document.cookie.indexOf(disableStr+'=true')>-1&&(window[disableStr]=!0);
+  if(true) {
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  }
+  if (typeof ga === "function") {
+    ga('create', '0', 'auto', {});
+      ga('set', 'anonymizeIp', true);
+      
+      
+      
+      
+      }</script><link rel="icon" href="/favicon-32x32.png?v=ad9e124e5060ab5ddbaf24744e1cfc72" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="/static/webfonts/s/roboto/v32/KFOlCnqEu92Fr1MmSU5fBBc4.woff2"/><link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="/static/webfonts/s/roboto/v32/KFOmCnqEu92Fr1Mu4mxK.woff2"/><link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="/static/webfonts/s/roboto/v32/KFOlCnqEu92Fr1MmEU9fBBc4.woff2"/><style>@font-face{font-display:swap;font-family:Roboto;font-style:normal;font-weight:300;src:url(/static/webfonts/s/roboto/v32/KFOlCnqEu92Fr1MmSU5fBBc4.woff2) format("woff2")}@font-face{font-display:swap;font-family:Roboto;font-style:normal;font-weight:400;src:url(/static/webfonts/s/roboto/v32/KFOmCnqEu92Fr1Mu4mxK.woff2) format("woff2")}@font-face{font-display:swap;font-family:Roboto;font-style:normal;font-weight:500;src:url(/static/webfonts/s/roboto/v32/KFOlCnqEu92Fr1MmEU9fBBc4.woff2) format("woff2")}@font-face{font-display:swap;font-family:Roboto;font-style:normal;font-weight:300;src:url(/static/webfonts/s/roboto/v32/KFOlCnqEu92Fr1MmSU5fBBc-.woff) format("woff")}@font-face{font-display:swap;font-family:Roboto;font-style:normal;font-weight:400;src:url(/static/webfonts/s/roboto/v32/KFOmCnqEu92Fr1Mu4mxM.woff) format("woff")}@font-face{font-display:swap;font-family:Roboto;font-style:normal;font-weight:500;src:url(/static/webfonts/s/roboto/v32/KFOlCnqEu92Fr1MmEU9fBBc-.woff) format("woff")}</style><link rel="sitemap" type="application/xml" href="/sitemap.xml"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script><title data-react-helmet="true">DEV 03. 메인페이지 만들기</title></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="page-wrapper"><header class="page-header-wrapper"><div class="page-header"><div class="front-section"><a class="link" href="/">JUN-HYEONG</a></div><div class="trailing-section"><a class="link" href="/about">ABOUT</a><a class="link" href="/posts">POSTS</a><a href="https://junyangyee.vercel.app/" class="link" target="_blank" rel="noreferrer">PORTFOLIO</a><div class="MuiAutocomplete-root MuiAutocomplete-hasPopupIcon css-18nc3u2"><div class="search-input-wrapper"><div class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root search-input css-feqhe6"><div class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd MuiAutocomplete-inputRoot css-12rx5qu"><input type="text" aria-invalid="false" autoComplete="off" value="" class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-mnn31" aria-autocomplete="list" aria-expanded="false" autoCapitalize="none" spellcheck="false" role="combobox"/><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium search-icon css-vubbuv" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="SearchOutlinedIcon"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg></div></div></div></div></div></div></header><main class="page-content"><header class="post-header"><div class="info"><div class="categories"><a class="category" href="/posts/PORTFOLIO">PORTFOLIO</a></div></div><h1 class="title">DEV 03. 메인페이지 만들기</h1><div class="info"><div class="date">October 18, 2024</div></div></header><div class="post-content"><div class="markdown"><blockquote>
+<p>메인 페이지를 제작하였습니다.<br>
+배포까지 진행해 바로바로 수정사항이 배포될 수 있도록 설정하였습니다.</p>
+</blockquote>
+<hr>
+<h2 id="기존코드-오류-수정" style="position:relative;"><a href="#%EA%B8%B0%EC%A1%B4%EC%BD%94%EB%93%9C-%EC%98%A4%EB%A5%98-%EC%88%98%EC%A0%95" aria-label="기존코드 오류 수정 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>기존코드 오류 수정</h2>
+<p>예전에 윈도우를 예쁘게 써보겠다고 MacType을 사용해서<br>
+윈도우 전체 폰트를 Pretendard로 변경했었습니다. (예쁘게 쓰긴 했습니다.)<br>
+다만 이런 상태로 폰트를 변경하는 작업을 하다보니, 기존에 Pretendard 를 적용했던 게 잘 적용된 것으로 보였습니다.<br>
+혹시 몰라 MacType 해제 후 다시 확인해보니, 적용이 안된 채로 맑은 고딕으로 보이고 있었습니다.</p>
+<p>확인해보니 <code class="language-text">&lt;body className={'${pretendard.variable}'}></code> 이렇게 코드를 작성했었는데,<br>
+해당 부분이 전역으로 폰트를 설정하는 것이 아닌 포인트를 줄 수있도록 된 것이었습니다.<br>
+<code class="language-text">variable</code> 부분을 <code class="language-text">className</code> 으로 변경하면 전역으로 사용되게 됩니다.</p>
+<p>해당 부분에 대한 이해는 아직 잘 되지 않습니다.<br>
+사실 기존 css 에 font-family 로 하는 것이 더 익숙하지만, 폰트 최적화에서는 해당 방법이 더 좋다고 하기에 이 방법으로 계속 진행해보려 합니다.</p>
+<p>추가로 <code class="language-text">$</code> 표시가 의미하는 것을 찾아보려 했으나, 무슨 의미인지 확인하지 못했습니다.<br>
+인터넷에선 제거한 것과 안 한 것 다 있어서, 지운채로 사용하겠습니다.<br>
+문법과 관련 정보를 계속해서 찾아보려고 합니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// app/layout.js</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">RootLayout</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> children <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>kr<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>pretendard<span class="token punctuation">.</span>className<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token punctuation">{</span>children<span class="token punctuation">}</span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">></span></span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<hr>
+<h2 id="메인-페이지-레이아웃-수정" style="position:relative;"><a href="#%EB%A9%94%EC%9D%B8-%ED%8E%98%EC%9D%B4%EC%A7%80-%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83-%EC%88%98%EC%A0%95" aria-label="메인 페이지 레이아웃 수정 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>메인 페이지 레이아웃 수정</h2>
+<p>이전에 문제라고 생각했던 레이아웃 구상 부분을 구체화해보려합니다.</p>
+<p>기존 피그마 작업물은 그리드나 다른 것들을 구상하지 않고 그냥 이미지만 제작한 상황입니다.<br>
+해당 작업물을 조금 더 수치화하고 구조를 생각하면서 진행해보려합니다.</p>
+<p>컨테이너의 크기를 기존 1280px 에서 1200px로 축소하였습니다.<br>
+추후 1280px 비율의 디자인을 진행할 때, 좌우 40px 정도 마진을 주기위해 축소하였습니다.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 58.88888888888889%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAA7DAAAOwwHHb6hkAAACtElEQVQoz12SeU8TURDA9/P4SYz/olGjUg6vaAzxilHBAgEqhxpJvCMoMR7hKnhBJFEBi1YFNSoGSw9qd7e0dNke2+1eP8PWCyeZzMybmV/eezNC3dHjdJ2/gK+9E5+vnZZ6L61nvPgam/A1NtPS4KXN2/hH187PNja7fvOpetpa2/B1dNLRdY6TDV6E93MfWScrKmRzkMtDvvDXFrSy/zteq8ko61oleRlh4vkUhgUZtYCqZMmGY2SjcdRInGz0B8pijJVQhPT3MJlQ5J9cWdW0gpIroukmn74sILycmnHpBd1AzxfR4wn0hOSqIS+T+PSZ0Ju3fJ6cIvp+FlNKoifEXzUiejaPVrKwHfj2PYww+aoMLJZMDE3HSIgYkowhyq61k2lIK5BZxUmmMUSpnHNVwsgV0E3LZSyEIgjTgdduYJgWll7CEiX3FqYoY8spCmKc0bEeBh9dZTW+iCMvY8pJrGQKS5KxChqm5biMUDiKEJh54waWbeMYBo4sw2oaMstgaARHhjnn2Ud3zQHe+f3ucGxJdOucVBpH09znrsliJIYQeL0eSCqJMrWEGoiRHZwl6O3h/p56np2+xPyRsxjjE6x0t5A6VIGzFIVSCdspE8PR/4BYBmZcInh4nre7Zvm2ZQSx5h4TO5sI7G8lV1GN6qklU70VaeMGiuPDbq9tWX+B04HyUEqGiWOW0BbizBwLMbltni+VQcKex8zVXeNdXQfqngaKOypRKzYjV1egtJ3ANk1M0/z1hxGE2bkP65YzP5Mg1rfE19Y4PVuCnPSMcWTHALWbBji09Tlju3txmrpg+gVaXRUo6X8WO4nQef4ij5+OM+gfZdjv58GV2wz23qGvu4+9O9up2d5EZdUNqnb34dncwsHay9y9dIvR/n6GbvYy1D/A0MhDRh894XrPbX4Cwd40lauo3fkAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Dev03_001_FigmaGrid"
+        title="Dev03_001_FigmaGrid"
+        src="/static/32b1808fa06f51c9a4ae624086ad315b/37523/Dev03_001_FigmaGrid.png"
+        srcset="/static/32b1808fa06f51c9a4ae624086ad315b/e9ff0/Dev03_001_FigmaGrid.png 180w,
+/static/32b1808fa06f51c9a4ae624086ad315b/f21e7/Dev03_001_FigmaGrid.png 360w,
+/static/32b1808fa06f51c9a4ae624086ad315b/37523/Dev03_001_FigmaGrid.png 720w,
+/static/32b1808fa06f51c9a4ae624086ad315b/302a4/Dev03_001_FigmaGrid.png 1080w,
+/static/32b1808fa06f51c9a4ae624086ad315b/07a9c/Dev03_001_FigmaGrid.png 1440w,
+/static/32b1808fa06f51c9a4ae624086ad315b/5df5d/Dev03_001_FigmaGrid.png 1572w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<p>그리드는 추후 관련 작업이 필요할 경우를 위해 만들어두었으나,
+지금 현재에는 필요없는 부분인 것 같아 코드 상에는 구현하지 않았습니다.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 56.666666666666664%; position: relative; bottom: 0; left: 0; background-image: url('data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAALABQDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAEFA//EABQBAQAAAAAAAAAAAAAAAAAAAAL/2gAMAwEAAhADEAAAAbmKmpWhhP8A/8QAGhAAAgMBAQAAAAAAAAAAAAAAAAIBAxEiMv/aAAgBAQABBQKcFdJML/FHTH//xAAXEQADAQAAAAAAAAAAAAAAAAABEBFB/9oACAEDAQE/ARNX/8QAFxEAAwEAAAAAAAAAAAAAAAAAEBESIv/aAAgBAgEBPwGcsf/EABgQAAIDAAAAAAAAAAAAAAAAAAEQESAh/9oACAEBAAY/AtoZX//EABsQAAMBAQADAAAAAAAAAAAAAAABESExQWFx/9oACAEBAAE/IYeC+lHZs0WDt6VGn3FULiP/2gAMAwEAAgADAAAAEKvP/8QAFREBAQAAAAAAAAAAAAAAAAAAARD/2gAIAQMBAT8QDQj/xAAXEQEAAwAAAAAAAAAAAAAAAAABEBEx/9oACAECAQE/ELKLkf/EABwQAQACAgMBAAAAAAAAAAAAAAEAESFhMUFRcf/aAAgBAQABPxAtbCqtVCc9KjG/kABqEXeUGmMho/RSGpmz4T//2Q=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Dev03_002_LayoutGNB"
+        title="Dev03_002_LayoutGNB"
+        src="/static/507a92396da02d519844d1b92a693c83/80e3c/Dev03_002_LayoutGNB.png.jpg"
+        srcset="/static/507a92396da02d519844d1b92a693c83/4ec73/Dev03_002_LayoutGNB.png.jpg 180w,
+/static/507a92396da02d519844d1b92a693c83/158ba/Dev03_002_LayoutGNB.png.jpg 360w,
+/static/507a92396da02d519844d1b92a693c83/80e3c/Dev03_002_LayoutGNB.png.jpg 720w,
+/static/507a92396da02d519844d1b92a693c83/47311/Dev03_002_LayoutGNB.png.jpg 1080w,
+/static/507a92396da02d519844d1b92a693c83/644c5/Dev03_002_LayoutGNB.png.jpg 1440w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<p>구상 단계에서부터 구조를 어떻게 짤지 그림으로 그려본 후, 코딩 작업으로 넘어갔습니다.</p>
+<h3 id="html-코드-구성" style="position:relative;"><a href="#html-%EC%BD%94%EB%93%9C-%EA%B5%AC%EC%84%B1" aria-label="html 코드 구성 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>HTML 코드 구성</h3>
+<p>기존에는 HTML코드부터 정리되지 않고 구체화되지 않은채로 nav로 모든 것을 묶어둔 상태였습니다.<br>
+새롭게 코드를 작성해서 구조화되고 깔끔하게 보이도록 진행하였습니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// app/layout.js</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">RootLayout</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> children <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>kr<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>pretendard<span class="token punctuation">.</span>className<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>header</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>gnbContainer<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>pageLogo<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Image</span></span> <span class="token attr-name">src</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token string">"/images/logo.png"</span><span class="token punctuation">}</span></span> <span class="token attr-name">width</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">200</span><span class="token punctuation">}</span></span> <span class="token attr-name">height</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">36</span><span class="token punctuation">}</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>JunHyeong<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span><span class="token plain-text">
+                        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>nav</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>pageMenu<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>menuList<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Home</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/works<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Works</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/profile<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Profile</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://junyangyee.github.io/<span class="token punctuation">"</span></span> <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>_blank<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Blog</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nav</span><span class="token punctuation">></span></span><span class="token plain-text">
+                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>pageContact<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">className</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>contactList<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://www.instagram.com/ju_nyang_yee/<span class="token punctuation">"</span></span> <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>_blank<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Image</span></span> <span class="token attr-name">src</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token string">"/icons/Instagram.svg"</span><span class="token punctuation">}</span></span> <span class="token attr-name">width</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">26</span><span class="token punctuation">}</span></span> <span class="token attr-name">height</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">26</span><span class="token punctuation">}</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Instagram<span class="token punctuation">"</span></span> <span class="token attr-name">title</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Instagram<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+                            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span><span class="token punctuation">"</span></span> <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>_blank<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Image</span></span> <span class="token attr-name">src</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token string">"/icons/LinkedIn.svg"</span><span class="token punctuation">}</span></span> <span class="token attr-name">width</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">26</span><span class="token punctuation">}</span></span> <span class="token attr-name">height</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">26</span><span class="token punctuation">}</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>LinkedIn<span class="token punctuation">"</span></span> <span class="token attr-name">title</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>LinkedIn<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+                            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>mailto:answnsgud19@gmail.com<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Image</span></span> <span class="token attr-name">src</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token string">"/icons/Mail.svg"</span><span class="token punctuation">}</span></span> <span class="token attr-name">width</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">26</span><span class="token punctuation">}</span></span> <span class="token attr-name">height</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token number">26</span><span class="token punctuation">}</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Mail<span class="token punctuation">"</span></span> <span class="token attr-name">title</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Mail<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span><span class="token plain-text">
+                                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+                            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+                        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+                    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>header</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token punctuation">{</span>children<span class="token punctuation">}</span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">></span></span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p><code class="language-text">&lt;header></code> 태그로 gnb 전체를 감싸주었으며, 다양한 아이템이 있을 경우 리스트 태그를 사용하여 감싸주었습니다.</p>
+<h3 id="css-디자인" style="position:relative;"><a href="#css-%EB%94%94%EC%9E%90%EC%9D%B8" aria-label="css 디자인 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CSS 디자인</h3>
+<p>기존 코드는 GNB 자체를 <code class="language-text">display: flex;</code>로 묶어두었습니다.<br>
+다만 이 방법으로는 중앙 메뉴바를 가운데로 정렬하기에 난이도가 있었으며, 기존에는 중앙 메뉴바의 가로 길이가 로고와 컨텍메뉴 사이를 꽉 채우는 것으로 구상하여 중앙 정렬에 난이도가 조금 더 있었던 것 같습니다.</p>
+<div class="gatsby-highlight" data-language="css"><pre class="language-css"><code class="language-css"><span class="token comment">/* app/globals.css */</span>
+
+<span class="token selector">:root</span> <span class="token punctuation">{</span>
+    <span class="token property">--background</span><span class="token punctuation">:</span> #ffffff<span class="token punctuation">;</span>
+    <span class="token property">--foreground</span><span class="token punctuation">:</span> #171717<span class="token punctuation">;</span>
+
+    <span class="token property">--font-black</span><span class="token punctuation">:</span> #303030<span class="token punctuation">;</span>
+    <span class="token property">--font-gray</span><span class="token punctuation">:</span> #787878<span class="token punctuation">;</span>
+    <span class="token property">--font-extrabold</span><span class="token punctuation">:</span> 800<span class="token punctuation">;</span>
+    <span class="token property">--font-semibold</span><span class="token punctuation">:</span> 600<span class="token punctuation">;</span>
+    <span class="token property">--font-regular</span><span class="token punctuation">:</span> 400<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">*</span> <span class="token punctuation">{</span>
+    <span class="token property">margin</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+    <span class="token property">padding</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">html,
+body</span> <span class="token punctuation">{</span>
+    <span class="token property">max-width</span><span class="token punctuation">:</span> 100vw<span class="token punctuation">;</span>
+    <span class="token property">overflow-x</span><span class="token punctuation">:</span> hidden<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">body</span> <span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+    <span class="token property">max-width</span><span class="token punctuation">:</span> 1200px<span class="token punctuation">;</span>
+    <span class="token property">margin-left</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+    <span class="token property">margin-right</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+    <span class="token property">padding-right</span><span class="token punctuation">:</span> 40px<span class="token punctuation">;</span>
+    <span class="token property">padding-left</span><span class="token punctuation">:</span> 40px<span class="token punctuation">;</span>
+  
+    <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--foreground<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token property">background</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--background<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 16px<span class="token punctuation">;</span>
+    <span class="token property">letter-spacing</span><span class="token punctuation">:</span> -0.05rem<span class="token punctuation">;</span>
+    <span class="token property">font-weight</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--font-regular<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">/* 해당 부분은 특정 브라우저(웹킷을 사용하는)에 폰트가 부드럽게 보여지게 설정하는 부분입니다. */</span>
+    <span class="token property">-webkit-font-smoothing</span><span class="token punctuation">:</span> antialiased<span class="token punctuation">;</span>
+    <span class="token property">-moz-osx-font-smoothing</span><span class="token punctuation">:</span> grayscale<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">ul, li</span> <span class="token punctuation">{</span>
+    <span class="token property">list-style</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">a</span> <span class="token punctuation">{</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+    <span class="token property">text-decoration</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.gnbContainer</span> <span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> grid<span class="token punctuation">;</span>
+    <span class="token property">grid-template-columns</span><span class="token punctuation">:</span> 1fr auto 1fr<span class="token punctuation">;</span>
+    <span class="token property">grid-template-rows</span><span class="token punctuation">:</span> 1fr<span class="token punctuation">;</span>
+    <span class="token property">gap</span><span class="token punctuation">:</span> 0px 0px<span class="token punctuation">;</span>
+    <span class="token property">grid-template-areas</span><span class="token punctuation">:</span> <span class="token string">"left center right"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.pageLogo</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">grid-area</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+    <span class="token property">justify-self</span><span class="token punctuation">:</span> start<span class="token punctuation">;</span>
+    <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+  
+    <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.pageMenu</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">grid-area</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">justify-self</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">text-align</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.menuList</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 400px<span class="token punctuation">;</span>
+    <span class="token property">justify-content</span><span class="token punctuation">:</span> space-around<span class="token punctuation">;</span>
+    
+    font-size<span class="token punctuation">:</span> 1.125rem<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--font-gray<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.pageContact</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">grid-area</span><span class="token punctuation">:</span> right<span class="token punctuation">;</span>
+    <span class="token property">justify-self</span><span class="token punctuation">:</span> end<span class="token punctuation">;</span>
+    <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.contactList</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 144px<span class="token punctuation">;</span>
+    <span class="token property">justify-content</span><span class="token punctuation">:</span> space-between<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">h1</span> <span class="token punctuation">{</span>
+    <span class="token property">text-align</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 46.666666666666664%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAW0lEQVQoz+2OWwrAIAwEvf9VQ06QxxZb0ZhKH/S3A8LikkkKGu6+v4qZw8yOrApmBhFBRFpvUNXTXKUgEcsQ+//cex4fwrhpZO953T+4cHVxFl5xK3zLL/wu3AAUmcxk/RtxuAAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Dev03_003_cssDesign01"
+        title="Dev03_003_cssDesign01"
+        src="/static/bb9a7838378b920611765908fe161676/37523/Dev03_003_cssDesign01.png"
+        srcset="/static/bb9a7838378b920611765908fe161676/e9ff0/Dev03_003_cssDesign01.png 180w,
+/static/bb9a7838378b920611765908fe161676/f21e7/Dev03_003_cssDesign01.png 360w,
+/static/bb9a7838378b920611765908fe161676/37523/Dev03_003_cssDesign01.png 720w,
+/static/bb9a7838378b920611765908fe161676/302a4/Dev03_003_cssDesign01.png 1080w,
+/static/bb9a7838378b920611765908fe161676/07a9c/Dev03_003_cssDesign01.png 1440w,
+/static/bb9a7838378b920611765908fe161676/36909/Dev03_003_cssDesign01.png 2772w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<p>기본적으로 body 컨테이너 부분을 중앙정렬하기 위해 <code class="language-text">max-width</code> 및 <code class="language-text">margin</code> 부분을 작업하였습니다. 추가로 좌우 40px의 패딩을 주어서 최소 1280px까지 body 컨테이너 구간을 설정하였습니다.</p>
+<p>전체적인 수치는 figma 작업 기준으로 진행하였습니다.<br>
+GNB 전체를 <code class="language-text">.gnbContainer</code> 클래스로 묶어서 작업을 진행하였으며 큰 레이아웃은 <code class="language-text">display: grid</code>로 구분하였습니다.<br>
+그리드는 <code class="language-text">1fr auto 1fr</code> 로 작업하여 가운데 부분이 자동으로 설정되어 중앙정렬되도록 설정하였습니다.<br>
+크게 그리드의 지역을 left center right로 나뉘어 area 설정을 진행하였으며, 위치에 맞게 아이템 정렬을 진행하였습니다.</p>
+<p>메뉴 리스트는 400px로 여유있게 설정하였으며, 우측 컨택 리스트는 144px로 8x16 사이즈로 작업하였습니다.<br>
+내부는 <code class="language-text">display: flex</code>로 설정하여 아이템들을 정렬하기 편하도록 작업하였습니다.</p>
+<h4 id="px-단위와-rem-단위" style="position:relative;"><a href="#px-%EB%8B%A8%EC%9C%84%EC%99%80-rem-%EB%8B%A8%EC%9C%84" aria-label="px 단위와 rem 단위 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>px 단위와 rem 단위</h4>
+<p>예전에 HTML/CSS 를 배울때에 <code class="language-text">rem em xp vh vw</code>등 다양한 단위가 있다는 건 배웠었습니다.<br>
+다만 이걸 정확히 어떻게 사용해야할지 잘 몰라서 익숙한 px 단위를 사용하였습니다.<br>
+이번에 css를 수정하면서 다양한 정보들을 찾아보았는데, 대부분 rem 단위를 사용해서 그 이유를 찾아보았습니다.</p>
+<p><a href="https://blog.jeongtae.com/rem-%EA%B3%A0%EC%B0%B0">CSS에서 rem 단위 사용하기</a><br>
+해당 블로그를 통해서 관련한 내용을 참고하였습니다.</p>
+<p>px단위의 경우 다양한 디자인 툴에서 디자인 한 것을 그대로 구현할 수 있다는 장점이 있습니다.<br>
+포토샵과 figma 등 다양한 툴에서 px를 기본으로 사용하기에, 디자인툴에 익숙한 저로써는 더욱 px를 사용하려고 했습니다.</p>
+<p>다만 px단위의 단점으로는 다음과 같은 부분이 있습니다.</p>
+<ul>
+<li>전체적인 폰트 크기 수정을 하려면 상위부터 하위 클래스까지 전부 수치를 바꾸어야한다.</li>
+<li>모든 디바이스/브라우저에서 글씨가 같은 크기로 나온다.
+<ul>
+<li>폰트 크기를 조절하는 경우 일정하게 조절되지 않는다.</li>
+<li>즉, 브라우저의 기본 폰트 크기를 조절해도 대응되지 않는다.</li>
+</ul>
+</li>
+</ul>
+<p>이런 부분때문에 폰트의 경우는 rem단위를 사용하는 경우가 많다고합니다.</p>
+<p>rem 단위는 Root 요소 (html / 브라우저의 font-size)를 바탕으로 계산이 되는 단위입니다.<br>
+장점으로는 다음과 같은 부분이 있습니다.</p>
+<ul>
+<li>웹 브라우저마다 다른 기본 폰트 사이즈에 대응 가능하다.</li>
+<li>저시력자 접근성이 좋다</li>
+<li>전체 스타일의 스케일을 손쉽게 조정할 수 있다.</li>
+</ul>
+<p>단점으로는 px단위 기반으로 디자인하는 경우가 많아 계산이 불편하다는 점이 있지만,<br>
+<a href="https://nekocalc.com/px-to-rem-converter">해당 사이트</a>처럼 px과 rem 계산을 해주는 사이트가 존재하여, 디자인된 px를 rem으로 변경하면 될 것 같습니다.</p>
+<hr>
+<h2 id="css-모듈화" style="position:relative;"><a href="#css-%EB%AA%A8%EB%93%88%ED%99%94" aria-label="css 모듈화 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CSS 모듈화</h2>
+<p>현재 <code class="language-text">globals.css</code>에 모든 css 디자인이 들어가있습니다.<br>
+이렇게 될 경우 추후 <code class="language-text">globals.css</code>에 너무 많은 부분이 들어가 점점 복잡해질 가능성이 있습니다.<br>
+각 페이지에 맞게 css를 모듈화하여 작업을 진행해보려합니다.</p>
+<p>현재 글로벌 세팅으로 두어야하는 것들 (a, li의 스타일, :root 색상 정보 등)은 <code class="language-text">globals.css</code>에,
+<code class="language-text">layout.js</code>에만 사용되는 부분들은 모듈화하여 <code class="language-text">layout.module.js</code>에 저장하도록 하겠습니다.</p>
+<h3 id="css-모듈화란" style="position:relative;"><a href="#css-%EB%AA%A8%EB%93%88%ED%99%94%EB%9E%80" aria-label="css 모듈화란 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CSS 모듈화란?</h3>
+<p>사실 Next.js의 기본으로 있던 <code class="language-text">page.module.css</code> 파일이 무슨 역할인지 1일차 설정 때 찾아보고 처음 알았습니다.<br>
+기존 css의 경우, 코드가 복잡해짐과 함께 클래스의 충돌이 발생할 여지가 상당히 많습니다.<br>
+예전에 html/css를 배울때에는 그렇게 복잡해질 일이 별로 없었으나, 이렇게 페이지를 직접 제작하다보면 복잡해지고 충돌이 일어날 가능성이 매우 높아집니다.</p>
+<p>css 모듈화는 다음과 같은 방식으로 진행됩니다.<br>
+파일명을 <code class="language-text">모듈이름.module.css</code>로 생성한 후 js에 임포트합니다.<br>
+<code class="language-text">import styles from "./모듈이름.module.css";</code></p>
+<p>그 이후 기존에 있던 클래스들을 다음과 같이 수정합니다.
+<code class="language-text">&lt;div className={styles.클래스이름}/></code></p>
+<p>물론 최상단에 <code class="language-text">import "./globals.css";</code>는 작성해야 글로벌 css가 적용됩니다.</p>
+<h3 id="코드-수정" style="position:relative;"><a href="#%EC%BD%94%EB%93%9C-%EC%88%98%EC%A0%95" aria-label="코드 수정 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>코드 수정</h3>
+<p>수정을 진행하면서 기존 구분을 위해 복잡하게지었던 클래스명도 간단하게 수정하여 적용하였습니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// app/layout.js</span>
+
+<span class="token keyword">import</span> styles <span class="token keyword">from</span> <span class="token string">"./layout.module.css"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">RootLayout</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> children <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">return</span> <span class="token punctuation">(</span>
+		<span class="token comment">// </span>
+			<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>header</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>container<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+				</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>logo<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+				</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+				</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>nav</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>menu<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+					</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>memuList<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+					</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+				</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nav</span><span class="token punctuation">></span></span><span class="token plain-text">
+				</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>contact<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+					</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>contactList<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+					</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span><span class="token plain-text">
+				</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+			</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>header</span><span class="token punctuation">></span></span>
+		<span class="token comment">//</span>
+	<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre></div>
+<div class="gatsby-highlight" data-language="css"><pre class="language-css"><code class="language-css"><span class="token comment">/* app/layout.module.css */</span>
+
+<span class="token selector">.container</span> <span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 100px<span class="token punctuation">;</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> grid<span class="token punctuation">;</span>
+    <span class="token property">grid-template-columns</span><span class="token punctuation">:</span> 1fr auto 1fr<span class="token punctuation">;</span>
+    <span class="token property">grid-template-rows</span><span class="token punctuation">:</span> 1fr<span class="token punctuation">;</span>
+    <span class="token property">gap</span><span class="token punctuation">:</span> 0px 0px<span class="token punctuation">;</span>
+    <span class="token property">grid-template-areas</span><span class="token punctuation">:</span> <span class="token string">"left center right"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.logo</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">grid-area</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+    <span class="token property">justify-self</span><span class="token punctuation">:</span> start<span class="token punctuation">;</span>
+    <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+  
+    <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.menu</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">grid-area</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">justify-self</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">text-align</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.memuList</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 400px<span class="token punctuation">;</span>
+    <span class="token property">justify-content</span><span class="token punctuation">:</span> space-around<span class="token punctuation">;</span>
+    
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 1.125rem<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--font-gray<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.contact</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">grid-area</span><span class="token punctuation">:</span> right<span class="token punctuation">;</span>
+    <span class="token property">justify-self</span><span class="token punctuation">:</span> end<span class="token punctuation">;</span>
+    <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.contactList</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 144px<span class="token punctuation">;</span>
+    <span class="token property">justify-content</span><span class="token punctuation">:</span> space-between<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<hr>
+<h2 id="배경-그라디언트-작업" style="position:relative;"><a href="#%EB%B0%B0%EA%B2%BD-%EA%B7%B8%EB%9D%BC%EB%94%94%EC%96%B8%ED%8A%B8-%EC%9E%91%EC%97%85" aria-label="배경 그라디언트 작업 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>배경 그라디언트 작업</h2>
+<p>GNB 제작이 완료되었으니 메인화면 작업을 진행해보겠습니다.<br>
+현재 피그마에 제작된 배경의 경우 배경 전체에 그라디언트가 들어가있습니다.</p>
+<p>현재 작업했던 css는 body를 1200px의 중앙 부분만 적용해두었습니다.<br>
+html에 <code class="language-text">background-image</code>를 활용하여 전체에 적용시켜보겠습니다.</p>
+<h3 id="css-그라디언트-작업" style="position:relative;"><a href="#css-%EA%B7%B8%EB%9D%BC%EB%94%94%EC%96%B8%ED%8A%B8-%EC%9E%91%EC%97%85" aria-label="css 그라디언트 작업 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>CSS 그라디언트 작업</h3>
+<p>배경을 추가하면서 상단 헤더부분이 1200px 위치만 하얗게 가려지는 문제가 발생하였습니다.<br>
+해당 문제를 해결하기 위해 해더의 높이인 100px만큼 position을 내려주었습니다.</p>
+<p>그와 함께 body내에 있던 <code class="language-text">background-color</code> 부분이 뒷 배경을 가리고 있어 해당 부분을 삭제하였습니다.</p>
+<p>추가로 body에 있는 color 부분도 의미가 없어서 삭제한 후 <code class="language-text">:root</code>에 있던 <code class="language-text">--background</code> <code class="language-text">--foreground</code> 변수도 삭제하였습니다.</p>
+<div class="gatsby-highlight" data-language="css"><pre class="language-css"><code class="language-css"><span class="token comment">/* app/globals.css */</span>
+
+<span class="token selector">html</span> <span class="token punctuation">{</span>
+    <span class="token property">background-position</span><span class="token punctuation">:</span> 0px 100px<span class="token punctuation">;</span>
+    <span class="token property">background-image</span><span class="token punctuation">:</span> <span class="token function">linear-gradient</span><span class="token punctuation">(</span>to bottom<span class="token punctuation">,</span> #F3F5FA<span class="token punctuation">,</span> #ffffff<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token property">background-repeat</span><span class="token punctuation">:</span> no-repeat<span class="token punctuation">;</span>
+    <span class="token property">background-size</span><span class="token punctuation">:</span> 100vw 500px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 46.111111111111114%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAV0lEQVQoz63PSwrAMAgEUO9/0KbtPv6SON1kFdJuqvBAEEck846VaAerz95RzhtHuVDZYD7AYhBt2O1SlYYVT/XF14x2V/6gMQKZCMlFEYFM+YHpL2cHPmrPx/aLpyQHAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Dev03_004_gradient"
+        title="Dev03_004_gradient"
+        src="/static/df9edbd2b1518a433532be21318817b6/37523/Dev03_004_gradient.png"
+        srcset="/static/df9edbd2b1518a433532be21318817b6/e9ff0/Dev03_004_gradient.png 180w,
+/static/df9edbd2b1518a433532be21318817b6/f21e7/Dev03_004_gradient.png 360w,
+/static/df9edbd2b1518a433532be21318817b6/37523/Dev03_004_gradient.png 720w,
+/static/df9edbd2b1518a433532be21318817b6/302a4/Dev03_004_gradient.png 1080w,
+/static/df9edbd2b1518a433532be21318817b6/07a9c/Dev03_004_gradient.png 1440w,
+/static/df9edbd2b1518a433532be21318817b6/b325c/Dev03_004_gradient.png 2770w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<hr>
+<h2 id="메인페이지-작업" style="position:relative;"><a href="#%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%9E%91%EC%97%85" aria-label="메인페이지 작업 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>메인페이지 작업</h2>
+<p>이제는 <code class="language-text">page.js</code> 에서 작업을 진행합니다.<br>
+기존 텍스트에 서브텍스트 추가 및 아바타 이미지를 임시로 추가해두겠습니다.</p>
+<p>메인페이지 역시 <code class="language-text">main.module.css</code>파일을 생성하여 css 모듈을 만들어주겠습니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// app/page.js</span>
+
+<span class="token keyword">import</span> styles <span class="token keyword">from</span> <span class="token string">"./main.module.css"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Image <span class="token keyword">from</span> <span class="token string">"next/image"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Home</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>main</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>main<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>title<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>titleText<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">꿈꾸는 모든 것을 만들다</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>titleSub<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">다재다능 테크니컬 아티스트를 꿈꾸는 문준형입니다.</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>image<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+                </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Image</span></span> <span class="token attr-name">src</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token string">"/images/Profile_Avatar.png"</span><span class="token punctuation">}</span></span> <span class="token attr-name">fill</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Image</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+            </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+        </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>main</span><span class="token punctuation">></span></span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<div class="gatsby-highlight" data-language="css"><pre class="language-css"><code class="language-css"><span class="token comment">/* app/main.module.css */</span>
+
+<span class="token selector">.main</span> <span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span>
+    <span class="token property">justify-content</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.title</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span>
+    <span class="token property">padding-top</span><span class="token punctuation">:</span> 120px<span class="token punctuation">;</span>
+
+    <span class="token property">text-align</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.titleText</span> <span class="token punctuation">{</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 2.25rem<span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> #000000<span class="token punctuation">;</span>
+    <span class="token property">font-weight</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--font-bold<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.titleSub</span> <span class="token punctuation">{</span>
+    <span class="token property">margin-top</span><span class="token punctuation">:</span> 0.575rem<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 1rem<span class="token punctuation">;</span>
+    <span class="token property">font-weight</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--font-medium<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> #777777<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+  
+<span class="token selector">.image</span> <span class="token punctuation">{</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 1200px<span class="token punctuation">;</span>
+    <span class="token property">height</span><span class="token punctuation">:</span> 660px<span class="token punctuation">;</span>
+    <span class="token property">margin-top</span><span class="token punctuation">:</span> 9rem<span class="token punctuation">;</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span>
+    <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+    <span class="token property">text-align</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 46.111111111111114%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAA7DAAAOwwHHb6hkAAABMUlEQVQoz42QT0vDQBDF9xv6AXoRQZCiQYpeRQSF9iZ4UPEPCB5LUTwJouhBEMWgYCM1VouUtPbQaJtks5l9kmyjaZqCD34sszvvDbOM+wFiPK5O1wvxozpN+O64HK4nhjwxrO8KpHHi0wvQ/XLwWm+g9vKGrt2P7pI9aVgyfQSuICBC1T44F2M9jEgiEykhoXR8UcHReTkKlYNwCijTx5CSlCpGOAHom9DSTWxoyzhYKKLzYMC9u4JXvR/0xiP+xMKAJBSohvczB9f5Opqzl7gt7OB5sQSRn0d7cgKd1TkVSIS0fyQwGgoJo2LjdMrCSe4RezNlbE4f4ia3Blsr4HNJg28amaEsa10ShF7TQ0PvYXuriuK6jpXSE/Z3Tdg1C2R9QLRbQ57flcf94X+U1fsDIXmrD2ZLZIEAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Dev03_005_main01"
+        title="Dev03_005_main01"
+        src="/static/7573c93a29fc9b60aa4530bb2b13f053/37523/Dev03_005_main01.png"
+        srcset="/static/7573c93a29fc9b60aa4530bb2b13f053/e9ff0/Dev03_005_main01.png 180w,
+/static/7573c93a29fc9b60aa4530bb2b13f053/f21e7/Dev03_005_main01.png 360w,
+/static/7573c93a29fc9b60aa4530bb2b13f053/37523/Dev03_005_main01.png 720w,
+/static/7573c93a29fc9b60aa4530bb2b13f053/302a4/Dev03_005_main01.png 1080w,
+/static/7573c93a29fc9b60aa4530bb2b13f053/07a9c/Dev03_005_main01.png 1440w,
+/static/7573c93a29fc9b60aa4530bb2b13f053/91428/Dev03_005_main01.png 2769w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<hr>
+<h2 id="코드-최적화" style="position:relative;"><a href="#%EC%BD%94%EB%93%9C-%EC%B5%9C%EC%A0%81%ED%99%94" aria-label="코드 최적화 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>코드 최적화</h2>
+<p>찾아보니 현재 nav 메뉴에서 사용한 <code class="language-text">&lt;a></code>태그의 경우, 외부링크에는 효율적이지만 내부 페이지 이동에서는 전체 렌더링이 다시 진행되어 느릴 수 있다고 합니다.<br>
+이를 위해서 nextjs에서는 <code class="language-text">&lt;Link></code> 컴포넌트를 만들어두어서, 이를 사용하려고 합니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// app/layout.js</span>
+
+<span class="token keyword">import</span> Link <span class="token keyword">from</span> <span class="token string">"next/link"</span><span class="token punctuation">;</span>
+
+<span class="token comment">//</span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+		</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Home</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+		</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/works<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Works</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+		</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/profile<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Profile</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+	 </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+		</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>https://junyangyee.github.io/<span class="token punctuation">"</span></span> <span class="token attr-name">target</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>_blank<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">Blog</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">></span></span><span class="token plain-text">
+	</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+<span class="token comment">//</span></code></pre></div>
+<p>외부로 이동하는 링크는 계속해서 <code class="language-text">&lt;a></code> 태그를 사용하고, 내부 페이지 이동만 <code class="language-text">&lt;Link></code> 태그를 이용하겠습니다.</p>
+<hr>
+<h2 id="컴포넌트-분리" style="position:relative;"><a href="#%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EB%B6%84%EB%A6%AC" aria-label="컴포넌트 분리 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>컴포넌트 분리</h2>
+<h3 id="분리하는-이유" style="position:relative;"><a href="#%EB%B6%84%EB%A6%AC%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0" aria-label="분리하는 이유 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>분리하는 이유</h3>
+<p>navMenu에서 현재 오픈된 페이지의 텍스트가 굵게 보이는 것을 구현하기 위해 찾아보고 있었습니다.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 17.22222222222222%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAADCAYAAACTWi8uAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAXElEQVQI13VNSQrAMAjM/z+XJ+Qg5OYh4imYTDGgtKUVBpzFsQDA3vsgJvifFvrb9ymxtNZQa4WIHD7nRO8dzJxhVQURZWatdTJjjCzNQjfN7PHd4fpd++J+F4UX9lTr5EJTLbwAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Dev03_006_navStyling"
+        title="Dev03_006_navStyling"
+        src="/static/09b99d1e556bcff95f4818f8f0b5b936/37523/Dev03_006_navStyling.png"
+        srcset="/static/09b99d1e556bcff95f4818f8f0b5b936/e9ff0/Dev03_006_navStyling.png 180w,
+/static/09b99d1e556bcff95f4818f8f0b5b936/f21e7/Dev03_006_navStyling.png 360w,
+/static/09b99d1e556bcff95f4818f8f0b5b936/37523/Dev03_006_navStyling.png 720w,
+/static/09b99d1e556bcff95f4818f8f0b5b936/302a4/Dev03_006_navStyling.png 1080w,
+/static/09b99d1e556bcff95f4818f8f0b5b936/07a9c/Dev03_006_navStyling.png 1440w,
+/static/09b99d1e556bcff95f4818f8f0b5b936/64a58/Dev03_006_navStyling.png 1577w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<p>이 부분을 구현하기 위해서 다음과 같은 코드를 발견하였습니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// https://mariais.tistory.com/entry/Nextjs-useSelectedLayoutSegment-%ED%98%84%EC%9E%AC-%EC%9E%88%EB%8A%94-%ED%8E%98%EC%9D%B4%EC%A7%80%EC%9D%98-%EC%A3%BC%EC%86%8C%EB%A5%BC-%EC%95%8C%EA%B3%A0-%EC%8B%B6%EC%9D%80-%EA%B2%BD%EC%9A%B0</span>
+
+<span class="token string">'use client'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">{</span> useSelectedLayoutSegment <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"next/navigation"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Link <span class="token keyword">from</span> <span class="token string">"next/link"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">NavMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">const</span> segment <span class="token operator">=</span> <span class="token function">useSelectedLayoutSegment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>segment<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token punctuation">(</span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+			</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span><span class="token plain-text">
+				</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/home<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+					</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+						</span><span class="token punctuation">{</span>segment <span class="token operator">===</span> <span class="token string">"home"</span> <span class="token operator">?</span> <span class="token punctuation">(</span>
+							<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+								</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token punctuation">{</span> <span class="token literal-property property">fontWeight</span><span class="token operator">:</span> <span class="token string">"bold"</span> <span class="token punctuation">}</span><span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">홈이당</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+							</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+						<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token punctuation">(</span>
+							<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+								</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">홈아니당</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+							</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+						<span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token plain-text">
+					</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span><span class="token plain-text">
+				</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+			</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span></code></pre></div>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// https://www.geeksforgeeks.org/how-to-add-styling-to-an-active-link-in-nextjs/</span>
+
+<span class="token string">'use client'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> usePathname <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"next/navigation"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> Link <span class="token keyword">from</span> <span class="token string">"next/link"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">"./globals.css"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">RootLayout</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> children <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">const</span> pathname <span class="token operator">=</span> <span class="token function">usePathname</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token punctuation">(</span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+			</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span><span class="token plain-text">
+				</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>nav</span><span class="token punctuation">></span></span><span class="token plain-text">
+					</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span>
+						<span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>pathname <span class="token operator">===</span> <span class="token string">"/"</span> <span class="token operator">?</span> <span class="token string">"active"</span> <span class="token operator">:</span> <span class="token string">""</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">}</span></span>
+						<span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/<span class="token punctuation">"</span></span>
+					<span class="token punctuation">></span></span><span class="token plain-text">
+						Home
+					</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span></code></pre></div>
+<p>이처럼 <code class="language-text">next/navigation</code>에 있는 <code class="language-text">{ useRouter }</code> <code class="language-text">{ usePathname }</code> <code class="language-text">{ useSelectedLayoutSegment ]</code> 등 다양한 라우팅기반 기능들을 찾을 수 있었습니다.</p>
+<p>이 내용들을 <code class="language-text">layout.js</code>에 추가하고자 다음 부분을 추가하였습니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// app/layout.js</span>
+
+<span class="token string">'use client'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> usePathname <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"next/navigation"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">RootLayout</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> children <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">const</span> pathname <span class="token operator">=</span> <span class="token function">usePathname</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token punctuation">(</span> <span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<p>이렇게 실행하니 다음과 같은 오류화면이 나왔습니다.</p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 81.66666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAQCAYAAAAWGF8bAAAACXBIWXMAAA7DAAAOwwHHb6hkAAABlUlEQVQ4y6WU2W6DMBBF+YEkkAUCxuy2gUZVW6l5aP7/u251nQwlVZJG6sPRDDa+sxmCwzDiw7h/895ZHIYXBM4NOH2dcPw8QisNleXIlaCfhuescQgG2+O1rPBW1R5TlD/o4mlaXcDaHoE1Fk1VoKoaVFWNsmqQlhZpXiNLFbLsebxg11nEcQKtNfI8x263QxSGiKLoivCeH4ZYr9eI4xjWOgoaZFkGpRT2+70XTdPUrxH6XOe+UtnFKr9Oy/cpRlEv2LZnQeccjDGT7brOQ7+ua+9ba71PEaEoCi+83W5hjDuXvNlsfKkCI4pNkuRqjweZDWHJq9XKQ9/3kBnyEKO1bYumaVCW5VSOlMgqWPq8PQw47/NUMvvB1CULBmCzF4sFlsvlhGQjhJfhiZ0EOWURlX5JbyguQ2Kw8NYNuBbspklSTKAoB8TyeaUoyF7/KcihMDIF54Mg0nixPPibmyVLdhwIrTSdQvODj7ncQ46ajnM9hmH0yJo8j+MBxlikDz5F7vlrw5f7frwL/0Z9P3j7F9T6BkZOqPEmGw/5AAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Dev03_007_useClientError"
+        title="Dev03_007_useClientError"
+        src="/static/c98a5a3e6fcd7ebbbff7a03f8859dc28/37523/Dev03_007_useClientError.png"
+        srcset="/static/c98a5a3e6fcd7ebbbff7a03f8859dc28/e9ff0/Dev03_007_useClientError.png 180w,
+/static/c98a5a3e6fcd7ebbbff7a03f8859dc28/f21e7/Dev03_007_useClientError.png 360w,
+/static/c98a5a3e6fcd7ebbbff7a03f8859dc28/37523/Dev03_007_useClientError.png 720w,
+/static/c98a5a3e6fcd7ebbbff7a03f8859dc28/e3189/Dev03_007_useClientError.png 1035w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<p>이유를 찾아보니 <code class="language-text">export const metadata = {}</code> 부분인 메타데이터 부분에서 오류가 발생한다는 것을 확인했습니다.</p>
+<p>Nextjs에서 메타데이터는 클라이언트사이드(CSR)에서 작동하지 않고, 서버사이드에서 작동합니다.<br>
+허나 <code class="language-text">'use client'</code>를 사용하여 클라이언트사이드에서 돌아가게 설정하여, 오류가 발생했다는 것을 알았습니다.</p>
+<p>이를 해결하기 위해서 컴포넌트를 분리하면 제대로 동작한다는 것을 확인하고 분리를 진행하려합니다.</p>
+<h3 id="컴포넌트-분리하기" style="position:relative;"><a href="#%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EB%B6%84%EB%A6%AC%ED%95%98%EA%B8%B0" aria-label="컴포넌트 분리하기 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>컴포넌트 분리하기</h3>
+<p>분리하는 부분은 GNB 중 nav 부분입니다.<br>
+다른 부분은 클라이언트사이드에서 만질 것들이 아직은 없는 것 같아, 해당 부분만 컴포넌트로 분리하여 작업해보겠습니다.</p>
+<p>먼저 <code class="language-text">src/components</code> 폴더를 생성하겠습니다.<br>
+그 후 안에 <code class="language-text">navMenu.js</code> 파일을 생성하여 작업을 진행해보겠습니다.</p>
+<p>기존에 필요하던 것들을 임포트하겠습니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// app/components/navMenu.js</span>
+
+<span class="token string">'use client'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> usePathname <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"next/navigation"</span><span class="token punctuation">;</span></code></pre></div>
+<p>그리고 기본적으로  필요한 구조를 생성해서 추가하겠습니다.<br>
+기존 코드 중 <code class="language-text">&lt;nav></code> 부분을 그대로 가져오며, 그에 맞게 <code class="language-text">import Link from "next/link"</code>도 추가해줍니다.<br>
+추가적으로 활성되는 스타일은 기존 css를 그대로 사용하기 위해 모듈 css도 추가해주겠습니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// app/components/navMenu.js</span>
+
+<span class="token keyword">import</span> Link <span class="token keyword">from</span> <span class="token string">"next/link"</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> styles <span class="token keyword">from</span> <span class="token string">"../app/layout.module.css"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">NavMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">return</span> <span class="token punctuation">(</span>
+	<span class="token operator">...</span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>nav</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>menu<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+			...
+		</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nav</span><span class="token punctuation">></span></span>
+	<span class="token operator">...</span>
+	<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>현재 경로를 파악하기 위한 코드를 추가하고, className에 조건을 추가하여 현재 페이지 경로에 따라 css에서 온오프 되도록 설정하였습니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// src/components/navMenu.js</span>
+
+<span class="token keyword">import</span> styles <span class="token keyword">from</span> <span class="token string">"../app/layout.module.css"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">NavMenu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">const</span> pathname <span class="token operator">=</span> <span class="token function">usePathname</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span> <span class="token punctuation">(</span>
+	<span class="token operator">...</span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./<span class="token punctuation">"</span></span> 
+		<span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>pathname <span class="token operator">===</span> <span class="token string">"/"</span> <span class="token operator">?</span> styles<span class="token punctuation">.</span>active <span class="token operator">:</span> styles<span class="token punctuation">.</span>none<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+		Home</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span>
+		<span class="token operator">...</span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/works<span class="token punctuation">"</span></span> 
+		<span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>pathname <span class="token operator">===</span> <span class="token string">"/works"</span> <span class="token operator">?</span> styles<span class="token punctuation">.</span>active <span class="token operator">:</span> styles<span class="token punctuation">.</span>none<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+		Works</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span>
+		<span class="token operator">...</span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Link</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>/profile<span class="token punctuation">"</span></span> 
+		<span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>pathname <span class="token operator">===</span> <span class="token string">"/profile"</span> <span class="token operator">?</span> styles<span class="token punctuation">.</span>active <span class="token operator">:</span> styles<span class="token punctuation">.</span>none<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+		Profile</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Link</span></span><span class="token punctuation">></span></span>
+		<span class="token operator">...</span>
+	<span class="token operator">...</span>
+	<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>추가로 모듈css에서 스타일도 적용해줍니다.</p>
+<div class="gatsby-highlight" data-language="css"><pre class="language-css"><code class="language-css"><span class="token comment">/* src/app/layout.module.css */</span>
+
+<span class="token selector">.memuList</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">width</span><span class="token punctuation">:</span> 400px<span class="token punctuation">;</span>
+    <span class="token property">justify-content</span><span class="token punctuation">:</span> space-around<span class="token punctuation">;</span>
+    <span class="token property">font-size</span><span class="token punctuation">:</span> 1.125rem<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.active</span> <span class="token punctuation">{</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--font-black<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token property">font-weight</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--font-semibold<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.none</span> <span class="token punctuation">{</span>
+    <span class="token property">color</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--font-gray<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token property">font-weight</span><span class="token punctuation">:</span> <span class="token function">var</span><span class="token punctuation">(</span>--font-regular<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<h3 id="컴포넌트-적용" style="position:relative;"><a href="#%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EC%A0%81%EC%9A%A9" aria-label="컴포넌트 적용 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>컴포넌트 적용</h3>
+<p>컴포넌트를 적용하기위해 <code class="language-text">layout.js</code>에 컴포넌트 파일을 임포트합니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// src/app/layout.js</span>
+
+<span class="token keyword">import</span> Nav <span class="token keyword">from</span> <span class="token string">"../components/navMenu"</span><span class="token punctuation">;</span></code></pre></div>
+<p>그리고 기존에 있던 부분을 <code class="language-text">&lt;Nav>&lt;/Nav></code> 형태로 대체하여 적용합니다.</p>
+<div class="gatsby-highlight" data-language="jsx"><pre class="language-jsx"><code class="language-jsx"><span class="token comment">// src/app/layout.js</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">RootLayout</span><span class="token punctuation">(</span><span class="token parameter"><span class="token punctuation">{</span> children <span class="token punctuation">}</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">return</span> <span class="token punctuation">(</span>
+		<span class="token operator">...</span>
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>logo<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+		
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span><span class="token class-name">Nav</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span><span class="token class-name">Nav</span></span><span class="token punctuation">></span></span>
+		
+		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">className</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>styles<span class="token punctuation">.</span>contact<span class="token punctuation">}</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+		<span class="token operator">...</span>
+	<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre></div>
+<p>최종 적용한 모습입니다.</p>
+<p><img src="/75d523eff17c769b48125821c33fb0ef/Dev03_008_Result.gif" alt="Dev03_008_Result.gif"></p>
+<hr>
+<h2 id="vercel로-임시-배포" style="position:relative;"><a href="#vercel%EB%A1%9C-%EC%9E%84%EC%8B%9C-%EB%B0%B0%ED%8F%AC" aria-label="vercel로 임시 배포 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Vercel로 임시 배포</h2>
+<p>일단 배포를 먼저 해두고 싶어서 배포를 했습니다.<br>
+<a href="https://ziszini.tistory.com/146">이 사이트</a>에서 도움을 받아서 진행했습니다.</p>
+<p><del><em><a href="https://junyangyee.vercel.app/">임시 배포 링크</a></em></del><br>
+<em>현재 포트폴리오 공식 배포 링크입니다. 클릭 시 포트폴리오 사이트로 이동합니다.</em></p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 103.8888888888889%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAVCAYAAABG1c6oAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAB+UlEQVQ4y62V626yQBCGQRNPgAdQFhRspP3R74+atEDEa/COvQBPiYk39DbvKBSrbT+T/nhcmJ19d2Z2WDVN0/Cn6LqOZrMptFotNBqN4v1RKpUKRTUo5SN+jzGdTrHIMvieh3q9/pAYg6lWq+cILctCGIYIggDj8Ri+78NxHPT7/V/J/ahRRNjtdhHHCZI0RRoneH97w2w2w3w+x7/XV0RRJJsppeB5HobD4RWj0Ug0RJARttvtYtLzfYHPFKHz6DLHyClqmuYNhmF8CjJc5SoMBgNJISdPi3bXdeXZtu27B3dVQ9OyMFCuiHAn0zDEic+kVqvJpoyQ4lx8j7OgpsPqWhg8+ZhMIqkXUcpFEIQIg0CcWZbnl2dE0QRGq1VsVuacckWXBebFmPcixzydsp3cE7tpG9ZIamjbRQq5Y/n9q+02ZV0XJ4oFYQjLNL9d8B35SV+fslKCcTmQRwRvTjnvQwoy9UdgQ3Nd8aVI25imtAx7rEyv1/sR+jAYjlcpM00a+VX4pa+k7ziyMxf9BH0KQf4wf94unU5HHDjSiTX5X4oa8nLgCS8WC2RZJiyXSxlTXhZpiiRJhPz9K1zLrC6XrCaG4/GIzWaD7XZbsNvtcDgcsF6vhf1+L7Yy9DudTlitVp+CzJ+149V0D879Ns9S8Ty0v/5P+QDsJRD60CbNmQAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="Dev03_009_Deploy.png"
+        title="Dev03_009_Deploy.png"
+        src="/static/08756b8cab6ac43aff6c781d44efa94f/37523/Dev03_009_Deploy.png"
+        srcset="/static/08756b8cab6ac43aff6c781d44efa94f/e9ff0/Dev03_009_Deploy.png 180w,
+/static/08756b8cab6ac43aff6c781d44efa94f/f21e7/Dev03_009_Deploy.png 360w,
+/static/08756b8cab6ac43aff6c781d44efa94f/37523/Dev03_009_Deploy.png 720w,
+/static/08756b8cab6ac43aff6c781d44efa94f/8c857/Dev03_009_Deploy.png 761w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<hr>
+<h2 id="todo" style="position:relative;"><a href="#todo" aria-label="todo permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Todo</h2>
+<blockquote>
+<p>추후 작업할 내용입니다.<br>
+순서대로 작성한 것이 아니며,
+확정이 아니기에 추후 작업하면서 변경될 수 있습니다.</p>
+</blockquote>
+<ul>
+<li>
+<p><strong>Profile 및 Works 페이지 만들기 (Figma)</strong></p>
+<ul>
+<li>레이아웃 구상</li>
+<li>기초 레이아웃 잡아두기</li>
+</ul>
+</li>
+<li>
+<p><strong>Profile 페이지 만들기</strong></p>
+<ul>
+<li>HTML 구조 짜놓기</li>
+</ul>
+</li>
+</ul>
+<hr>
+<div class="table-of-contents">
+<ul>
+<li>
+<p><a href="#%EA%B8%B0%EC%A1%B4%EC%BD%94%EB%93%9C-%EC%98%A4%EB%A5%98-%EC%88%98%EC%A0%95">기존코드 오류 수정</a></p>
+</li>
+<li>
+<p><a href="#%EB%A9%94%EC%9D%B8-%ED%8E%98%EC%9D%B4%EC%A7%80-%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83-%EC%88%98%EC%A0%95">메인 페이지 레이아웃 수정</a></p>
+<ul>
+<li>
+<p><a href="#html-%EC%BD%94%EB%93%9C-%EA%B5%AC%EC%84%B1">HTML 코드 구성</a></p>
+</li>
+<li>
+<p><a href="#css-%EB%94%94%EC%9E%90%EC%9D%B8">CSS 디자인</a></p>
+<ul>
+<li><a href="#px-%EB%8B%A8%EC%9C%84%EC%99%80-rem-%EB%8B%A8%EC%9C%84">px 단위와 rem 단위</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><a href="#css-%EB%AA%A8%EB%93%88%ED%99%94">CSS 모듈화</a></p>
+<ul>
+<li><a href="#css-%EB%AA%A8%EB%93%88%ED%99%94%EB%9E%80">CSS 모듈화란?</a></li>
+<li><a href="#%EC%BD%94%EB%93%9C-%EC%88%98%EC%A0%95">코드 수정</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#%EB%B0%B0%EA%B2%BD-%EA%B7%B8%EB%9D%BC%EB%94%94%EC%96%B8%ED%8A%B8-%EC%9E%91%EC%97%85">배경 그라디언트 작업</a></p>
+<ul>
+<li><a href="#css-%EA%B7%B8%EB%9D%BC%EB%94%94%EC%96%B8%ED%8A%B8-%EC%9E%91%EC%97%85">CSS 그라디언트 작업</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%9E%91%EC%97%85">메인페이지 작업</a></p>
+</li>
+<li>
+<p><a href="#%EC%BD%94%EB%93%9C-%EC%B5%9C%EC%A0%81%ED%99%94">코드 최적화</a></p>
+</li>
+<li>
+<p><a href="#%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EB%B6%84%EB%A6%AC">컴포넌트 분리</a></p>
+<ul>
+<li><a href="#%EB%B6%84%EB%A6%AC%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0">분리하는 이유</a></li>
+<li><a href="#%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EB%B6%84%EB%A6%AC%ED%95%98%EA%B8%B0">컴포넌트 분리하기</a></li>
+<li><a href="#%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8-%EC%A0%81%EC%9A%A9">컴포넌트 적용</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#vercel%EB%A1%9C-%EC%9E%84%EC%8B%9C-%EB%B0%B0%ED%8F%AC">Vercel로 임시 배포</a></p>
+</li>
+<li>
+<p><a href="#todo">Todo</a></p>
+</li>
+</ul>
+</div></div></div><div class="post-navigator"><div class="post-navigator-card-wrapper"><a class="post-card prev" href="/Portfolio/PortfolioDev_002/"><div class="direction">이전 글</div><div class="title">DEV 02. 기본 CSS 꾸미기</div></a></div><div class="post-navigator-card-wrapper"><a class="post-card next" href="/Portfolio/PortfolioDev_004/"><div class="direction">다음 글</div><div class="title">DEV 04. 레이아웃 변경 / 디자인</div></a></div></div></main><footer class="page-footer-wrapper"><p class="page-footer">© <!-- -->2024<!-- --> <a href="https://github.com/JuNyangYee" target="_blank" rel="noreferrer">문준형</a> powered by<a href="https://github.com/zoomKoding/zoomkoding-gatsby-blog" target="_blank" rel="noreferrer"> zoomkoding-gatsby-blog</a></p></footer><div class="dark-mode-button-wrapper"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium dark-mode-button css-1yxmbwk" tabindex="0" type="button"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeLarge dark-mode-icon css-6flbmm" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="DarkModeIcon"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path></svg></button></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/Portfolio/PortfolioDev_003/";window.___webpackCompilationHash="57b41b6a0abc96bec04a";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-1f5de005935b6fd7f7d3.js"],"app":["/app-47f2df10d7ba545e5bcc.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-73c5afff140dec503f6c.js"],"component---src-pages-404-js":["/component---src-pages-404-js-140d27e8ab899178a69e.js"],"component---src-pages-about-js":["/component---src-pages-about-js-be9cb455a3670e264fec.js"],"component---src-pages-index-js":["/component---src-pages-index-js-9750c5d54c92528f3454.js"],"component---src-templates-blog-template-js":["/component---src-templates-blog-template-js-1ce12d659b6173b17b95.js"],"component---src-templates-category-template-js":["/component---src-templates-category-template-js-e1c39933037bd68f3a48.js"]};/*]]>*/</script><script src="/polyfill-1f5de005935b6fd7f7d3.js" nomodule=""></script><script src="/app-47f2df10d7ba545e5bcc.js" async=""></script><script src="/framework-fc03f0a1c01e8ca1f8d7.js" async=""></script><script src="/webpack-runtime-13fa84d0948046c658f2.js" async=""></script></body></html>
