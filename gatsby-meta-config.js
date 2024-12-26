@@ -13,7 +13,7 @@ module.exports = {
   author: {
     name: `문준형`,
     bio: {
-      role: `Technical Artist`,
+      role: `팔방미인(八方美人)`,
       /* description: ['사람에 가치를 두는', '능동적으로 일하는', '이로운 것을 만드는'], */
       description: ['경험을 바탕으로 성장하는', '다재다능을 꿈꾸는', '새로운 배움을 좋아하는'],
       thumbnail: 'Profile_Crop.png', // Path to the image in the 'asset' folder
