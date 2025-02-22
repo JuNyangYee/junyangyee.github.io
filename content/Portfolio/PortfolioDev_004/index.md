@@ -4,7 +4,7 @@ title: DEV 04. 레이아웃 변경 / 디자인
 date: '2024-10-19 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > 전체 레이아웃을 원 페이지 형태로 변경하였습니다.  

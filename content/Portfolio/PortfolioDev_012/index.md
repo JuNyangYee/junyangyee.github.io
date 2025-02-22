@@ -4,7 +4,7 @@ title: DEV 12. 디스플레이 스타일 대응
 date: '2024-11-19 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > 전체 작업이 마무리 단계에 접어들어,  

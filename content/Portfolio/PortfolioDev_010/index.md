@@ -4,7 +4,7 @@ title: DEV 10. WORKS 작업 진행
 date: '2024-11-07 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > 태그 선택에 따라 리스트가 변경 되도록 작업했으며,  

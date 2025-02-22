@@ -4,7 +4,7 @@ title: DEV 01. 기본 설정
 date: '2024-10-07 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > 기본적인 개발환경 설정을 진행했습니다.   

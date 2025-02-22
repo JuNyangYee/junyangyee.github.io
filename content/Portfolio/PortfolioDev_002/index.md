@@ -4,7 +4,7 @@ title: DEV 02. 기본 CSS 꾸미기
 date: '2024-10-16 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > 기본 css를 작업했습니다.  

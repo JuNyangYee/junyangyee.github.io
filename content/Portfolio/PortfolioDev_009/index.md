@@ -4,7 +4,7 @@ title: DEV 09. 작업물 리스트
 date: '2024-11-06 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > WORKS 페이지에서 작업물들을 선택할 수 있도록  

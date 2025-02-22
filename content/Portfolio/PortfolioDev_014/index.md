@@ -4,7 +4,7 @@ title: DEV 14. 태그 수정
 date: '2024-12-04 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > 포트폴리오 작업물 분류 태그를 수정합니다.  

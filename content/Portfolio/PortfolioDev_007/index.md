@@ -4,7 +4,7 @@ title: DEV 07. 프로필 디자인
 date: '2024-10-31 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > 프로필 섹션의 디자인과 작업을 진행했습니다.  

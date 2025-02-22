@@ -4,7 +4,7 @@ title: DEV 05. 페이지 기본 형태 만들기
 date: '2024-10-27 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 ## 메인 페이지 레이아웃 변경

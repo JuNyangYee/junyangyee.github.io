@@ -4,7 +4,7 @@ title: DEV 06. 메인 스크롤 디자인
 date: '2024-10-30 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > 전체적인 메인 페이지의 디자인과 스크롤 형태를 완성했습니다.  

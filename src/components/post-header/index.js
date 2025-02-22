@@ -14,6 +14,9 @@ function PostHeader({ post }) {
             </Link>
           ))}
         </div>
+        <div className="tags">
+          {post.tags}
+        </div>
       </div>
 
       <h1 className="title">{post.title}</h1>

@@ -4,7 +4,7 @@ title: DEV 13. 아이콘 mui 전환
 date: '2024-12-01 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > 기존 svg 파일을 통해 관리하던 아이콘들을  

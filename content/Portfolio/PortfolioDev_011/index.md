@@ -4,7 +4,7 @@ title: DEV 11. CONTACT / 모달창
 date: '2024-11-12 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > Contact 페이지를 제작하고, 모달 페이지 작업을 진행했습니다.  

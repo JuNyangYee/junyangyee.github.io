@@ -4,7 +4,7 @@ title: DEV 03. 메인페이지 만들기
 date: '2024-10-18 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > 메인 페이지를 제작하였습니다.  

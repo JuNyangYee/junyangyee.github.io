@@ -4,7 +4,7 @@ title: DEV 00. 포트폴리오 계획
 date: '2024-10-04 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > **포트폴리오 작업 시작**

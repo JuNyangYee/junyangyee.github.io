@@ -4,7 +4,7 @@ title: DEV 08. 세부 프로필 및 작업물
 date: '2024-11-04 12:30:00'
 author: JunHyeong Moon
 tags: 
-categories: PORTFOLIO
+categories: DEV-PORTFOLIO
 ---
 
 > 전체적인 디자인을 수정하고, 프로필 페이지를 완성하였으며,  
