@@ -15,7 +15,7 @@ module.exports = {
     bio: {
       role: `팔방미인(八方美人)`,
       /* description: ['사람에 가치를 두는', '능동적으로 일하는', '이로운 것을 만드는'], */
-      description: ['경험을 바탕으로 성장하는', '다재다능을 꿈꾸는', '새로운 배움을 좋아하는'],
+      description: ['경험을 바탕으로 성장하는', '여덟 빛 팔방미인', '도전을 두려워하지 않는'],
       thumbnail: 'Profile_Crop.png', // Path to the image in the 'asset' folder
     },
     social: {
@@ -79,8 +79,8 @@ module.exports = {
       // ========================================================
       {
         date: '2017. 03 ~ 2017. 10',
-        activity: 'Smarteen App Challange 엔터테인먼트(게임) 부문',
-        role: '\nUnity Sub Programmer 참여',
+        activity: 'Smarteen App+ Challenge 2017 엔터테인먼트(게임) 부문',
+        role: '\nUnity Sub Programmer 참여  |  입선',
         links: {
         },
       },
@@ -88,7 +88,7 @@ module.exports = {
       // ========================================================
       {
         date: '2018. 04',
-        activity: 'T Academy 15회 앱잼 미래산업(IoT/VR) 부문 VR분야',
+        activity: 'T Academy 15회 앱잼 미래산업/신기술 부문 VR분야',
         role: '\n3D Artist - Modeling/Texturing 파트 참여  |  장려상',
         links: {
         },
@@ -96,8 +96,8 @@ module.exports = {
       // ========================================================
       // ========================================================
       {
-        date: '2019. 04',
-        activity: 'SK 0와 함께하는 17회 앱잼 VR분야',
+        date: '2018. 12',
+        activity: 'SK 0와 함께하는 17회 앱잼 미래산업(IoT/VR) VR분야',
         role: '\n3D Artist - Modeling/Texturing 파트 참여  |  장려상',
         links: {
         },
