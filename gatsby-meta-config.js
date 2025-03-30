@@ -80,7 +80,7 @@ module.exports = {
       {
         date: '2017. 03 ~ 2017. 10',
         activity: 'Smarteen App+ Challenge 2017 엔터테인먼트(게임) 부문',
-        role: '\nUnity Sub Programmer 참여  |  입선',
+        role: '\nUnity Sub Programmer 파트 참여  |  입선',
         links: {
         },
       },
@@ -136,6 +136,15 @@ module.exports = {
         date: '2024. 04',
         activity: "홍익대학교 대학원 조소과·판화과 1학기 석사학위청구전 전시",
         role: '\nTouchDesigner Technical Artist 참여',
+        links: {
+        },
+      },
+      // ========================================================
+      // ========================================================
+      {
+        date: '2024. 09',
+        activity: "Kiaf SEOUL 2024 - Kiaf onSITE 'HyperConnection:VR' 전시",
+        role: '\nUnreal Engine VR Technical Artist 참여',
         links: {
         },
       },

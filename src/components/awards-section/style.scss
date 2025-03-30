@@ -67,7 +67,8 @@
       }
 
       .activity {
-        color: #464646;
+        // color: #464646;
+        color: var(--secondary-text-color);
         font-size: 12px;
         line-height: 20px;
         width: 100%;
