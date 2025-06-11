@@ -1,0 +1,1405 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="ie=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/><meta name="generator" content="Gatsby 4.25.7"/><meta data-react-helmet="true" property="og:title" content="Unity Custom Substance PBR Shader"/><meta data-react-helmet="true" property="og:site_title" content="Unity Custom Substance PBR Shader"/><meta data-react-helmet="true" name="description" content="모바일에서 사용 가능한 유니티 커스텀 섭스턴스 PBR 쉐이더 만들기 군생활 중, NDC 2019 발표를 보면서 단순 정리한 내용입니다. 노션에 작성했던 내용을 블로그로 옮겨 작성해, 가독성에 문제가 있을 수 있습니다. ※주의 : 본 내용은 아주 기술적인 이야기는 아니며, 기술보다는 꼼수를 이용한 문제해결 이야기입니다. 약 38:35 정도까지 작성되었습니다. ▶ NDC Replay - 발표 자료 링크 유니티 PBR 리니어 스페이스와 감마 스페이스 사실 리니어 스페이스가 맞는 값 하지만 어두운 곳에 민감한 사람 눈은 이것을 선형적으로 인지하지 않는다. 이것을 감마 코렉션 (2.2제곱)하여 선형적으로 보이게끔 한 것 Unity ColorSpace Default Setting : Gamma 
+
+ 유니티와 섭페를 비교해보며 알 수 있었던 것 유니티 감마는 물론이고 리니어도 섭스턴스 페인터와 동일하지 않다. 결과값이 다르게 나오는 걸 보면 서로서로 구현도 다르다는 것을 알 수 있다. 즉, 물…"/><meta data-react-helmet="true" property="og:description" content="모바일에서 사용 가능한 유니티 커스텀 섭스턴스 PBR 쉐이더 만들기 군생활 중, NDC 2019 발표를 보면서 단순 정리한 내용입니다. 노션에 작성했던 내용을 블로그로 옮겨 작성해, 가독성에 문제가 있을 수 있습니다. ※주의 : 본 내용은 아주 기술적인 이야기는 아니며, 기술보다는 꼼수를 이용한 문제해결 이야기입니다. 약 38:35 정도까지 작성되었습니다. ▶ NDC Replay - 발표 자료 링크 유니티 PBR 리니어 스페이스와 감마 스페이스 사실 리니어 스페이스가 맞는 값 하지만 어두운 곳에 민감한 사람 눈은 이것을 선형적으로 인지하지 않는다. 이것을 감마 코렉션 (2.2제곱)하여 선형적으로 보이게끔 한 것 Unity ColorSpace Default Setting : Gamma 
+
+ 유니티와 섭페를 비교해보며 알 수 있었던 것 유니티 감마는 물론이고 리니어도 섭스턴스 페인터와 동일하지 않다. 결과값이 다르게 나오는 걸 보면 서로서로 구현도 다르다는 것을 알 수 있다. 즉, 물…"/><meta data-react-helmet="true" property="og:author" content="문준형"/><meta data-react-helmet="true" property="og:image" content="/og-image.png"/><meta data-react-helmet="true" property="og:type" content="website"/><style data-href="/styles.e68842396251167b4518.css" data-identity="gatsby-global-css">@import url(https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;200;300;400;500;600;700;800;900&display=swap);@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:100;src:local("Montserrat Thin "),local("Montserrat-Thin"),url(/static/montserrat-latin-100-8d7d79679b70dbe27172b6460e7a7910.woff2) format("woff2"),url(/static/montserrat-latin-100-ec38980a9e0119a379e2a9b3dbb1901a.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:100;src:local("Montserrat Thin italic"),local("Montserrat-Thinitalic"),url(/static/montserrat-latin-100italic-e279051046ba1286706adc886cf1c96b.woff2) format("woff2"),url(/static/montserrat-latin-100italic-3b325a3173c8207435cd1b76e19bf501.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:200;src:local("Montserrat Extra Light "),local("Montserrat-Extra Light"),url(/static/montserrat-latin-200-9d266fbbfa6cab7009bd56003b1eeb67.woff2) format("woff2"),url(/static/montserrat-latin-200-2d8ba08717110d27122e54c34b8a5798.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:200;src:local("Montserrat Extra Light italic"),local("Montserrat-Extra Lightitalic"),url(/static/montserrat-latin-200italic-6e5b3756583bb2263eb062eae992735e.woff2) format("woff2"),url(/static/montserrat-latin-200italic-a0d6f343e4b536c582926255367a57da.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:300;src:local("Montserrat Light "),local("Montserrat-Light"),url(/static/montserrat-latin-300-00b3e893aab5a8fd632d6342eb72551a.woff2) format("woff2"),url(/static/montserrat-latin-300-ea303695ceab35f17e7d062f30e0173b.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:300;src:local("Montserrat Light italic"),local("Montserrat-Lightitalic"),url(/static/montserrat-latin-300italic-56f34ea368f6aedf89583d444bbcb227.woff2) format("woff2"),url(/static/montserrat-latin-300italic-54b0bf2c8c4c12ffafd803be2466a790.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:400;src:local("Montserrat Regular "),local("Montserrat-Regular"),url(/static/montserrat-latin-400-b71748ae4f80ec8c014def4c5fa8688b.woff2) format("woff2"),url(/static/montserrat-latin-400-0659a9f4e90db5cf51b50d005bff1e41.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:400;src:local("Montserrat Regular italic"),local("Montserrat-Regularitalic"),url(/static/montserrat-latin-400italic-6eed6b4cbb809c6efc7aa7ddad6dbe3e.woff2) format("woff2"),url(/static/montserrat-latin-400italic-7583622cfde30ae49086d18447ab28e7.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:500;src:local("Montserrat Medium "),local("Montserrat-Medium"),url(/static/montserrat-latin-500-091b209546e16313fd4f4fc36090c757.woff2) format("woff2"),url(/static/montserrat-latin-500-edd311588712a96bbf435fad264fff62.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:500;src:local("Montserrat Medium italic"),local("Montserrat-Mediumitalic"),url(/static/montserrat-latin-500italic-c90ced68b46050061d1a41842d6dfb43.woff2) format("woff2"),url(/static/montserrat-latin-500italic-5146cbfe02b1deea5dffea27a5f2f998.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:600;src:local("Montserrat SemiBold "),local("Montserrat-SemiBold"),url(/static/montserrat-latin-600-0480d2f8a71f38db8633b84d8722e0c2.woff2) format("woff2"),url(/static/montserrat-latin-600-b77863a375260a05dd13f86a1cee598f.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:600;src:local("Montserrat SemiBold italic"),local("Montserrat-SemiBolditalic"),url(/static/montserrat-latin-600italic-cf46ffb11f3a60d7df0567f8851a1d00.woff2) format("woff2"),url(/static/montserrat-latin-600italic-c4fcfeeb057724724097167e57bd7801.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:700;src:local("Montserrat Bold "),local("Montserrat-Bold"),url(/static/montserrat-latin-700-7dbcc8a5ea2289d83f657c25b4be6193.woff2) format("woff2"),url(/static/montserrat-latin-700-99271a835e1cae8c76ef8bba99a8cc4e.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:700;src:local("Montserrat Bold italic"),local("Montserrat-Bolditalic"),url(/static/montserrat-latin-700italic-c41ad6bdb4bd504a843d546d0a47958d.woff2) format("woff2"),url(/static/montserrat-latin-700italic-6779372f04095051c62ed36bc1dcc142.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:800;src:local("Montserrat ExtraBold "),local("Montserrat-ExtraBold"),url(/static/montserrat-latin-800-db9a3e0ba7eaea32e5f55328ace6cf23.woff2) format("woff2"),url(/static/montserrat-latin-800-4e3c615967a2360f5db87d2f0fd2456f.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:800;src:local("Montserrat ExtraBold italic"),local("Montserrat-ExtraBolditalic"),url(/static/montserrat-latin-800italic-bf45bfa14805969eda318973947bc42b.woff2) format("woff2"),url(/static/montserrat-latin-800italic-fe82abb0bcede51bf724254878e0c374.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:900;src:local("Montserrat Black "),local("Montserrat-Black"),url(/static/montserrat-latin-900-e66c7edc609e24bacbb705175669d814.woff2) format("woff2"),url(/static/montserrat-latin-900-8211f418baeb8ec880b80ba3c682f957.woff) format("woff")}@font-face{font-display:swap;font-family:Montserrat;font-style:italic;font-weight:900;src:local("Montserrat Black italic"),local("Montserrat-Blackitalic"),url(/static/montserrat-latin-900italic-4454c775e48152c1a72510ceed3603e2.woff2) format("woff2"),url(/static/montserrat-latin-900italic-efcaa0f6a82ee0640b83a0916e6e8d68.woff) format("woff")}.search-input-wrapper{align-items:center;display:none;margin-top:3px;width:160px}@media(min-width:768px){.search-input-wrapper{display:flex}}.search-icon{color:var(--primary-text-color);margin-right:2px}.search-input{height:100%;width:100%}.search-input .MuiAutocomplete-inputRoot{padding-left:5px;padding-right:0!important}.search-input .MuiInputBase-input{color:var(--primary-text-color)!important;font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans KR,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;font-size:14px;font-weight:400;margin-bottom:3px;padding-bottom:2px!important}.search-input .MuiInput-underline:before{border-bottom-color:var(--primary-text-color);border-bottom-width:1px}.search-input .MuiInput-underline:after{border-bottom-color:var(--primary-text-color)}.page-header-wrapper{display:flex;height:60px;justify-content:center;width:100%}.page-header-wrapper .page-header{align-items:center;display:flex;font-family:Montserrat;justify-content:space-between;max-width:720px;width:100%}.page-header-wrapper .page-header .link{color:var(--primary-text-color);font-size:17px;font-weight:540;letter-spacing:.15em}.page-header-wrapper .page-header .trailing-section{align-items:center;display:flex;justify-content:space-around}.page-header-wrapper .page-header .trailing-section .link{border-right:1px solid rgba(32,32,32,.165);font-size:14px;font-weight:400;letter-spacing:0;padding-left:6px;padding-right:6px}@media(min-width:768px){.page-header-wrapper .page-header .trailing-section .link{font-size:15px;padding-left:10px;padding-right:10px}}.page-header-wrapper .page-header .trailing-section .link:nth-last-child(2){border-right:none}.page-footer-wrapper{align-items:center;display:flex;height:62px;justify-content:center;margin-top:auto;opacity:.75;width:100%}.page-footer-wrapper .page-footer{font-size:11px;font-weight:300;letter-spacing:-.025em;max-width:720px;text-align:center;width:100%}.page-footer-wrapper .page-footer .link{color:var(--primary-text-color);font-size:15px;font-weight:700;margin-right:20px}.page-footer-wrapper .page-footer a{color:#3a95ff}.dark-mode-button-wrapper{align-items:center;bottom:20px;display:flex;justify-content:center;position:fixed;right:20px}.dark-mode-button{-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);background-color:#363f47!important;border-radius:50px;box-shadow:0 5px 25px rgba(0,0,0,.12);cursor:pointer;height:50px;width:50px;z-index:3}.dark-mode-icon{color:#fff}*{-ms-overflow-style:none}::-webkit-scrollbar{background-color:transparent;height:7.5px;width:7.5px}::-webkit-scrollbar-thumb{background-clip:padding-box;background-color:var(--scrollbar-thumb-color);border:.5px solid transparent;border-radius:999px}::-webkit-scrollbar-thumb:hover{border:none}a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{border:0;font-size:100%;font:inherit;margin:0;padding:0;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:"";content:none}table{border-collapse:collapse;border-spacing:0}a{outline:none;text-decoration:none}li{font-family:Pretendard;font-size:13px;font-weight:500}html{--background-color:#fff;--primary-text-color:#202020;--secondary-text-color:#9e9e9e;--content-text-color:#37352f;--scrollbar-thumb-color:#00000070;--button-background-color:#f3f3f4;--button-text-color:#363f47;--tab-text-color:#6e6d7a;--tab-hover-text-color:#0d0c22;--tab-selected-background-color:rgba(13,12,34,.05);--bio-link-icon-color:rgba(0,0,0,.54);--about-link-icon-color:#a8a8a8;--chip-background-color:#f3f3f4;--link-text-color:rgba(55,53,47,.7);--post-card-border-color:rgba(0,0,0,.12);--markdown-table-even-cell-background-color:#f6f8fa;--markdown-table-border-color:#dfe2e5;--markdown-blockquote-border-color:#dfe2e5;--markdown-border-color:#e1e4e8;--notion-red:#e65b58;--notion-green:#529e72;--notion-blue:#379ad3;--notion-yellow:#ca984d}html[data-theme=dark]{--background-color:#232326;--primary-text-color:#e6e6e6;--secondary-text-color:#768390;--content-text-color:#e6e6e6;--scrollbar-thumb-color:#ffffff70;--button-background-color:#444c56;--button-text-color:#363f47;--tab-text-color:#768390;--tab-hover-text-color:#acbac7;--tab-selected-background-color:#373e47;--chip-background-color:#323a42;--bio-link-icon-color:#e6e6e6;--about-link-icon-color:#a8a8a8;--link-text-color:#90b0ec;--post-card-border-color:#363f47;--markdown-table-even-cell-background-color:#2d333b;--markdown-table-border-color:#444c56;--markdown-blockquote-border-color:#4f5864;--markdown-border-color:#e1e4e8}*{-webkit-appearance:none;appearance:none;box-sizing:border-box}html{font-size:14px;height:100%;overflow-y:scroll;width:100%}body{background-color:var(--background-color)!important}a{color:var(--link-text-color)}.page-wrapper{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;color:var(--primary-text-color);font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans KR,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;justify-content:center;min-height:100vh;padding-left:15px;padding-right:15px;word-break:keep-all}.page-wrapper,.page-wrapper .page-content{align-items:center;display:flex;flex-direction:column;width:100%}.page-wrapper .page-content{max-width:720px}.icon{color:var(--about-link-icon-color);font-size:20px}.social-links .icon{color:var(--bio-link-icon-color);font-size:30px}@-webkit-keyframes blinking-cursor{0%{opacity:0}50%{opacity:1}to{opacity:0}}@keyframes blinking-cursor{0%{opacity:0}50%{opacity:1}to{opacity:0}}.bio{color:var(--primary-text-color);display:flex;flex-direction:column;justify-content:space-between;margin-bottom:120px;margin-top:120px;width:100%}@media(min-width:768px){.bio{align-items:center;flex-direction:row}}.bio .introduction{display:flex;flex-direction:column;letter-spacing:-.05em;word-break:keep-all}.bio .introduction .react-rotating-text-cursor{-webkit-animation:blinking-cursor 1.2s cubic-bezier(.68,.01,.01,.99) 0s infinite;animation:blinking-cursor 1.2s cubic-bezier(.68,.01,.01,.99) 0s infinite}.bio .introduction strong{display:inline-block;font-weight:600;letter-spacing:-.05em}.bio .introduction strong.en_role{font-family:Montserrat;font-weight:300;letter-spacing:-.05em}.bio .introduction.korean{font-size:32px;font-weight:200;line-height:1.2}.bio .introduction.korean .title .react-rotating-text-cursor{font-size:35px;line-height:35px}@media(min-width:768px){.bio .introduction.korean{font-size:40px}.bio .introduction.korean .title .react-rotating-text-cursor{font-size:45px;line-height:45px}}.bio .introduction.korean .social-links{display:flex;margin-top:15px}@media(min-width:768px){.bio .introduction.korean{margin-top:30px}}.bio .introduction.english{font-family:Montserrat;font-size:25px;line-height:1.2}@media(min-width:768px){.bio .introduction.english{font-size:45px}}.bio .introduction.english .name{font-size:35px;font-weight:600}.bio .introduction.english .job{font-size:35px}.bio .introduction.english .description{font-size:20px;font-weight:200;margin-top:8px}.bio .introduction.english .social-links{display:flex;margin-top:20px}.bio .thumbnail-wrapper{display:none}.section-header-wrapper{display:flex;justify-content:center;margin-bottom:32px;width:100%}.section-header-wrapper .section-header{border-bottom:2px solid var(--primary-text-color);color:var(--primary-text-color);font-family:Montserrat;font-size:23px;font-weight:550;letter-spacing:-.02em;padding-bottom:5px}.timestamp-section{align-items:center;display:flex;flex-direction:column;justify-content:center;margin-bottom:100px;width:100%;word-break:keep-all}.timestamp-section .body{padding:0 10px;width:100%}.timestamp-section .body .timestamp{border-left:2px solid #bdbdbd;display:flex;font-family:Pretendard;font-size:15px;font-weight:400;justify-items:center;letter-spacing:-.035em;margin-left:5px;padding:15px 0;width:100%}.timestamp-section .body .timestamp:first-child{padding-top:7px}.timestamp-section .body .timestamp:last-child{padding-bottom:7px}.timestamp-section .body .timestamp:before{align-self:center;background-color:var(--background-color);border:2px solid #828282;border-radius:10px;content:"";height:10px;left:-1px;position:relative;-webkit-transform:translatex(-50%);transform:translatex(-50%);width:10px}.timestamp-section .body .timestamp .date{align-self:center;color:#828282;margin-left:5px;margin-right:5px;min-width:115px;width:115px}@media(min-width:768px){.timestamp-section .body .timestamp .date{min-width:200px;width:200px}}.timestamp-section .body .timestamp .activity{font-weight:500;line-height:23px;width:100%}.project-section{align-items:center;justify-content:center}.project-section,.project-section .project{display:flex;flex-direction:column;width:100%}.project-section .project{margin-bottom:30px;padding:15px}.project-section .project .head{font-size:20px;font-weight:700;line-height:30px;margin-bottom:10px}.project-section .project .body{display:flex;flex-direction:column;width:100%}.project-section .project .body .thumbnail{margin-bottom:10px;width:100%}.project-section .project .body .tech-stack{display:flex;margin-bottom:10px}.project-section .project .body .tech-stack .tech{background-color:var(--chip-background-color);border-radius:10px;font-size:15px;font-weight:500;margin-right:5px;padding:5px 7px}.project-section .project .body .description{font-size:16px;font-weight:400;line-height:1.4}@media(min-width:768px){.project-section .project .body{flex-direction:column}.project-section .project .body .content{margin-top:0}}.awards-section{align-items:center;display:flex;flex-direction:column;justify-content:center;margin-bottom:100px;width:100%;word-break:keep-all}.awards-section .body{padding:0 10px;width:100%}.awards-section .body .awards{border-left:2px solid #bdbdbd;display:flex;font-family:Pretendard;font-size:15px;font-weight:400;justify-items:center;letter-spacing:-.035em;margin-left:5px;padding:20px 0;white-space:pre-wrap;width:100%}.awards-section .body .awards:first-child{padding-top:7px}.awards-section .body .awards:last-child{padding-bottom:7px}.awards-section .body .awards:before{align-self:center;background-color:var(--background-color);border:2px solid #828282;border-radius:10px;content:"";height:10px;left:-1px;position:relative;-webkit-transform:translatex(-50%);transform:translatex(-50%);width:10px}.awards-section .body .awards .date{align-self:center;color:#828282;margin-left:5px;margin-right:5px;min-width:115px;width:115px}@media(min-width:768px){.awards-section .body .awards .date{min-width:200px;width:200px}}.awards-section .body .awards .activity{color:var(--secondary-text-color);font-size:12px;line-height:20px;width:100%}.awards-section .body .awards strong{color:var(--primary-text-color);font-size:15px;font-weight:500}.certification-section{align-items:center;display:flex;flex-direction:column;justify-content:center;margin-bottom:100px;width:100%;word-break:keep-all}.certification-section .body{padding:0 10px;width:100%}.certification-section .body .certification{border-left:2px solid #bdbdbd;display:flex;font-family:Pretendard;font-size:15px;font-weight:400;justify-items:center;letter-spacing:-.035em;margin-left:5px;padding:15px 0;width:100%}.certification-section .body .certification:first-child{padding-top:7px}.certification-section .body .certification:last-child{padding-bottom:7px}.certification-section .body .certification:before{align-self:center;background-color:var(--background-color);border:2px solid #828282;border-radius:10px;content:"";height:10px;left:-1px;position:relative;-webkit-transform:translatex(-50%);transform:translatex(-50%);width:10px}.certification-section .body .certification .date{align-self:center;color:#828282;margin-left:5px;margin-right:5px;min-width:115px;width:115px}@media(min-width:768px){.certification-section .body .certification .date{min-width:200px;width:200px}}.certification-section .body .certification .activity{font-weight:500;line-height:23px;width:100%}.post-header{border-bottom:1px solid var(--post-card-border-color);display:flex;flex-direction:column;justify-content:center;letter-spacing:-.025em;margin-bottom:50px;margin-top:50px;padding-bottom:10px;width:100%;word-break:keep-all}.post-header .emoji{font-size:78px;margin-bottom:40px}.post-header .categories{font-family:Montserrat;margin-bottom:8px}.post-header .categories .category{color:var(--primary-text-color);font-weight:400;margin-right:8px}.post-header .categories .category:hover{text-decoration:underline}.post-header .title{color:var(--primary-text-color);font-size:32px;font-weight:700;line-height:1.3;margin-bottom:6px}.post-header .info{color:var(--secondary-text-color);display:flex;flex-wrap:wrap;font-size:16px;font-weight:300;line-height:1.8;width:100%}.post-header .info .author{margin-right:4px}.post-header .info strong{color:var(--primary-text-color);font-size:16px;font-weight:400}.post-header .info .date{margin-bottom:12px}.post-navigator{-webkit-column-gap:1.4%;column-gap:1.4%;display:grid;grid-template-columns:49.3% 49.3%;margin-bottom:80px;width:100%}.post-navigator .post-card{border:1px solid var(--post-card-border-color);border-radius:18px;color:var(--primary-text-color);cursor:pointer;display:flex;flex-direction:column;letter-spacing:-.025em;padding:30px 20px 20px;transition:-webkit-transform .2s;transition:transform .2s;transition:transform .2s,-webkit-transform .2s;width:100%}.post-navigator .post-card:hover .title{text-decoration:underline}.post-navigator .post-card.prev{margin-right:auto}.post-navigator .post-card.next{margin-left:auto}.post-navigator .post-card .direction{color:gray;font-size:11px;font-weight:300;margin-bottom:5px}.post-navigator .post-card .title{font-size:14px;font-weight:600;line-height:1.4;margin-bottom:7px}.markdown .octicon{fill:currentColor;display:inline-block;vertical-align:text-bottom}.markdown .anchor{float:left;line-height:1;margin-left:-20px;padding-right:4px}.markdown .anchor:focus{outline:none}.markdown h1 .octicon-link,.markdown h2 .octicon-link,.markdown h3 .octicon-link,.markdown h4 .octicon-link,.markdown h5 .octicon-link,.markdown h6 .octicon-link{color:#1b1f23;vertical-align:middle;visibility:hidden}.markdown h1:hover .anchor,.markdown h2:hover .anchor,.markdown h3:hover .anchor,.markdown h4:hover .anchor,.markdown h5:hover .anchor,.markdown h6:hover .anchor{text-decoration:none}.markdown h1:hover .anchor .octicon-link,.markdown h2:hover .anchor .octicon-link,.markdown h3:hover .anchor .octicon-link,.markdown h4:hover .anchor .octicon-link,.markdown h5:hover .anchor .octicon-link,.markdown h6:hover .anchor .octicon-link{visibility:visible}.markdown h1:hover .anchor .octicon-link:before,.markdown h2:hover .anchor .octicon-link:before,.markdown h3:hover .anchor .octicon-link:before,.markdown h4:hover .anchor .octicon-link:before,.markdown h5:hover .anchor .octicon-link:before,.markdown h6:hover .anchor .octicon-link:before{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' aria-hidden='true' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z'/%3E%3C/svg%3E");content:" ";display:inline-block;height:16px;width:16px}.markdown{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;word-wrap:break-word;color:var(--content-text-color);font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans KR,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;font-size:16px;font-weight:400;letter-spacing:-.025em;line-height:1.5;line-height:170%;text-align:justify;word-break:break-all}.markdown details{display:block}.markdown summary{display:list-item}.markdown a{background-color:initial}.markdown a:active,.markdown a:hover{outline-width:0}.markdown strong{font-weight:inherit;font-weight:bolder}.markdown h1{margin:.67em 0}.markdown img{border-style:none}.markdown code,.markdown kbd,.markdown pre{font-family:monospace,monospace;font-size:1em}.markdown hr{box-sizing:initial;overflow:visible}.markdown input{font:inherit;margin:0;overflow:visible}.markdown [type=checkbox]{box-sizing:border-box;padding:0}.markdown *{box-sizing:border-box}.markdown input{font-family:inherit;font-size:inherit;line-height:inherit}.markdown a{border-bottom:.05em solid;border-color:var(--link-text-color);color:var(--link-text-color);text-decoration:none}.markdown a.anchor{border-bottom:none}.markdown strong{font-weight:700}.markdown hr{background:transparent;border-bottom:1px solid var(--markdown-blockquote-border-color);height:0;margin:15px 0;overflow:hidden}.markdown hr:after,.markdown hr:before{content:"";display:table}.markdown hr:after{clear:both}.markdown table{border-collapse:collapse;border-spacing:0}.markdown td,.markdown th{padding:0}.markdown details summary{cursor:pointer}.markdown h1,.markdown h2,.markdown h3,.markdown h4,.markdown h5,.markdown h6{margin-bottom:0;margin-top:0}.markdown h1{font-size:32px}.markdown h1,.markdown h2{font-weight:600}.markdown h2{font-size:24px}.markdown h3{font-size:20px}.markdown h3,.markdown h4{font-weight:600}.markdown h4{font-size:16px}.markdown h5{font-size:14px}.markdown h5,.markdown h6{font-weight:600}.markdown h6{font-size:12px}.markdown p{margin-bottom:10px;margin-top:0}.markdown blockquote{margin:0}.markdown ol,.markdown ul{margin-bottom:0;margin-top:0;padding-left:0}.markdown ol ol,.markdown ul ol{list-style-type:lower-roman}.markdown ol ol ol,.markdown ol ul ol,.markdown ul ol ol,.markdown ul ul ol{list-style-type:lower-alpha}.markdown dd{margin-left:0}.markdown code,.markdown pre{font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;font-size:12px}.markdown code.language-text{border-radius:3px;font-size:85%;padding:.2em .4em}.markdown :not(pre)>code.language-text{background:hsla(44,6%,50%,.15);color:#eb5757;overflow-wrap:break-word}.markdown pre{margin-bottom:0;margin-top:0}.markdown input::-webkit-inner-spin-button,.markdown input::-webkit-outer-spin-button{-webkit-appearance:none;appearance:none;margin:0}.markdown :checked+.radio-label{border-color:#0366d6;position:relative;z-index:1}.markdown .border{border:1px solid var(--markdown-border-color)!important}.markdown .border-0{border:0!important}.markdown .border-bottom{border-bottom:1px solid var(--markdown-border-color)!important}.markdown .rounded-1{border-radius:3px!important}.markdown .bg-white{background-color:transparent!important}.markdown .bg-gray-light{background-color:#fafbfc!important}.markdown .text-gray-light{color:#6a737d!important}.markdown .pl-3,.markdown .px-3{padding-left:16px!important}.markdown .px-3{padding-right:16px!important}.markdown .f6{font-size:12px!important}.markdown .lh-condensed{line-height:1.25!important}.markdown .text-bold{font-weight:600!important}.markdown .pl-c{color:#6a737d}.markdown .pl-c1,.markdown .pl-s .pl-v{color:#005cc5}.markdown .pl-e,.markdown .pl-en{color:#6f42c1}.markdown .pl-s .pl-s1,.markdown .pl-smi{color:#24292e}.markdown .pl-ent{color:#22863a}.markdown .pl-k{color:#d73a49}.markdown .pl-pds,.markdown .pl-s,.markdown .pl-s .pl-pse .pl-s1,.markdown .pl-sr,.markdown .pl-sr .pl-cce,.markdown .pl-sr .pl-sra,.markdown .pl-sr .pl-sre{color:#032f62}.markdown .pl-smw,.markdown .pl-v{color:#e36209}.markdown .pl-bu{color:#b31d28}.markdown .pl-ii{background-color:#b31d28;color:#fafbfc}.markdown .pl-c2{background-color:#d73a49;color:#fafbfc}.markdown .pl-c2:before{content:"^M"}.markdown .pl-sr .pl-cce{color:#22863a;font-weight:700}.markdown .pl-ml{color:#735c0f}.markdown .pl-mh,.markdown .pl-mh .pl-en,.markdown .pl-ms{color:#005cc5;font-weight:700}.markdown .pl-mi{color:#24292e;font-style:italic}.markdown .pl-mb{color:#24292e;font-weight:700}.markdown .pl-md{background-color:#ffeef0;color:#b31d28}.markdown .pl-mi1{background-color:#f0fff4;color:#22863a}.markdown .pl-mc{background-color:#ffebda;color:#e36209}.markdown .pl-mi2{background-color:#005cc5;color:#f6f8fa}.markdown .pl-mdr{color:#6f42c1;font-weight:700}.markdown .pl-ba{color:#586069}.markdown .pl-sg{color:#959da5}.markdown .pl-corl{color:#032f62;text-decoration:underline}.markdown .mb-0{margin-bottom:0!important}.markdown .my-2{margin-bottom:8px!important;margin-top:8px!important}.markdown .pl-0{padding-left:0!important}.markdown .py-0{padding-bottom:0!important;padding-top:0!important}.markdown .pl-1{padding-left:4px!important}.markdown .pl-2{padding-left:8px!important}.markdown .py-2{padding-bottom:8px!important;padding-top:8px!important}.markdown .pl-3{padding-left:16px!important}.markdown .pl-4{padding-left:24px!important}.markdown .pl-5{padding-left:32px!important}.markdown .pl-6{padding-left:40px!important}.markdown .pl-7{padding-left:48px!important}.markdown .pl-8{padding-left:64px!important}.markdown .pl-9{padding-left:80px!important}.markdown .pl-10{padding-left:96px!important}.markdown .pl-11{padding-left:112px!important}.markdown .pl-12{padding-left:128px!important}.markdown hr{border-bottom-color:var(--markdown-blockquote-border-color)}.markdown kbd{background-color:#fafbfc;border:1px solid #d1d5da;border-radius:3px;box-shadow:inset 0 -1px 0 #d1d5da;color:#444d56;display:inline-block;font:11px SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;line-height:10px;padding:3px 5px;vertical-align:middle}.markdown:after,.markdown:before{content:"";display:table}.markdown:after{clear:both}.markdown>:first-child{margin-top:0!important}.markdown>:last-child{margin-bottom:0!important}.markdown a:not([href]){color:inherit;text-decoration:none}.markdown blockquote,.markdown details,.markdown dl,.markdown ol,.markdown p,.markdown pre,.markdown table,.markdown ul{margin-bottom:28px;margin-top:0}.markdown li{font-size:14px}.markdown li>p{margin-bottom:4px;margin-top:0}.markdown p+ol,.markdown p+ul{margin-top:-15px}.markdown hr{background-color:var(--markdown-blockquote-border-color);border:0;height:.05em;margin:48px 0;padding:0}.markdown blockquote{border-left:.25em solid var(--markdown-blockquote-border-color);color:#6a737d;padding:0 1em}.markdown blockquote>:first-child{margin-top:0}.markdown blockquote>:last-child{margin-bottom:0}.markdown h1,.markdown h2,.markdown h3,.markdown h4,.markdown h5,.markdown h6{font-weight:600;line-height:1.25;margin-bottom:16px;margin-top:48px}.markdown h1{font-size:2em}.markdown h2{font-size:1.5em}.markdown h3{font-size:1.25em}.markdown h4{font-size:1em}.markdown h5{font-size:.875em}.markdown h6{color:#6a737d;font-size:.85em}.markdown ol,.markdown ul{padding-left:2em}.markdown ol ol,.markdown ol ul,.markdown ul ol,.markdown ul ul{margin-bottom:0;margin-top:0}.markdown ol{list-style-type:decimal}.markdown ul{list-style-type:disc}.markdown li{word-wrap:break-all;display:list-item;text-align:-webkit-match-parent}.markdown li>p{margin-top:16px}.markdown li{margin-top:.25em}.markdown dl{padding:0}.markdown dl dt{font-size:1em;font-style:italic;font-weight:600;margin-top:16px;padding:0}.markdown dl dd{margin-bottom:16px;padding:0 16px}.markdown table{display:block;overflow:auto;width:100%}.markdown table th{font-weight:600}.markdown table td,.markdown table th{border:1px solid var(--markdown-table-border-color);padding:6px 13px}.markdown table tr{border-top:1px solid var(--markdown-table-border-color)}.markdown table tr:nth-child(2n){background-color:var(--markdown-table-even-cell-background-color)}.markdown img{background-color:transparent;box-sizing:initial;display:block;margin:0 auto;max-width:100%}.markdown img[align=right]{padding-left:20px}.markdown img[align=left]{padding-right:20px}.markdown code{background-color:rgba(27,31,35,.05);border-radius:3px;font-size:85%;margin:0;padding:.2em .4em}.markdown pre{word-wrap:normal}.markdown pre>code{background:transparent;border:0;font-size:85%;margin:0;padding:0;white-space:pre;word-break:normal}.markdown .highlight{margin-bottom:16px}.markdown .highlight pre{margin-bottom:0;word-break:normal}.markdown .highlight pre,.markdown pre{background-color:#f6f8fa;border-radius:3px;font-size:85%;line-height:1.45;overflow:auto;padding:16px}.markdown pre code{word-wrap:normal;background-color:initial;border:0;display:inline;line-height:inherit;margin:0;max-width:auto;overflow:visible;padding:0}.markdown .commit-tease-sha{color:#444d56;display:inline-block;font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;font-size:90%}.markdown .full-commit .btn-outline:not(:disabled):hover{border-color:#005cc5;color:#005cc5}.markdown .blob-wrapper{overflow-x:auto;overflow-y:hidden}.markdown .blob-wrapper-embedded{max-height:240px;overflow-y:auto}.markdown .blob-num{color:rgba(27,31,35,.3);cursor:pointer;font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;font-size:12px;line-height:20px;min-width:50px;padding-left:10px;padding-right:10px;text-align:right;-webkit-user-select:none;user-select:none;vertical-align:top;white-space:nowrap;width:1%}.markdown .blob-num:hover{color:rgba(27,31,35,.6)}.markdown .blob-num:before{content:attr(data-line-number)}.markdown .blob-code{line-height:20px;padding-left:10px;padding-right:10px;position:relative;vertical-align:top}.markdown .blob-code-inner{word-wrap:normal;color:#24292e;font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;font-size:12px;overflow:visible;white-space:pre}.markdown .pl-token.active,.markdown .pl-token:hover{background:#ffea7f;cursor:pointer}.markdown .tab-size[data-tab-size="1"]{-o-tab-size:1;tab-size:1}.markdown .tab-size[data-tab-size="2"]{-o-tab-size:2;tab-size:2}.markdown .tab-size[data-tab-size="3"]{-o-tab-size:3;tab-size:3}.markdown .tab-size[data-tab-size="4"]{-o-tab-size:4;tab-size:4}.markdown .tab-size[data-tab-size="5"]{-o-tab-size:5;tab-size:5}.markdown .tab-size[data-tab-size="6"]{-o-tab-size:6;tab-size:6}.markdown .tab-size[data-tab-size="7"]{-o-tab-size:7;tab-size:7}.markdown .tab-size[data-tab-size="8"]{-o-tab-size:8;tab-size:8}.markdown .tab-size[data-tab-size="9"]{-o-tab-size:9;tab-size:9}.markdown .tab-size[data-tab-size="10"]{-o-tab-size:10;tab-size:10}.markdown .tab-size[data-tab-size="11"]{-o-tab-size:11;tab-size:11}.markdown .tab-size[data-tab-size="12"]{-o-tab-size:12;tab-size:12}.markdown .task-list-item{list-style-type:none}.markdown .task-list-item+.task-list-item{margin-top:3px}.markdown .task-list-item input{margin:0 .2em .25em -1.6em;vertical-align:middle}.markdown .table-of-contents{align-items:flex-start;display:flex;flex-direction:column;justify-content:center;position:fixed;right:0;top:120px;width:320px}@media(max-width:1400px){.markdown .table-of-contents{display:none}}.markdown .table-of-contents ul{cursor:pointer;list-style-type:none}.markdown .table-of-contents ul li a{border-bottom:none;color:var(--secondary-text-color);display:block;font-size:15px;font-weight:400;height:auto;letter-spacing:-.025em;line-height:125%;padding:8px 30px;width:100%}.markdown .table-of-contents ul p{margin:0}.markdown .table-of-contents a:hover{color:var(--primary-text-color)}.markdown .gatsby-resp-image-wrapper{display:flex!important;justify-content:center!important;max-height:560px!important;width:100%!important}.markdown .gatsby-resp-image-wrapper img{height:auto!important;max-height:560px!important;max-width:100%!important;position:relative!important;width:auto!important}.markdown .gatsby-resp-image-wrapper img,.markdown img{border-radius:4px!important;box-shadow:0 0 12px rgba(32,32,32,.357)!important;margin-bottom:8px!important}.markdown .gatsby-resp-image-wrapper+em{color:#6a737d;display:block;font-size:15px;font-style:italic;text-align:center}.markdown .gatsby-highlight{margin-bottom:20px}.markdown em{color:#6a737d;font-style:italic}.markdown pre::-webkit-scrollbar{display:block;height:1em;width:auto}.markdown pre::-webkit-scrollbar-track{background-color:transparent}.markdown pre::-webkit-scrollbar-thumb{background-clip:padding-box;background-color:hsla(0,0%,100%,.267);border:5px solid transparent;border-radius:999px}.markdown pre::-webkit-scrollbar-thumb:hover{background-color:hsla(0,0%,100%,.561)}.markdown p+.gatsby-highlight{margin-bottom:15px;margin-top:-18px}.markdown li>p+.gatsby-highlight{margin-top:0}.markdown red{color:var(--notion-red)}.markdown green{color:var(--notion-green)}.markdown blue{color:var(--notion-blue)}.markdown yellow{color:var(--notion-yellow)}code[class*=language-],pre[class*=language-]{word-wrap:normal;background:none;color:#ccc;font-family:Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;font-size:1em;-webkit-hyphens:none;hyphens:none;line-height:1.5;-o-tab-size:4;tab-size:4;text-align:left;white-space:pre;word-break:normal;word-spacing:normal}pre[class*=language-]{margin:.5em 0;overflow:auto;padding:1em}:not(pre)>code[class*=language-],pre[class*=language-]{background:#2d2d2d}:not(pre)>code[class*=language-]{border-radius:.3em;padding:.1em;white-space:normal}.token.block-comment,.token.cdata,.token.comment,.token.doctype,.token.prolog{color:#999}.token.punctuation{color:#ccc}.token.attr-name,.token.deleted,.token.namespace,.token.tag{color:#e2777a}.token.function-name{color:#6196cc}.token.boolean,.token.function,.token.number{color:#f08d49}.token.class-name,.token.constant,.token.property,.token.symbol{color:#f8c555}.token.atrule,.token.builtin,.token.important,.token.keyword,.token.selector{color:#cc99cd}.token.attr-value,.token.char,.token.regex,.token.string,.token.variable{color:#7ec699}.token.entity,.token.operator,.token.url{color:#67cdcc}.token.bold,.token.important{font-weight:700}.token.italic{font-style:italic}.token.entity{cursor:help}.token.inserted{color:green}.post-content{width:100%}.category-page-header-wrapper,.post-content{display:flex;flex-direction:column;justify-content:center;margin-bottom:30px}.category-page-header-wrapper{align-items:center;font-family:Montserrat;letter-spacing:-.025em;margin-top:30px}.category-page-header-wrapper .category-page-title{border-bottom:2px solid var(--primary-text-color);font-size:36px;font-weight:500;margin-bottom:15px;padding-bottom:7px;text-align:center;text-transform:uppercase;width:-webkit-fit-content;width:-moz-fit-content;width:fit-content}.category-page-header-wrapper .category-page-subtitle{font-size:18px;font-weight:300;padding-bottom:10px;text-align:center}.post-card-wrapper{display:flex;justify-content:center;min-height:150px;width:100%}.post-card-wrapper .post-card{border:1px solid var(--post-card-border-color);border-radius:18px;color:var(--primary-text-color);cursor:pointer;display:flex;flex-direction:column;height:100%;margin-bottom:15px;max-width:720px;padding:36px 30px 42px;transition:-webkit-transform .2s;transition:transform .2s;transition:transform .2s,-webkit-transform .2s;width:100%}.post-card-wrapper .post-card:hover .title{text-decoration:underline}@media(min-width:768px){.post-card-wrapper .post-card{margin-bottom:0}}.post-card-wrapper .post-card .title{font-size:18px;font-weight:600;letter-spacing:-.025em;line-height:1.4;margin-bottom:10px}.post-card-wrapper .post-card .description{-webkit-line-clamp:2;-webkit-box-orient:vertical;color:var(--primary-text-color);display:-webkit-box;font-size:13px;letter-spacing:-.025em;line-height:150%;margin-bottom:14px;overflow:hidden;text-overflow:ellipsis}.post-card-wrapper .post-card .info{color:var(--about-link-icon-color);display:flex;font-size:13px;font-weight:400;justify-content:space-between;letter-spacing:-.04em;margin-top:auto}.post-card-wrapper .post-card .info .date{font-family:Montserrat;letter-spacing:-.0625em}.post-card-wrapper .post-card .info .categories{display:flex;font-family:Montserrat}.post-card-wrapper .post-card .info .categories .category{font-size:12px;margin-left:4px}.post-card-wrapper .post-card .info .categories .category:hover{text-decoration:underline}.post-card-column-wrapper{display:flex;justify-content:center;width:100%}.post-card-column-wrapper .post-card-column{align-items:center;display:flex;flex-direction:column;width:100%}.post-card-column-wrapper .post-card-column .post-card-wrapper{margin-bottom:10px}.post-card-column-wrapper .post-card-column .more-post-card-button{background-color:var(--button-background-color);color:var(--tab-hover-text-color);font-family:Montserrat;font-size:15px;font-weight:400;height:42px;letter-spacing:-.025em;margin-top:20px}@font-face{font-display:swap;font-family:Pretendard;font-style:normal;font-weight:45 920;src:url(/fonts/Pretendard.woff2) format("woff2-variations")}@font-face{font-display:swap;font-family:Montserrat;font-style:normal;font-weight:45 920;src:url(/fonts/Montserrat.woff2) format("woff2-variations")}.post-tabs-wrapper{align-self:flex-start;display:flex;flex-direction:column;justify-content:center;top:0;width:100%}.post-tabs-wrapper .post-tabs{display:flex;height:40px;justify-content:center;margin-bottom:12px;max-width:760px;width:100%}.post-tabs-wrapper .post-tabs .mui-tabs .MuiTab-root{color:var(--tab-text-color);font-family:Pretendard,-apple-system,BlinkMacSystemFont,Segoe UI,Noto Sans KR,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;font-family:Montserrat;font-size:15px;font-weight:400;height:40px;letter-spacing:-.03em;min-height:auto;min-width:auto;padding:10px 24px;transition:all .2s ease}.post-tabs-wrapper .post-tabs .mui-tabs .Mui-selected,.post-tabs-wrapper .post-tabs .mui-tabs .MuiTab-root :hover{color:var(--tab-hover-text-color);transition:all .2s ease}.post-tabs-wrapper .post-tabs .mui-tabs .Mui-selected{background-color:var(--tab-selected-background-color);border-radius:12px;font-size:17px;font-weight:600}.post-tabs-wrapper .post-tabs .mui-tabs .MuiTabScrollButton-root{height:40px;width:20px}.post-tabs-wrapper .post-tabs .mui-tabs .MuiTabs-scrollable{height:40px}.post-tabs-wrapper .post-tabs .mui-tabs .MuiTabs-indicator{display:none}</style><style data-emotion="css-global o6gwfi">html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;box-sizing:border-box;-webkit-text-size-adjust:100%;}*,*::before,*::after{box-sizing:inherit;}strong,b{font-weight:700;}body{margin:0;color:rgba(0, 0, 0, 0.87);font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:400;font-size:1rem;line-height:1.5;letter-spacing:0.00938em;background-color:#fff;}@media print{body{background-color:#fff;}}body::backdrop{background-color:#fff;}</style><style data-emotion="css-global 1prfaxn">@-webkit-keyframes mui-auto-fill{from{display:block;}}@keyframes mui-auto-fill{from{display:block;}}@-webkit-keyframes mui-auto-fill-cancel{from{display:block;}}@keyframes mui-auto-fill-cancel{from{display:block;}}</style><style data-emotion="css 18nc3u2 feqhe6 12rx5qu mnn31 vubbuv 1yxmbwk 6flbmm">.css-18nc3u2.Mui-focused .MuiAutocomplete-clearIndicator{visibility:visible;}@media (pointer: fine){.css-18nc3u2:hover .MuiAutocomplete-clearIndicator{visibility:visible;}}.css-18nc3u2 .MuiAutocomplete-tag{margin:3px;max-width:calc(100% - 6px);}.css-18nc3u2 .MuiAutocomplete-inputRoot{-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;}.MuiAutocomplete-hasPopupIcon.css-18nc3u2 .MuiAutocomplete-inputRoot,.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiAutocomplete-inputRoot{padding-right:30px;}.MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiAutocomplete-inputRoot{padding-right:56px;}.css-18nc3u2 .MuiAutocomplete-inputRoot .MuiAutocomplete-input{width:0;min-width:30px;}.css-18nc3u2 .MuiInput-root{padding-bottom:1px;}.css-18nc3u2 .MuiInput-root .MuiInput-input{padding:4px 4px 4px 0px;}.css-18nc3u2 .MuiInput-root.MuiInputBase-sizeSmall .MuiInput-input{padding:2px 4px 3px 0;}.css-18nc3u2 .MuiOutlinedInput-root{padding:9px;}.MuiAutocomplete-hasPopupIcon.css-18nc3u2 .MuiOutlinedInput-root,.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiOutlinedInput-root{padding-right:39px;}.MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiOutlinedInput-root{padding-right:65px;}.css-18nc3u2 .MuiOutlinedInput-root .MuiAutocomplete-input{padding:7.5px 4px 7.5px 5px;}.css-18nc3u2 .MuiOutlinedInput-root .MuiAutocomplete-endAdornment{right:9px;}.css-18nc3u2 .MuiOutlinedInput-root.MuiInputBase-sizeSmall{padding-top:6px;padding-bottom:6px;padding-left:6px;}.css-18nc3u2 .MuiOutlinedInput-root.MuiInputBase-sizeSmall .MuiAutocomplete-input{padding:2.5px 4px 2.5px 8px;}.css-18nc3u2 .MuiFilledInput-root{padding-top:19px;padding-left:8px;}.MuiAutocomplete-hasPopupIcon.css-18nc3u2 .MuiFilledInput-root,.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiFilledInput-root{padding-right:39px;}.MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon.css-18nc3u2 .MuiFilledInput-root{padding-right:65px;}.css-18nc3u2 .MuiFilledInput-root .MuiFilledInput-input{padding:7px 4px;}.css-18nc3u2 .MuiFilledInput-root .MuiAutocomplete-endAdornment{right:9px;}.css-18nc3u2 .MuiFilledInput-root.MuiInputBase-sizeSmall{padding-bottom:1px;}.css-18nc3u2 .MuiFilledInput-root.MuiInputBase-sizeSmall .MuiFilledInput-input{padding:2.5px 4px;}.css-18nc3u2 .MuiInputBase-hiddenLabel{padding-top:8px;}.css-18nc3u2 .MuiFilledInput-root.MuiInputBase-hiddenLabel{padding-top:0;padding-bottom:0;}.css-18nc3u2 .MuiFilledInput-root.MuiInputBase-hiddenLabel .MuiAutocomplete-input{padding-top:16px;padding-bottom:17px;}.css-18nc3u2 .MuiFilledInput-root.MuiInputBase-hiddenLabel.MuiInputBase-sizeSmall .MuiAutocomplete-input{padding-top:8px;padding-bottom:9px;}.css-18nc3u2 .MuiAutocomplete-input{-webkit-box-flex:1;-webkit-flex-grow:1;-ms-flex-positive:1;flex-grow:1;text-overflow:ellipsis;opacity:1;}.css-feqhe6{display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;position:relative;min-width:0;padding:0;margin:0;border:0;vertical-align:top;width:100%;}.css-12rx5qu{font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:400;font-size:1rem;line-height:1.4375em;letter-spacing:0.00938em;color:rgba(0, 0, 0, 0.87);box-sizing:border-box;position:relative;cursor:text;display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;width:100%;position:relative;}.css-12rx5qu.Mui-disabled{color:rgba(0, 0, 0, 0.38);cursor:default;}label+.css-12rx5qu{margin-top:16px;}.css-12rx5qu:after{border-bottom:2px solid #1976d2;left:0;bottom:0;content:"";position:absolute;right:0;-webkit-transform:scaleX(0);-moz-transform:scaleX(0);-ms-transform:scaleX(0);transform:scaleX(0);-webkit-transition:-webkit-transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;transition:transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;pointer-events:none;}.css-12rx5qu.Mui-focused:after{-webkit-transform:scaleX(1) translateX(0);-moz-transform:scaleX(1) translateX(0);-ms-transform:scaleX(1) translateX(0);transform:scaleX(1) translateX(0);}.css-12rx5qu.Mui-error:before,.css-12rx5qu.Mui-error:after{border-bottom-color:#d32f2f;}.css-12rx5qu:before{border-bottom:1px solid rgba(0, 0, 0, 0.42);left:0;bottom:0;content:"\00a0";position:absolute;right:0;-webkit-transition:border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;pointer-events:none;}.css-12rx5qu:hover:not(.Mui-disabled, .Mui-error):before{border-bottom:2px solid rgba(0, 0, 0, 0.87);}@media (hover: none){.css-12rx5qu:hover:not(.Mui-disabled, .Mui-error):before{border-bottom:1px solid rgba(0, 0, 0, 0.42);}}.css-12rx5qu.Mui-disabled:before{border-bottom-style:dotted;}.css-mnn31{font:inherit;letter-spacing:inherit;color:currentColor;padding:4px 0 5px;border:0;box-sizing:content-box;background:none;height:1.4375em;margin:0;-webkit-tap-highlight-color:transparent;display:block;min-width:0;width:100%;-webkit-animation-name:mui-auto-fill-cancel;animation-name:mui-auto-fill-cancel;-webkit-animation-duration:10ms;animation-duration:10ms;}.css-mnn31::-webkit-input-placeholder{color:currentColor;opacity:0.42;-webkit-transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}.css-mnn31::-moz-placeholder{color:currentColor;opacity:0.42;-webkit-transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}.css-mnn31:-ms-input-placeholder{color:currentColor;opacity:0.42;-webkit-transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}.css-mnn31::-ms-input-placeholder{color:currentColor;opacity:0.42;-webkit-transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}.css-mnn31:focus{outline:0;}.css-mnn31:invalid{box-shadow:none;}.css-mnn31::-webkit-search-decoration{-webkit-appearance:none;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31::-webkit-input-placeholder{opacity:0!important;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31::-moz-placeholder{opacity:0!important;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31:-ms-input-placeholder{opacity:0!important;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31::-ms-input-placeholder{opacity:0!important;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31:focus::-webkit-input-placeholder{opacity:0.42;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31:focus::-moz-placeholder{opacity:0.42;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31:focus:-ms-input-placeholder{opacity:0.42;}label[data-shrink=false]+.MuiInputBase-formControl .css-mnn31:focus::-ms-input-placeholder{opacity:0.42;}.css-mnn31.Mui-disabled{opacity:1;-webkit-text-fill-color:rgba(0, 0, 0, 0.38);}.css-mnn31:-webkit-autofill{-webkit-animation-duration:5000s;animation-duration:5000s;-webkit-animation-name:mui-auto-fill;animation-name:mui-auto-fill;}.css-vubbuv{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;width:1em;height:1em;display:inline-block;fill:currentColor;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;-webkit-transition:fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;font-size:1.5rem;}.css-1yxmbwk{display:-webkit-inline-box;display:-webkit-inline-flex;display:-ms-inline-flexbox;display:inline-flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;-webkit-justify-content:center;justify-content:center;position:relative;box-sizing:border-box;-webkit-tap-highlight-color:transparent;background-color:transparent;outline:0;border:0;margin:0;border-radius:0;padding:0;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;vertical-align:middle;-moz-appearance:none;-webkit-appearance:none;-webkit-text-decoration:none;text-decoration:none;color:inherit;text-align:center;-webkit-flex:0 0 auto;-ms-flex:0 0 auto;flex:0 0 auto;font-size:1.5rem;padding:8px;border-radius:50%;overflow:visible;color:rgba(0, 0, 0, 0.54);-webkit-transition:background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}.css-1yxmbwk::-moz-focus-inner{border-style:none;}.css-1yxmbwk.Mui-disabled{pointer-events:none;cursor:default;}@media print{.css-1yxmbwk{-webkit-print-color-adjust:exact;color-adjust:exact;}}.css-1yxmbwk:hover{background-color:rgba(0, 0, 0, 0.04);}@media (hover: none){.css-1yxmbwk:hover{background-color:transparent;}}.css-1yxmbwk.Mui-disabled{background-color:transparent;color:rgba(0, 0, 0, 0.26);}.css-6flbmm{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;width:1em;height:1em;display:inline-block;fill:currentColor;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;-webkit-transition:fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;font-size:2.1875rem;}</style><link rel="preconnect" href="https://www.google-analytics.com"/><link rel="dns-prefetch" href="https://www.google-analytics.com"/><script>
+  
+  function gaOptout(){document.cookie=disableStr+'=true; expires=Thu, 31 Dec 2099 23:59:59 UTC;path=/',window[disableStr]=!0}var gaProperty='0',disableStr='ga-disable-'+gaProperty;document.cookie.indexOf(disableStr+'=true')>-1&&(window[disableStr]=!0);
+  if(true) {
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  }
+  if (typeof ga === "function") {
+    ga('create', '0', 'auto', {});
+      ga('set', 'anonymizeIp', true);
+      
+      
+      
+      
+      }</script><link rel="icon" href="/favicon-32x32.png?v=ad9e124e5060ab5ddbaf24744e1cfc72" type="image/png"/><link rel="manifest" href="/manifest.webmanifest" crossorigin="anonymous"/><link rel="apple-touch-icon" sizes="48x48" href="/icons/icon-48x48.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="256x256" href="/icons/icon-256x256.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png?v=ad9e124e5060ab5ddbaf24744e1cfc72"/><style type="text/css">
+    .anchor.before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      padding-right: 4px;
+    }
+    .anchor.after {
+      display: inline-block;
+      padding-left: 4px;
+    }
+    h1 .anchor svg,
+    h2 .anchor svg,
+    h3 .anchor svg,
+    h4 .anchor svg,
+    h5 .anchor svg,
+    h6 .anchor svg {
+      visibility: hidden;
+    }
+    h1:hover .anchor svg,
+    h2:hover .anchor svg,
+    h3:hover .anchor svg,
+    h4:hover .anchor svg,
+    h5:hover .anchor svg,
+    h6:hover .anchor svg,
+    h1 .anchor:focus svg,
+    h2 .anchor:focus svg,
+    h3 .anchor:focus svg,
+    h4 .anchor:focus svg,
+    h5 .anchor:focus svg,
+    h6 .anchor:focus svg {
+      visibility: visible;
+    }
+  </style><script>
+    document.addEventListener("DOMContentLoaded", function(event) {
+      var hash = window.decodeURI(location.hash.replace('#', ''))
+      if (hash !== '') {
+        var element = document.getElementById(hash)
+        if (element) {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+          var clientTop = document.documentElement.clientTop || document.body.clientTop || 0
+          var offset = element.getBoundingClientRect().top + scrollTop - clientTop
+          // Wait for the browser to finish rendering before scrolling.
+          setTimeout((function() {
+            window.scrollTo(0, offset - 0)
+          }), 0)
+        }
+      }
+    })
+  </script><link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="/static/webfonts/s/roboto/v48/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWuaabVmUiAo.woff2"/><link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="/static/webfonts/s/roboto/v48/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWubEbVmUiAo.woff2"/><link rel="preload" as="font" type="font/woff2" crossorigin="anonymous" href="/static/webfonts/s/roboto/v48/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWub2bVmUiAo.woff2"/><style>@font-face{font-display:swap;font-family:Roboto;font-stretch:normal;font-style:normal;font-weight:300;src:url(/static/webfonts/s/roboto/v48/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWuaabVmUiAo.woff2) format("woff2")}@font-face{font-display:swap;font-family:Roboto;font-stretch:normal;font-style:normal;font-weight:400;src:url(/static/webfonts/s/roboto/v48/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWubEbVmUiAo.woff2) format("woff2")}@font-face{font-display:swap;font-family:Roboto;font-stretch:normal;font-style:normal;font-weight:500;src:url(/static/webfonts/s/roboto/v48/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWub2bVmUiAo.woff2) format("woff2")}@font-face{font-display:swap;font-family:Roboto;font-stretch:normal;font-style:normal;font-weight:300;src:url(/static/webfonts/s/roboto/v48/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWuaabVmUiAw.woff) format("woff")}@font-face{font-display:swap;font-family:Roboto;font-stretch:normal;font-style:normal;font-weight:400;src:url(/static/webfonts/s/roboto/v48/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWubEbVmUiAw.woff) format("woff")}@font-face{font-display:swap;font-family:Roboto;font-stretch:normal;font-style:normal;font-weight:500;src:url(/static/webfonts/s/roboto/v48/KFOMCnqEu92Fr1ME7kSn66aGLdTylUAMQXC89YmC2DPNWub2bVmUiAw.woff) format("woff")}</style><link rel="sitemap" type="application/xml" href="/sitemap.xml"/><style>.gatsby-image-wrapper{position:relative;overflow:hidden}.gatsby-image-wrapper picture.object-fit-polyfill{position:static!important}.gatsby-image-wrapper img{bottom:0;height:100%;left:0;margin:0;max-width:none;padding:0;position:absolute;right:0;top:0;width:100%;object-fit:cover}.gatsby-image-wrapper [data-main-image]{opacity:0;transform:translateZ(0);transition:opacity .25s linear;will-change:opacity}.gatsby-image-wrapper-constrained{display:inline-block;vertical-align:top}</style><noscript><style>.gatsby-image-wrapper noscript [data-main-image]{opacity:1!important}.gatsby-image-wrapper [data-placeholder-image]{opacity:0!important}</style></noscript><script type="module">const e="undefined"!=typeof HTMLImageElement&&"loading"in HTMLImageElement.prototype;e&&document.body.addEventListener("load",(function(e){const t=e.target;if(void 0===t.dataset.mainImage)return;if(void 0===t.dataset.gatsbyImageSsr)return;let a=null,n=t;for(;null===a&&n;)void 0!==n.parentNode.dataset.gatsbyImageWrapper&&(a=n.parentNode),n=n.parentNode;const o=a.querySelector("[data-placeholder-image]"),r=new Image;r.src=t.currentSrc,r.decode().catch((()=>{})).then((()=>{t.style.opacity=1,o&&(o.style.opacity=0,o.style.transition="opacity 500ms linear")}))}),!0);</script><title data-react-helmet="true">Unity Custom Substance PBR Shader</title></head><body><div id="___gatsby"><div style="outline:none" tabindex="-1" id="gatsby-focus-wrapper"><div class="page-wrapper"><header class="page-header-wrapper"><div class="page-header"><div class="front-section"><a class="link" href="/">JUN-HYEONG</a></div><div class="trailing-section"><a class="link" href="/about">ABOUT</a><a class="link" href="/posts">POSTS</a><a href="https://junyangyee.vercel.app/" class="link" target="_blank" rel="noreferrer">PORTFOLIO</a><div class="MuiAutocomplete-root MuiAutocomplete-hasPopupIcon css-18nc3u2"><div class="search-input-wrapper"><div class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root search-input css-feqhe6"><div class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd MuiAutocomplete-inputRoot css-12rx5qu"><input type="text" aria-invalid="false" autoComplete="off" value="" class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd MuiAutocomplete-input MuiAutocomplete-inputFocused css-mnn31" aria-autocomplete="list" aria-expanded="false" autoCapitalize="none" spellcheck="false" role="combobox"/><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium search-icon css-vubbuv" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="SearchOutlinedIcon"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg></div></div></div></div></div></div></header><main class="page-content"><header class="post-header"><div class="info"><div class="categories"><a class="category" href="/posts/STUDY">STUDY</a></div><div class="tags"></div></div><h1 class="title">Unity Custom Substance PBR Shader</h1><div class="info"><div class="date">August 09, 2022</div></div></header><div class="post-content"><div class="markdown"><p><strong>모바일에서 사용 가능한 유니티 커스텀 섭스턴스 PBR 쉐이더 만들기</strong></p>
+<blockquote>
+<p>군생활 중, NDC 2019 발표를 보면서 단순 정리한 내용입니다.<br>
+노션에 작성했던 내용을 블로그로 옮겨 작성해, 가독성에 문제가 있을 수 있습니다.</p>
+<p><em>※주의 : 본 내용은 아주 기술적인 이야기는 아니며, 기술보다는 꼼수를 이용한 문제해결 이야기입니다.</em><br>
+<em>약 38:35 정도까지 작성되었습니다.</em></p>
+</blockquote>
+<div style="position: relative; width: 100%; padding-bottom: 56.25%">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hC62O9NGXEw?si=-eYCun2EHZMbX3gR" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position: absolute; width:100%; height: 100%;"></iframe>
+</div>
+<div style="margin-top: 12px"> </div>
+<p><a href="http://ndcreplay.nexon.com/NDC2019/sessions/NDC2019_0006.html#k%5B%5D=pbr">▶ NDC Replay - 발표 자료 링크</a></p>
+<hr>
+<h3 id="유니티-pbr" style="position:relative;"><a href="#%EC%9C%A0%EB%8B%88%ED%8B%B0-pbr" aria-label="유니티 pbr permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>유니티 PBR</h3>
+<ul>
+<li><strong>리니어 스페이스와 감마 스페이스</strong>
+<ul>
+<li>사실 리니어 스페이스가 맞는 값</li>
+<li>하지만 어두운 곳에 민감한 사람 눈은 이것을 선형적으로 인지하지 않는다.</li>
+<li>이것을 감마 코렉션 (2.2제곱)하여 선형적으로 보이게끔 한 것</li>
+<li>Unity ColorSpace Default Setting : <strong>Gamma</strong></li>
+</ul>
+</li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 56.666666666666664%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAA7DAAAOwwHHb6hkAAACYUlEQVQoz3WT/UtTURjH979G/RAUvWhBiSwtkVJIqAiMqDWn4hR3NV82t+WmGOnuZS+6Od3mXrxO0ek2t7s394lzRMugL3w5zznPfb734XueY2q1WtQbDWq1GrWaQaVakWu9XqdarWIYxvW5OBO8uLiQuUajgUC73ZZrs9nEVC6XCYVDqJpGNLZNMBgioGrEtuMyTiZThEIRgsEgyWSS6FaUdDrN+sYG8Xj8pmCrhUn8TaBmFPF5xpiZHSWkLZFNaczO2nC77aQSGvPuOZwry/jWf16LXNVe4YZg4USn52Unz3rMWKzvmf9uoau/h76hfrxeO++GB/lst2Cd/Hpph/HHlkqlgrCu9bfg8VGO7q67dJufYvnyGsfUJx513uFF7z18XjsDg88xv3qM1TIgvxdiwjPh45WvNwQN4xyfbwq3Z5Kt8Ar6fgyve5K1FYX8QYKZmRGmlTE21DX+h2azhandvhQsnh4QiSzQpsleYo3w5hKVepnzc51f63M43VOUjTpOv4vj40PZTa1ek9MhOhSQHYqxEJeUzcQYGf2Auhll0TWKbewj44qCsjjDwvwIe6ktWRQO+dH1DJVKlVKpRLFYpFQuS1ExWqajo0MKhVOSyW36+h5i7u3AYnnDxPgw9x/couPJbeZmbXyzDLGwOI7N+pZ8XufsrEihUJA8OTmRzOfzmBKJBIKpVApdP2B/f59cTiedzpDLZslmsjIW+Z2dHRlHIhGcLheeH16W/X78q6tyTnd3dzGpqkogEEDTNAJqALH/l5qmyrygKPT7/UzY7UwrDqYdDhyKgsfrlY/jNyRoBxi2FCm4AAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img01"
+        title="UnitySubstance_img01"
+        src="/static/526f7adfd00a610fdf43b17053457f67/37523/UnitySubstance_img01.png"
+        srcset="/static/526f7adfd00a610fdf43b17053457f67/e9ff0/UnitySubstance_img01.png 180w,
+/static/526f7adfd00a610fdf43b17053457f67/f21e7/UnitySubstance_img01.png 360w,
+/static/526f7adfd00a610fdf43b17053457f67/37523/UnitySubstance_img01.png 720w,
+/static/526f7adfd00a610fdf43b17053457f67/302a4/UnitySubstance_img01.png 1080w,
+/static/526f7adfd00a610fdf43b17053457f67/08037/UnitySubstance_img01.png 1379w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
+<span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 56.666666666666664%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAA7DAAAOwwHHb6hkAAACJUlEQVQoz42SzUsUYRzH52/p2KEXSgQFsbeTEhTVTbdLoUVdTDtEdAq6FVEQ0SlIwiLMakPNzMXdFXJnRndnbZ1ZNlaSfbFcd2fHedv5xOyuptahH3z4Pgzf5/MMM4/gui7VahXDMKhUKpimiT+e5/034Gdjj2BZFuFImEg0wmx4lmV1uS6s1Wr1gp+1PZvxatQNjaObzxtrgX9Ns+A4LqZpYdsWuq5jGCaW7fhKHGDT9XBre95wy247FvGUTDqboWJUERfn+L6iEk8tomaz5H6uIYkzZF14/jXJpJwgtemhmt6OT8QfoWWVGbh1iWs3B5mT5llSRaJzr+jp6+HyjSE+hiPExAneT73hdO8FXrwboewYSCkFx7G3pdtCxy5z9XqAQ+0dXOy/wsjoMLI4SvfZLtqOd3I+EOD16FNeDt/nYOsB7j68h7aq8mNlAce2/hZW9V8MDXTTduwoLR1H6Os/xXjwMYHedlraDtPavp87t88xM/GMk5376DpzggePBpkaf7It80fwr4n/p3W9gjg/xZfpt4RCY0TDQTKZJWRxmlAoSDQaRIzNkFtNE5c+82lyjOjsBzLpOJZl16+bj1AoFPApFotsbOiUShVKpTLlcpVcrkC+sNbI/Br5fLHOerPj99fXN9hy+AjpdJotVFVF89HU+jqZTJJQEiiKgpJUSCTipFLf0DSt3mmgsdMhiKLIfCyGn5Ik7UKW5V0sNHNvbye/ASuwBKmtf+0rAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img02"
+        title="UnitySubstance_img02"
+        src="/static/68eaafa13ff6cd6b0ace1546f4c29ca7/37523/UnitySubstance_img02.png"
+        srcset="/static/68eaafa13ff6cd6b0ace1546f4c29ca7/e9ff0/UnitySubstance_img02.png 180w,
+/static/68eaafa13ff6cd6b0ace1546f4c29ca7/f21e7/UnitySubstance_img02.png 360w,
+/static/68eaafa13ff6cd6b0ace1546f4c29ca7/37523/UnitySubstance_img02.png 720w,
+/static/68eaafa13ff6cd6b0ace1546f4c29ca7/302a4/UnitySubstance_img02.png 1080w,
+/static/68eaafa13ff6cd6b0ace1546f4c29ca7/0931d/UnitySubstance_img02.png 1373w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
+<span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 56.666666666666664%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAA7DAAAOwwHHb6hkAAADE0lEQVQoz02SXU9bBQCGz2/wVhMdziIDxkcrDizB8tW1BdFuHXQDP4bFrqRhzCxFzaJjM9PNTJlOwZmJGjJZYujmKFBH1wXc2nK6Au1pC0UXEjO3xGkWzqHFAI+hV77Jc/PkzXv1ChsbG6TTqyiKjKIoyPJKlkwmnXWrq0oWWZZZW8uQzqRZX19HVhRWVrZ6GTY2N9na2dzcRNgSy8t/kEymWEimWFxMEQ7PspT6HUlKkEgskkgsIIphllJ3kWIJ/rx3j3hcIhQM8OD+ff4fYe3fDG7PtwxfOY979CJDw18xMvY1t8UJRkYvMvDdSb7/8VO+6D/F4KXTeG9eJrb0G4FogplECn9IJCQtMD0b5cHf/yAoyiNs9nL2tKjQ6p5EteMxnF1qzvRZcTiraN6fR4O5gCL1E3R37+LEKSP9l3/Cfuw99BYj2koNh1xHeOfzC4hSHCGdXmHwfCfNlkperH8BY1M1zg49/p9P8sNAF44OI23t+3B0H+To4VcYH3YxdNXNa047xZo8TA069CYdXb29zCYXENYyMna7mcLSbWjKC6jWaykqfZqzHzk4/oENXW0xdYYKDtr3U6tXc+ZDGxeGvuH5qjJU+TnUGHVUVKnRGXVEpCiCLD/CeaiR2pp8tj3zOHmFObRZK+jv6+T9d1vZu6ecYk0uz1UU8FZ7Hf2fvUnflx/zkrmGZwtzUOU/Rb1Ri+OIjfBcGOHhw79wvW2ixVJMiSaXnSXbsb1RycC5TnqONvF6m4ZKXQm7tIV0tFdz7vSrDAyexdXroLxKTUHJdnY3VdNz4jAB8RbC8vJdWvaWYahXUVdXhGn3Tva9XMTxnmZarVoaDbmYGspoaizFatHgchr4pO8YXa4DmK0GLAeMtLabsXc34/VdQ0ilUvhvTODzjeEZdeMdv8Lk9VGmpibx+SbwTXrweNyMeUay/qbfy+3ANFPTPn65Psa49xq/3vIzNX2DWGweIRKJEI1JSPGtEyeJxeKI4h2CoRlmZsKEwxHE8J0soZCY9YFAkGAwxPx8lLiUIBaVkKQ4c3Pz/Afgo2BWSi+F8QAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img03"
+        title="UnitySubstance_img03"
+        src="/static/933ced8a42695400058a74e073d1efde/37523/UnitySubstance_img03.png"
+        srcset="/static/933ced8a42695400058a74e073d1efde/e9ff0/UnitySubstance_img03.png 180w,
+/static/933ced8a42695400058a74e073d1efde/f21e7/UnitySubstance_img03.png 360w,
+/static/933ced8a42695400058a74e073d1efde/37523/UnitySubstance_img03.png 720w,
+/static/933ced8a42695400058a74e073d1efde/302a4/UnitySubstance_img03.png 1080w,
+/static/933ced8a42695400058a74e073d1efde/1dbe8/UnitySubstance_img03.png 1374w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<ul>
+<li>
+<p><strong>유니티와 섭페를 비교해보며 알 수 있었던 것</strong></p>
+<ul>
+<li>유니티 감마는 물론이고 리니어도 섭스턴스 페인터와 동일하지 않다.</li>
+<li>결과값이 다르게 나오는 걸 보면 서로서로 구현도 다르다는 것을 알 수 있다.
+<ul>
+<li>즉, 물리기반 쉐이더가 사실은 물리적으로 완벽하게 옳은 것은 아니라는 것,</li>
+<li>Physically <strong>“Based”</strong> Shader</li>
+</ul>
+</li>
+<li>물리적인 이론과 라이트모델을 고려했을 뿐, 사실은 근사값 대잔치.
+<ul>
+<li>근사값 : 정확한 건 아니지만 대충 이정도로 하니까 비슷해보이는데?</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>PBR은 리니어에서 하는게 상식이다. 그러나…</strong></p>
+<ul>
+<li>감마 상태로 아주 오래 이어져 와서 리소스가 너무 많이 쌓여 컬러 스페이스를 바꾸는 것이 부담스럽거나</li>
+<li>이미 출시가 된 상태 (라이브 중)라 컬러 스페이스를 바꿀 수 없거나</li>
+<li>컬러 스페이스를 어떻게 바꾸는지 모르거나</li>
+<li>중도 입사했는데 이미 감마상태거나</li>
+<li>등등등 ”<strong>리니어로 바꾸세요</strong>“가 안되는 상황</li>
+</ul>
+</li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 56.666666666666664%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAA7DAAAOwwHHb6hkAAACq0lEQVQoz42SW0iTYRjHd9t1eFVmTi3RXNt0aZoGUQQVnaPEAiuio4VRswNFbWaFTs0WpBelF0FBmVi4+WkIsZFZ25yHmQ3LWJiDpbL1zXn8xfeJSnf94f8+p5c/z/O8r2J6epqxsTGZ4XAYKZ6cnCQSiTAxMcHU1NQ/lPKSnZ2dRcLMzAzzkHIKURT59Pkz3T09DP4YxO1243K5+NLfj8fjweF04PV6+er9KtcGBgbw9HkIBoMLQt9/DPLt+zfZV0jHx46PvKp/yZu3jXJ3/wNpEmkCCfqrevRFlxYF+/v6+GC34XI5CYWCjI+PEw6LspUwGYkQCgbllYjinwUhCU/rnqDRqTGVly4Kjo6OcrvkLoVXr3PuchEF+iscO1uAuaZGvhQIBDBVmTGWmrh9vxRzdTXdXZ2EQiEMJQZWxK+gyvxgUVBa5t68w8Sp1KiyslFl5ZCgTeXyjZs0WqwMDQ2Re/wES+NWE6vVodTqWBIVxS2DgUfVZmJXxVBRWT4nOP9KjU0Wtu7Zy67cPHbm5rF99y7OF15gZGRErlc9rubMxUty9+eKrnHk5CleNzRQ+ciEMnElDx5WzgmK4bDsWFvfEb1GRUJaOqvWZaLUriM2OZmfP338DgSwWq28t9tpslrp6nIv7PBuWQnxSUpMFWVzgsPDw4RFkecv61mWmIxSk0ZcWgYxa1NJSFmDp7cXv99P/qnTrN+8hY3bdrB93372HTxAbV0txfcMRCuXYyw2EhmPoJD+2K9fQzx7/oIkXTrqDTlocjaRkp6BVpdKR0cHPp+PQ/lHiVdrUGVmk5KZTVRMDPoiPffL7pGsTqL4jhH/sB+F0+lEYnt7O0JrK00WC/UNDQhCs0yHwyF/9La2NjluEQRaWgQEQcBut2G322kWmrHZbLg73fwFI0milf7v6RwAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img04"
+        title="UnitySubstance_img04"
+        src="/static/7cedad2ddcfe87e02c82bf2f69980748/37523/UnitySubstance_img04.png"
+        srcset="/static/7cedad2ddcfe87e02c82bf2f69980748/e9ff0/UnitySubstance_img04.png 180w,
+/static/7cedad2ddcfe87e02c82bf2f69980748/f21e7/UnitySubstance_img04.png 360w,
+/static/7cedad2ddcfe87e02c82bf2f69980748/37523/UnitySubstance_img04.png 720w,
+/static/7cedad2ddcfe87e02c82bf2f69980748/302a4/UnitySubstance_img04.png 1080w,
+/static/7cedad2ddcfe87e02c82bf2f69980748/f0811/UnitySubstance_img04.png 1367w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<ul>
+<li>
+<p><strong>감마에서 PBR로 퀄리티를 올리기란…</strong></p>
+<ul>
+<li>Standard 는 수많은 include로 인해 코드보기 및 변경이 힘듦</li>
+<li>수정하려면 GI 함수를 건드려야하는데 난이도가 높음</li>
+<li>또한 아티스트가 의도한 대로 아웃풋 표현이 잘 안되니 어려움</li>
+<li>그래서 Standard PBR은 과감히 포기하고 <strong>’수동으로라도 PBR 비슷하게 느낌을 내보면 어떨까’</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>PBR에서 3D 아티스트는 섭스턴스 사용</strong></p>
+<ul>
+<li>섭스턴스에 Specular / Glossiness 워크플로우가 있긴 하다.</li>
+<li>하지만 <strong>Roughness / Metallic 워크플로우가 표준이자 대세</strong>. 모두 이것으로 작업.</li>
+</ul>
+</li>
+<li>
+<p><strong>섭스턴스에서 값을 바꿔가며 변화를 체크해보니…</strong></p>
+<ul>
+<li><em>Albedo / Roughness / Metallic</em> 값 변화에 따라 변하는 값이 생각보다 몇 개 없다.
+<ul>
+<li><em>Specular</em></li>
+<li><em>Cubemap</em></li>
+<li><em>Fresnel</em></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>나는 아티스트니까 눈을 믿자</strong></p>
+<ul>
+<li>어차피 PBR도 진짜 물리적으로 계산하는 것도 아닌데 (근사값)</li>
+<li><em>Albedo</em>는 <code class="language-text">float3</code>니까 Luminance를 구하여 <code class="language-text">float</code>로 치환하면<br>
+<em>Albedo / Metallic / Roughness</em>를 보간의 3항으로 사용 가능
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">ex<span class="token punctuation">)</span> Specular <span class="token operator">=</span> NdotH <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.5</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token function">Luminance</span><span class="token punctuation">(</span>Albedo<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ex<span class="token punctuation">)</span> Fresnel <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>NdotV<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0.2</span><span class="token punctuation">,</span> Roughness<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+</li>
+<li>이런 느낌으로 <em>Albedo</em>가 밝을때는 빛을 반사하므로 <em>Specular</em>를 더 세게 해준다거나 표면이 거칠때는 프레넬 값을 감쇠시킨다던지 계산하면 되지 않을까?</li>
+</ul>
+</li>
+<li>
+<p><strong>아티스트가 문제를 해결하는 두 가지 길</strong></p>
+<ol>
+<li>기술적으로 해결하거나 (머리가 고생)</li>
+<li>노가다로 해결하거나 (몸이 고생)
+<ul>
+<li>이번 경우 (감마 PBR)는 기술적으로 답이 안나와서 스스로 생각하기에도 조금 미친 짓을 해보기로 함</li>
+<li>물리기반 셰이더와 똑같이 보이지만 전혀 안물리기반 셰이더를 만들어보기로</li>
+<li>회사에서 내내 물리/수학 공부만 할 수 있는 상황도 아님.</li>
+<li>결과와 과정이 둘 다 중요하지만, <strong>급하면 그런거 없다.</strong></li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>눈으로 보고 똑같이 만드는 것의 장점</strong></p>
+<ul>
+<li>복잡한 물리 / 수학 계산을 안해도 된다.</li>
+<li>감마든 리니어든 새로운 제3세계의 컬러스페이스든 <strong>눈으로 보고 맞추면 됨</strong></li>
+<li>HDR, 톤매핑 설정이 뭐든 간에 <strong>눈으로 맞추면 됨</strong></li>
+<li>독특한 라이팅 환경? <strong>눈으로 맞추면 됨</strong></li>
+</ul>
+</li>
+<li>
+<p><strong>일단 섭스턴스에서 모든 값을 캡쳐</strong></p>
+<ul>
+<li><em>Metallic</em>은 0과 1만 쓰는 것이 룰이지만, 혹시나 중간값을 쓰는 경우가 있을지도 모르니 보간으로 처리 (중간 값은 갭쳐에서 뺀다)</li>
+<li><em>BaseColor</em>가 0, 0.5, 1일때의 <em>Metallic</em>과 <em>Roughness</em> 값 변화에 따른<br>
+<em><strong>Specualr, Fresnel, Cubemap Reflection</strong></em> 값의 변화를 체크한다.
+<ul>
+<li>사실 PBR에서 이 세가지 리플렉션을 이렇게 따로 떨어뜨려 놓기는 애매하지만 셰이더에선 구현 편희상 따로 나눌 것이기 때문에 미리 따로 체크</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>섭스턴스에서 각 패러미터 변화별로 이미지 캡쳐</strong></p>
+<ul>
+<li><em>BaseColor</em> 가 0.5 (Gray)일 때
+<ul>
+<li>금속은 반사가 강하고 비금속은 약하다.</li>
+<li>비금속은 명암이 있지만 금속은 없다.</li>
+<li>표면이 거칠수록 반사는 흐려지고 약해진다.</li>
+<li>표면이 매끈할수록 스펙큘러가 좁아지며 밝기는 증가한다.</li>
+<li>그래프는 정확한 수치가 아니라 의식의 흐름대로…</li>
+</ul>
+</li>
+<li><em>BaseColor</em> 가 1 (White)일 때
+<ul>
+<li>비금속일 때 반사의 영향이 거의 없다.</li>
+<li>금속일때는 Diffuse가 없어서 그만큼 어두워지지만, 반사율이 높아 반사가 더 잘보인다.</li>
+<li>금속 스펙큘러는 표면의 색에 영향을 받아서 흰색일 때 굉장이 강하다.</li>
+</ul>
+</li>
+<li><em>BaseColor</em> 가 0 (Black)일 때
+<ul>
+<li>표면이 거칠면 금속은 완전 흑색이 되지만, 비금속은 완전 흑색이 되지 않는다.</li>
+<li>비금속에서는 스펙큘러가 상당히 약해진다.</li>
+<li>금속에서는 스펙큘러가 나타나지 않는다.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>정리 - DIFFUSE</strong></p>
+<ul>
+<li>비금속에는 <em>Diffuse (Lambert)</em> 로 인한 명암이 생기지만 금속에는 없다.</li>
+<li>금속일때는 <em>Diffuse</em>가 없으므로 <em>BaseColor</em>는 그만큼 어두워지고 대신 반사율이 높아진다.</li>
+<li><em>BaseColor</em>가 어둡고 <em>Roughness</em>가 높아지면 금속은 <em>Diffuse</em>와 <em>Reflection</em>이 없어서 완전 흑색이 되지만, 비금속은 <em>Diffuse</em>가 있어 살짝 밝다.</li>
+</ul>
+</li>
+<li>
+<p><strong>정리 - SPECULAR</strong></p>
+<ul>
+<li><em>BaseColor</em> 색이 밝아질수록 <em>Specular</em>가 강해진다.</li>
+<li>비금속의 <em>Specular Color</em>는 흰색이고, 금속의 <em>Specular Color</em>는 <code class="language-text">BaseColor (Albedo) * LightColor</code> 이다.</li>
+<li>그래서 금속의 <em>BaseColor</em>가 어두우면 <em>Specular</em>가 나타나지 않는다.</li>
+</ul>
+</li>
+<li>
+<p><strong>정리 - ROUGHNESS , FRESNEL</strong></p>
+<ul>
+<li>비금속도 매끄러우면 반사율이 조금 있다.
+<ul>
+<li><em>Roughness</em>가 0에 가까우면 미세면으로 인한 난반사가 많이 일어나지 않게 되어, 그만큼 <em>Reflection</em>이 살짝 강해지기 때문.</li>
+<li>하지만 금속만큼은 아니다.</li>
+</ul>
+</li>
+<li><em>Fresnel</em>은 금속 / 비금속 상관없이 어디에나 있다.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="간단-pbr-개념" style="position:relative;"><a href="#%EA%B0%84%EB%8B%A8-pbr-%EA%B0%9C%EB%85%90" aria-label="간단 pbr 개념 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>간단 PBR 개념</h3>
+<ul>
+<li>
+<p><strong>PBR 개념 간단 정리 - Energy Conservation</strong></p>
+<ul>
+<li>Diffuse &#x26; Reflection
+<ul>
+<li>빛이 물체에 닿으면 일부는 반사, 일부는 산란, 일부는 흡수
+<ol>
+<li>산란되는 녀석 = Diffuse</li>
+<li>반사되는 녀석 = Specular, Fresnel 등</li>
+<li>흡수되는 녀석 = Refraction (굴절), (뒷면에서 흡수) 투과</li>
+</ol>
+</li>
+<li>PBR에서 가장 중요한 것은 <strong>열역학 1법칙 - 에너지 보존</strong>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">Light <span class="token operator">>=</span> Diffuse <span class="token operator">+</span> Reflection <span class="token operator">+</span> Refraction</code></pre></div>
+</li>
+<li>Albedo는 ‘반사’가 아니라 그냥 표면의 색일뿐.</li>
+<li>PBR에서는 굴절, 흡수는 생각하지 않고 크게 <strong>Diffuse</strong>와 <strong>Reflection</strong>만 생각한다.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>PBR 개념 간단 정리 - IBL</strong></p>
+<ul>
+<li>조금 더 사실적인 표현을 위해 Directional Light에서 빛이 오는 것이 아니라 Cubemap(EnvMap)에서 빛이  온다 (Image Based Lighting)</li>
+<li>단일 광원이 아니라 전방향 광원</li>
+<li>IBL Source는 HDR로 만들어져 있어서, 그 자체로 <strong>라이트를 포함</strong>하고 있다.
+<ul>
+<li>HDR - High Dynamic Range. 1이상의 밝기 정보를 포함.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>PBR 개념 간단 정리 - Specular</strong></p>
+<ul>
+<li>HDR 환경맵 안에 포함되어있는 1 이상의 색상정보를 광원으로 인식하고 GGX나 Beckman 방식 등으로 계산하여 <strong>환경맵의 밉맵에 그 결과값을 넣어놓는다.</strong> (엔진이 해준다)</li>
+<li>컨벌루젼 타입을 Specular (Glossy Reflection)으로 설정</li>
+<li>유니티 PBR에서의 Specular는 HDR 밉맵이 다가 아니라 Directional Light로 Specular가 추가되기도 한다.</li>
+<li>라이트로 추가된 Specular도 GGX</li>
+</ul>
+</li>
+<li>
+<p><strong>PBR 개념 간단 정리 - Metallic</strong></p>
+<ul>
+<li>메탈릭 Metallic (금속성)</li>
+<li>반사표를 보면 입사각이 90도에 가까울수록 모든 물체의 반사율이 올라감 (Fresnel)</li>
+<li>각도에 따라 변하는 비금속과 달리 금속은 입사각에 상관없이 거의 항상 위쪽 (반사율 높음)</li>
+<li>반사율이 높아지면 에너지 보존 법칙에 의하여 <strong>Diffuse가 거의 없어짐</strong></li>
+<li>금속물질은 몇몇 파장을 흡수하므로 컬러 스펙큘러가 있다.</li>
+</ul>
+</li>
+<li>
+<p><strong>PBR 개념 간단 정리 - Roughness</strong></p>
+<ul>
+<li>러프니스 Roughness (거칠기)</li>
+<li>물체표면이 거칠면 거칠수록
+<ul>
+<li>난반사 (Diffuse)가 심해지면서</li>
+<li>정반사 (Reflection)는 그만큼 약해짐 (빛의 총량은 같다)</li>
+</ul>
+</li>
+<li>Diffuse 영향 ↑, Reflection 영향 ↓</li>
+<li>반사값 변화에 가장 큰 영향을 준다. 알기 쉬움.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="라이팅-모델" style="position:relative;"><a href="#%EB%9D%BC%EC%9D%B4%ED%8C%85-%EB%AA%A8%EB%8D%B8" aria-label="라이팅 모델 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>라이팅 모델</h3>
+<ul>
+<li>
+<p><strong>각 엔진들의 PBR 구현 라이팅 모델</strong></p>
+<ul>
+<li>PBR에 대해서 알아보려면 라이팅모델에 대한 이해가 필수</li>
+<li>Unity Legacy
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">Disney Diffuse <span class="token operator">+</span> Cook <span class="token function">Torrance</span> <span class="token punctuation">(</span>GGX<span class="token punctuation">,</span> Smith<span class="token punctuation">,</span> Schlick<span class="token punctuation">)</span> Specular
+
+Lambertian Diffuse <span class="token operator">+</span> Simplified Cook <span class="token function">Torrance</span> <span class="token punctuation">(</span>GGX<span class="token punctuation">,</span> Simplified KSK and Schlick<span class="token punctuation">)</span> Specular</code></pre></div>
+</li>
+<li>Unity SRP LW
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">Lambertian Diffuse <span class="token operator">+</span> Simplified Cook <span class="token function">Torrance</span> <span class="token punctuation">(</span>GGX<span class="token punctuation">,</span> Simplified KSK and Schlick<span class="token punctuation">)</span> Specular</code></pre></div>
+</li>
+<li>Unity SRP HD
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">기본적으로 <span class="token function">Disney</span> <span class="token punctuation">(</span>or Lambert<span class="token punctuation">)</span> Diffuse <span class="token operator">+</span> <span class="token punctuation">(</span>Anisotropic<span class="token punctuation">)</span>GGX Specular
+인데 GI<span class="token punctuation">,</span> 랜더패스 등과 엮여있음</code></pre></div>
+</li>
+<li>Unreal
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">Disney Diffuse <span class="token operator">+</span> Cook <span class="token function">Torrance</span> <span class="token punctuation">(</span>GGX<span class="token punctuation">,</span> Smith<span class="token punctuation">,</span> Schlick<span class="token punctuation">)</span> Specular</code></pre></div>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>사실적인 표현을 위해 고안된 여러 라이팅 모델</strong></p>
+<ul>
+<li>Diffuse BRDF
+<ul>
+<li>Lambert</li>
+<li>Oren - Nayer</li>
+<li>Disney Diffuse</li>
+</ul>
+</li>
+<li>Reflection (Specular) BRDF
+<ul>
+<li>Phong</li>
+<li>Blinn - Phong</li>
+<li>Cook Torrance</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>BRDF? BTDF? BSDF?</strong></p>
+<ul>
+<li>Bidirectional (양방향) Reflect (반사) Distribution (분포) Function (함수)
+<ul>
+<li>양방향 (광원, 관찰자) 간 반사 **’분포’**를 어떻게 할 것인지 계산하는 함수</li>
+</ul>
+</li>
+<li>사실 모든 라이트 모델이 양방향 반사 계산을 하는 BRDF 모델
+<ul>
+<li>Diffuse BRDF - Lambert, Oren-Nayer, Disney</li>
+<li>Reflection BRDF - Phong, Blinn-Phong, Ward, Schlicks, Cook-Torrance</li>
+</ul>
+</li>
+<li>PBR에서 Diffuse는 Lambert or Disney 사용. Reflection은 Cook-Torrance</li>
+<li>반사분포함수는 BRDF, 투과분포함수는 BTDF, 두 개를 합쳐서 BSDF</li>
+</ul>
+</li>
+<li>
+<p><strong>분포를 계산한다고요?</strong></p>
+<ul>
+<li>예를들어 Blinn-Phong이라면 Dot 계산을 한 번만 하니, Cosine 곡선의 분포대로 이미지가 결정될 것.</li>
+<li>계산에 따라 다양한 모양의 분포가 나오게 된다.</li>
+</ul>
+</li>
+<li>
+<p><strong>Diffuse Model - 램버트 Lambert</strong></p>
+<ul>
+<li>가장 기본이 되는 실시간 디퓨즈 라이팅 모델
+<ul>
+<li>모든 방향으로 동일하게 난반사를 한다는 전제하에, 빛의 입사각만 고려한 모델</li>
+<li><strong>물체 표면의 노멀</strong>과 <strong>빛의 방향</strong>과의 내적 (Dot Production)을 이용하여 난반사 (Diffuse) 계산</li>
+</ul>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl"><span class="token keyword">float4</span> <span class="token function">frag</span><span class="token punctuation">(</span>v2f i<span class="token punctuation">)</span> <span class="token operator">:</span> SV_Target
+<span class="token punctuation">{</span>
+		<span class="token keyword">float4</span> col <span class="token operator">=</span> <span class="token function">tex2D</span><span class="token punctuation">(</span>_MainTex<span class="token punctuation">,</span> i<span class="token punctuation">.</span>texcoord<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float3</span> worldSpaceLightDir <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>_WorldSpaceLightPos0<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float</span> ndotl <span class="token operator">=</span> <span class="token function">dot</span><span class="token punctuation">(</span>i<span class="token punctuation">.</span>normal<span class="token punctuation">,</span> worldSpaceLightDir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		col<span class="token punctuation">.</span>rgb <span class="token operator">=</span> corl<span class="token punctuation">.</span>rgb <span class="token operator">*</span> ndotl<span class="token punctuation">;</span>
+		<span class="token keyword">return</span> col<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 633px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 10%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAACCAYAAABYBvyLAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAcklEQVQI1x2N2Q3EIBBD039bKCwJGc5wCkgpXg1/lv1sH7VWxPdF7x21NVhrUUrBnHP7nI8x4L3H+j7knEHGbIb51hrWWptjffDATyk8RCAinOcJ5xxCCFCXgrEWIUZIKZF4jAhCCGitcd33Pkopbc29PxpailjnoCuHAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img05"
+        title="UnitySubstance_img05"
+        src="/static/e518df8d03188f444a6d15085729463a/bce72/UnitySubstance_img05.png"
+        srcset="/static/e518df8d03188f444a6d15085729463a/e9ff0/UnitySubstance_img05.png 180w,
+/static/e518df8d03188f444a6d15085729463a/f21e7/UnitySubstance_img05.png 360w,
+/static/e518df8d03188f444a6d15085729463a/bce72/UnitySubstance_img05.png 633w"
+        sizes="(max-width: 633px) 100vw, 633px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></li>
+</ul>
+</li>
+<li>
+<p><strong>Diffuse Model - 오렌 네이어 Oren - Nayer</strong></p>
+<ul>
+<li>램버트에 미세표면 (러프니스) 표현 추가
+<ul>
+<li>거친 표면의 Diffuse를 구하기 위한 모델</li>
+<li>a값 (러프니스)이 0일때는 램버트와 동일</li>
+<li>러프니스가 증가하면서 <strong>램버트의 반전값</strong>과 <strong>1-NdotV : 림라이트같은 모양</strong>를 곱해준 값으로 보간해준다.<br>
+(빛이 퍼지는 것을 표현)</li>
+</ul>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl"><span class="token function">Lerp</span> <span class="token punctuation">(</span> Lambert<span class="token punctuation">,</span> <span class="token function">Pow</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>Lambert<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>NdotV<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span> Roughness<span class="token punctuation">)</span></code></pre></div>
+<ul>
+<li>즉, 러프니스가 올라갈수록 램버트의 영향력은 줄어들고 1-NdotV의 영향을 받게 된다.</li>
+<li>정통으로 구현하면 굉장히 복잡. 근사치를 사용하여 최적화한 구현.</li>
+</ul>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl"><span class="token keyword">half</span> <span class="token function">ComputeOrenNayerLighting</span><span class="token punctuation">(</span><span class="token keyword">half3</span> normal<span class="token punctuation">,</span> <span class="token keyword">half3</span> lgithDir<span class="token punctuation">,</span> <span class="token keyword">half3</span> viewDir<span class="token punctuation">,</span> <span class="token keyword">half</span> roughness<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+		<span class="token keyword">half</span> NdotL <span class="token operator">=</span> <span class="token function">dot</span><span class="token punctuation">(</span>lightDir<span class="token punctuation">,</span> normal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">half</span> NdotV <span class="token operator">=</span> <span class="token function">dot</span><span class="token punctuation">(</span>viewDir<span class="token punctuation">,</span> normal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">half</span> clampNdotL <span class="token operator">=</span> <span class="token function">saturate</span><span class="token punctuation">(</span>NdotL<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">half</span> rim <span class="token operator">=</span> <span class="token function">saturate</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> NdotV <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">half</span> fakeBackLight <span class="token operator">=</span> <span class="token function">pow</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> clampNdotL <span class="token operator">*</span> rim<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">half</span> magicNumber <span class="token operator">=</span> <span class="token number">0.62</span><span class="token punctuation">;</span>
+		fakeBackLight <span class="token operator">=</span> magicNumber <span class="token operator">-</span> fakeBackLight <span class="token operator">*</span> magicNumber<span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token function">lerp</span><span class="token punctuation">(</span>clampNdotL<span class="token punctuation">,</span> fakeBackLight<span class="token punctuation">,</span> roughness<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Diffuse Model - 디즈니 Disney</strong></p>
+<ul>
+<li>디즈니 BRDF
+<ul>
+<li>램버트 방식은 관찰자의 위치가 고려되지 않았는데 이것을 고려해서 계산하는 방식. 러프니스도 함께 고려한다.</li>
+<li>러프니스도 고려하여 계산 : 러프니스가 올라가면 Oren-Nayer처럼 빛이 퍼지는 효과가 나타난다.</li>
+<li>계산량이 많아지므로 아무래도 무겁다.</li>
+</ul>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl"><span class="token keyword">half</span> <span class="token function">DisneyDiffuse</span><span class="token punctuation">(</span><span class="token keyword">half</span> NdotV<span class="token punctuation">,</span> <span class="token keyword">half</span> NdotL<span class="token punctuation">,</span> <span class="token keyword">half</span> LdotH<span class="token punctuation">,</span> <span class="token keyword">half</span> perceptualRoughness<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+		<span class="token keyword">half</span> fd90 <span class="token operator">=</span> <span class="token number">0.5</span> <span class="token operator">+</span> <span class="token number">2</span> <span class="token operator">*</span> LdotH <span class="token operator">*</span> LdotH <span class="token operator">*</span> perceptualRoughness<span class="token punctuation">;</span>
+		<span class="token keyword">half</span> lightScatter <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">+</span> <span class="token punctuation">(</span>fd90 <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">Pow5</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> NdotL<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">half</span> viewScatter <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">+</span> <span class="token punctuation">(</span>fd90 <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">Pow5</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> NdotV<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> lgithScatter <span class="token operator">*</span> viewScatter<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 629px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 14.444444444444443%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAADCAYAAACTWi8uAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAe0lEQVQI1z2O3QoAERCF9/1fULlwIeXCJoRYP2ebKabGzDmHLw8A7L1xiva11vWOpvq+D9baq1tr8N6zf+4+vXdorWGMwfu+PIUQSCkhhMCZUgoxRtRaIaVEzpkhzjnOCHyBdFBIYOoxBmv6Bc3Tc05+QLCzk19KuTAC/oo66O0bp2aDAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img06"
+        title="UnitySubstance_img06"
+        src="/static/2fb9e63dbec76b72ac82d8395cc94e98/63a68/UnitySubstance_img06.png"
+        srcset="/static/2fb9e63dbec76b72ac82d8395cc94e98/e9ff0/UnitySubstance_img06.png 180w,
+/static/2fb9e63dbec76b72ac82d8395cc94e98/f21e7/UnitySubstance_img06.png 360w,
+/static/2fb9e63dbec76b72ac82d8395cc94e98/63a68/UnitySubstance_img06.png 629w"
+        sizes="(max-width: 629px) 100vw, 629px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></li>
+</ul>
+</li>
+<li>
+<p><strong>램버트, 오렌네이어, 디즈니 방식을 한 번에 비교</strong></p>
+<ul>
+<li>러프니스 값이 적으면 큰 차이가 없음</li>
+<li>러프니스 값이 늘어남에 따라 빛이 퍼지는 것이 다르다.</li>
+<li>디즈니 방식은 추가로 시점 변화에 따라서도 다르게 보임</li>
+</ul>
+</li>
+<li>
+<p><strong>Reflection Model - 퐁 Phong</strong></p>
+<ul>
+<li>퐁 반사 모델
+<ul>
+<li><green>빛의 방향</green>과 <red>시선 반사 백터</red>와의 내적 (Dot Product)을 이용하여 스펙큘러 계산</li>
+<li><red>반사 백터</red> = -V + 2 * dot(N, V) * N (벡터의 투영을 이용하여 계산)</li>
+<li>빛이 앞에 있을 때 정반사, 뒤에 있을 때 림 라이트 느낌을 낸다 (실제 빛과 비슷) - 물리적 정확성과 계산효율의 절충 모형</li>
+</ul>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">fixed4 <span class="token function">frag</span><span class="token punctuation">(</span>v2f i<span class="token punctuation">)</span> <span class="token operator">:</span> SV_Target
+<span class="token punctuation">{</span>
+		fixed4 col <span class="token operator">=</span> <span class="token function">tex2D</span><span class="token punctuation">(</span>_MainTex<span class="token punctuation">,</span> i<span class="token punctuation">.</span>texcoord<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float3</span> lightDir <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>_WorldSpaceLightPos0<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float</span> ndotv <span class="token operator">=</span> <span class="token function">dot</span><span class="token punctuation">(</span>i<span class="token punctuation">.</span>normal<span class="token punctuation">,</span> i<span class="token punctuation">.</span>viewDir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float3</span> reflectVector <span class="token operator">=</span> <span class="token operator">-</span>i<span class="token punctuation">.</span>viewDir <span class="token operator">+</span> <span class="token number">2</span> <span class="token operator">*</span> ndotv <span class="token operator">*</span> i<span class="token punctuation">.</span>normal<span class="token punctuation">;</span>
+		<span class="token keyword">float</span> phong <span class="token operator">=</span> <span class="token function">pow</span><span class="token punctuation">(</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token function">dot</span><span class="token punctuation">(</span>lightDir<span class="token punctuation">,</span> reflectVector<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> _Shinenss<span class="token punctuation">)</span> <span class="token operator">*</span> Intensity<span class="token punctuation">;</span>
+		col<span class="token punctuation">.</span>rgb <span class="token operator">=</span> phong<span class="token punctuation">;</span>
+		<span class="token keyword">return</span> col<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Reflection Model - 블린 퐁 Blinn-Phong</strong></p>
+<ul>
+<li>빌린 퐁 스펙큘러 모델 - 퐁에서 간략화!
+<ul>
+<li><green>물체 표면의 노멀</green>과 <red>빛의 방향 + 카메라 방향 (하프벡터)</red>과의 내적을 이용하여 스펙큘러 계산</li>
+<li>계산은 간략화 되었지만 퐁과 비교하면 광원이 휙 도는 부분 (하프벡터때문)이 거슬림</li>
+<li>퐁과 블린퐁은 모두 러프니스는 고려하지 않음</li>
+</ul>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">fixed4 <span class="token function">frag</span><span class="token punctuation">(</span>v2f i<span class="token punctuation">)</span> <span class="token operator">:</span> SV_Target
+<span class="token punctuation">{</span>
+		fixed4 col <span class="token operator">=</span> <span class="token function">tex2D</span><span class="token punctuation">(</span>_MainTex<span class="token punctuation">,</span> i<span class="token punctuation">.</span>texcoord<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float3</span> lightDir <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>_WorldSpaceLightPos0<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float3</span> worldPos <span class="token operator">=</span> <span class="token function">mul</span><span class="token punctuation">(</span>unity_ObjectToWorld<span class="token punctuation">,</span> i<span class="token punctuation">.</span>localPos<span class="token punctuation">)</span><span class="token punctuation">.</span>xyz<span class="token punctuation">;</span>
+		<span class="token keyword">float3</span> viewDir <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>_WorldSpaceCameraPos<span class="token punctuation">.</span>xyz <span class="token operator">-</span> worldPos<span class="token punctuation">.</span>xyz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float</span> ndoth <span class="token operator">=</span> <span class="token function">dot</span> <span class="token punctuation">(</span>i<span class="token punctuation">.</span>normal<span class="token punctuation">,</span> <span class="token function">normalize</span><span class="token punctuation">(</span>lightDir <span class="token operator">+</span> viewDir<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float</span> phong <span class="token operator">=</span> <span class="token function">pow</span><span class="token punctuation">(</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> ndoth<span class="token punctuation">)</span><span class="token punctuation">,</span> _Shineness<span class="token punctuation">)</span> <span class="token operator">*</span> _Intensity<span class="token punctuation">;</span>
+		col<span class="token punctuation">.</span>rgb <span class="token operator">=</span> phong<span class="token punctuation">;</span>
+		<span class="token keyword">return</span> col<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Reflection Model - 쿡 토런스 Cook-Torrance</strong></p>
+<ul>
+<li>쿡 토런스 모델 - 표면의 Roughness를 고려한 리플렉션 모델
+<ul>
+<li>공식 = 미세분포함수 * 기하감쇠 * 프레넬 / NdotV</li>
+<li><strong>미세분포함수 (D)</strong> - 미세면의 분포함수. 주로 베크만 방식이나 GGX 방식을 사용한다 (스펙큘러의 <red><strong>모양</strong></red>을 계산 - Roughness를 이용하여 계산)</li>
+<li><strong>기하감쇠계수 (G)</strong> - 미세면에 입사한 빛이 다른 미세면에 그림자를 만드는 효과. (스펙큘러의 <red><strong>퍼짐</strong></red>을 계산 - 대부분 게임 엔진에선 Smith 방식을 사용)</li>
+<li><strong>프레넬 (F)</strong> - 측면에서 봤을 때 반사율이 높아지며 밝아지는 효과. 원래는 꽤 복잡한 계산이지만 근사로 구해도 별 차이 없음 (쉬릭스 방식)</li>
+</ul>
+</li>
+<li>결국 기하감쇠계수 (G)는 스미스 방식, 프레넬(F)는 쉬릭스 근사.</li>
+<li>미세면(MicroSurface)의 D (Distribution - 분포)만 어떤 방식으로 계산하느냐에 따라 결과가 달라진다.
+<ul>
+<li>Beckmann 분포 - 물리적으로 가장 정확하고 빠른 유형.</li>
+<li>GGX 분포 - 가장 큰 분산을 생성하며 금속의 정반사 표현을 사실적으로 하고 싶을 때 사용.</li>
+</ul>
+</li>
+<li>Beckmann이든 GGX든 결국 코드 보면 거칠기 (Roughness)를 이용해서 얼마나 스펙큘러를 falloff 시킬 것인지 계산하는 것.</li>
+</ul>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl"><span class="token keyword">inline</span> <span class="token keyword">half</span> <span class="token function">GGXTerm</span> <span class="token punctuation">(</span><span class="token keyword">half</span> NdotH<span class="token punctuation">,</span> <span class="token keyword">half</span> roughness<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+		<span class="token keyword">half</span> a2 <span class="token operator">=</span> roughness <span class="token operator">*</span> roughness<span class="token punctuation">;</span>
+		<span class="token keyword">half</span> d <span class="token operator">=</span> <span class="token punctuation">(</span>NdotH <span class="token operator">*</span> a2 <span class="token operator">-</span> NdotH<span class="token punctuation">)</span> <span class="token operator">*</span> NdotH <span class="token operator">+</span> <span class="token number">1.0f</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> UNITY_INV_PI <span class="token operator">*</span> a2 <span class="token operator">/</span> <span class="token punctuation">(</span>d <span class="token operator">*</span> d <span class="token operator">+</span> <span class="token number">1e-7f</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 1e-7f ≈ −4.281718172</span>
+<span class="token punctuation">}</span></code></pre></div>
+</li>
+</ul>
+<hr>
+<h3 id="커스텀-pbr-구현-준비" style="position:relative;"><a href="#%EC%BB%A4%EC%8A%A4%ED%85%80-pbr-%EA%B5%AC%ED%98%84-%EC%A4%80%EB%B9%84" aria-label="커스텀 pbr 구현 준비 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>커스텀 PBR 구현 준비</h3>
+<ul>
+<li>
+<p><strong>섭스턴스 셰이더 구현 확인</strong></p>
+<ul>
+<li>Reflection Model - <strong>Cook-Torrance</strong> 사용
+<ul>
+<li>미세분포함수 (D) : GGX</li>
+<li>기하감쇠계수 (G) : Smith</li>
+<li>프레넬 (F) : Schlick’s</li>
+</ul>
+</li>
+<li>Diffuse Model - <strong>Lambert</strong> 사용</li>
+</ul>
+<div class="gatsby-highlight" data-language="glsl"><pre class="language-glsl"><code class="language-glsl"><span class="token comment">// C:\Program Files\Allegorithmic\Substance Designer 5\resources\view3d\shaders\common\pbr_ibl.glsl</span>
+<span class="token comment">// C:\Program Files\Allegorithmic\Substance Designer 5\resources\view3d\shaders\lambert\fs.glsl</span>
+
+<span class="token keyword">float</span> <span class="token function">normal_distrib</span><span class="token punctuation">(</span><span class="token keyword">float</span> ndh<span class="token punctuation">,</span> <span class="token keyword">float</span> roughness<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+		<span class="token keyword">float</span> alpha <span class="token operator">=</span> roughness <span class="token operator">*</span> roughness<span class="token punctuation">;</span>
+		<span class="token keyword">float</span> tmp <span class="token operator">=</span> alpha <span class="token operator">/</span> <span class="token function">max</span><span class="token punctuation">(</span><span class="token number">1e-8</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>ndh <span class="token operator">*</span> ndh <span class="token operator">*</span> <span class="token punctuation">(</span>alpha <span class="token operator">*</span> alpha <span class="token operator">-</span> <span class="token number">1.0</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1.0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> rmp <span class="token operator">*</span> tmp <span class="token operator">*</span> M_INV_PI<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">float</span> <span class="token function">visiblility</span><span class="token punctuation">(</span><span class="token keyword">float</span> ndl<span class="token punctuation">,</span> <span class="token keyword">float</span> ndv<span class="token punctuation">,</span> <span class="token keyword">float</span> roughness<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+		<span class="token keyword">float</span> k <span class="token operator">=</span> roughness <span class="token operator">*</span> roughness <span class="token operator">*</span> <span class="token number">0.5</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> <span class="token function">GI</span><span class="token punctuation">(</span>ndl<span class="token punctuation">,</span> k<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">GI</span><span class="token punctuation">(</span>ndv<span class="token punctuation">,</span> k<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">vec3</span> <span class="token function">fresnel</span><span class="token punctuation">(</span><span class="token keyword">float</span> vdh<span class="token punctuation">,</span> <span class="token keyword">vec3</span> F0<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+		<span class="token keyword">float</span> sphg <span class="token operator">=</span> <span class="token function">pow</span><span class="token punctuation">(</span><span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">5.55473</span> <span class="token operator">*</span> vdh <span class="token operator">-</span> <span class="token number">6.98316</span><span class="token punctuation">)</span> <span class="token operator">*</span> vdh<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">return</span> F0 <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token keyword">vec3</span><span class="token punctuation">(</span><span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token number">1.0</span><span class="token punctuation">)</span> <span class="token operator">-</span> F0<span class="token punctuation">)</span> <span class="token operator">*</span> sphg<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">vec3</span> diffContrib0 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token function">dot</span><span class="token punctuation">(</span>pointToLight0DirWs<span class="token punctuation">,</span> iFS_Normal<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0.0</span><span class="token punctuation">)</span> <span class="token operator">*</span> Lamp0Intensity <span class="token operator">*</span> <span class="token function">lampAttenuation</span><span class="token punctuation">(</span>pointToLight0Length<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> Lamp0Color<span class="token punctuation">;</span>
+<span class="token keyword">vec3</span> diffContrib1 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token function">dot</span><span class="token punctuation">(</span>pointToLight1DirWs<span class="token punctuation">,</span> iFS_Normal<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0.0</span><span class="token punctuation">)</span> <span class="token operator">*</span> Lamp1Intensity <span class="token operator">*</span> <span class="token function">lampAttenuation</span><span class="token punctuation">(</span>pointToLight1Length<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> Lamp1Color<span class="token punctuation">;</span>
+<span class="token keyword">vec3</span> diffContrib <span class="token operator">=</span> diffContrib0 <span class="token operator">+</span> diffContrib1<span class="token punctuation">;</span></code></pre></div>
+</li>
+<li>
+<p><strong>섭스턴스 셰이더와 게임엔진에서의 라이팅 환경</strong></p>
+<ul>
+<li>섭페 쉐이더 = 섭디 쉐이더 + 그림자 처리</li>
+<li>유니티에서는 그림자를 발생시키려면 라이트가 필요</li>
+<li>그림자는 보간으로 제어가능하게 해 두는 편이 좋음 (섭페도 이렇게 구현되어 있다)</li>
+</ul>
+</li>
+<li>
+<p><strong>셰이더 작성 방식 : Custom Surface Shader</strong></p>
+<ul>
+<li>왜 스탠다드가 아니라 커스텀 서피스 셰이더인가?
+<ul>
+<li>스탠다드는 감마에서 베이스컬러 재현력 떨어지고, 전체적으로 허옇게 나옴</li>
+<li>퍼포먼스 제어 가능 - 전처리, 멀티 컴파일과 셰이더피쳐를 이용하여 퍼포먼스 제어</li>
+<li>무엇보다 <red><strong>고치기 힘듦</strong></red></li>
+</ul>
+</li>
+<li>왜 프레그먼트가 아니라 커스텀 서피스 셰이더인가?
+<ul>
+<li>다양한 환경에 대응하기 쉬움 (라이팅함수가 따로 있어서 포워드뿐 아니라 디퍼드까지 대응 가능)</li>
+<li>포스트 프로세싱과도 잘 붙음 - 프레그먼트는 분기별로 세팅을 잘 해주지 않으면 블룸 제어가 어려움</li>
+<li>무엇보다 <red><strong>만들기 쉬움!!</strong></red> - 아무리 좋아봤자 어려워서 만들지 못하면 도루묵</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>내맘대로 계산하기 편하게 커스텀</strong></p>
+<ul>
+<li>라이팅모델 공식들을 다 대입하는 것도 좋으나 섭스턴스와 다르게 보이면 말짱 꽝</li>
+<li>이론을 베이스로 작업하되, 계산하기 쉽게 나눈다.
+<ul>
+<li>Diffuse : 섭스턴스 구현을 따라서 Lambert 방식으로 구현 (모바일 친화적)</li>
+<li>Reflection : Specular / Cubemap (Metal / NonMetal) / Fresnel (Metal / NonMetal)</li>
+</ul>
+</li>
+<li>PBR에서는 큐브맵이 라이팅 그 자체가 되지만 커스텀에서는 리플렉션을 계산하기 쉽게 <red>성분을 나눠주도록 한다.</red></li>
+<li>Lerp의 직관성을 위해 Roughness보다 Smoothness로 계산하고 추후에 반전하여 사용.
+<ul>
+<li>표면의 거칠기가 높아질수록 리플렉션이 0에 가까워지니<br>
+<code class="language-text">Lerp(0, 1, Roughenss);</code>보다 <code class="language-text">Lerp(0, 1, Smoothness);</code>가 직관적이다.</li>
+</ul>
+</li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 416px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 133.33333333333331%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAbCAYAAAB836/YAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAFVUlEQVRIx6WUeUxUVxSHH6uxta1NbZo2jXZL2j/atLZ1A1mKgOIoiizDsJRFUEaGgZlhcWOZERSQzR0GqWjVNmqbxtQmSgoyMwgyIwozClFB69qYqqgoNkG+5g1iLLWWpCc5ueeec8+X33035wk8tsHBQbuL9ujRIwYGBp64uBddrI/Mj+wVGGHDhaetvaODhqMNdHZ18V/nhWcp3H9gP3naPHQ6LXnaHMo3lLKlqpKyjeXk5mbba9k5qzlSd+TJjf6hUEwMX0Gry2H6jC8JDQ9Ev1fP1n0/kFFaReHO7ympqSEsYhFTpnzKtsqt9vPi9Z8LLCxcR3D4PI60NLC3zkByfgXq9ZXEriomt+Yntv18lHnBAWzfrh+dwvz8XHQlmeh/aSZBW0PJdwcp272HAn0Va7ZWU7CvFV11JZWVm54PHBwcAlZUFFBUrkbfYKPhch8Xbt2kufM0hzus7DWa2WbsZufhH9m5o3J0wI1bilGmzCUzR86h+oPc+P0if9y8hvXaFfY3HaNi92bKy5awZ0/t6IAlpWuJi/MhJsqbuBgvMjOC0OZFosuJJEuzEN2qIAp1X1Oz45vRfcN16wqQhvsSHeNPSJg34TJvIiK+IirSh6gIH3Q5ESTEL6BKP8pHKSxci0Tiz+LFCwiVehG40J3AIA+kUm+UigDS06T4+nqzvaZ6dMCCtWuYNcuT+YEBhEkDkEpnESnzIzY6gAiZBIlkDh6eM9Dr/+VRhqdkGNjZ1YnR2EjTMRNGowmTyYjBcBSTyYSh0UhTUxONjUfp6en+G1B04Vmz+3/MrrC//yH379/nwYMH3Llzh97bt7l96yZ3796lV9z39trH69btW/ZYzIve13ePvnv36Ovrs/f39/cPAYuKi4mICCc2NpL0lemszl/DKm0eScsSiYySoVAq7H8aeXISUTGRJCbFk5i8hPjkpSSrUlgqT0AmC0WrzR0CLl+eid9sb0q3lbC+dhdLc0pRFGwgs2wrIVEyQsIW0mGzERIajCTQl2meU3jtzQm4jBvLhElv4xM4D3+JHylK+RAwK0uDckUaG/fXkVpUwxp9LerCElZu+hZVWS1xS+PoaO8gKjqMT6Z8yJgXXHBwEHByEhAEAdfx43GTBJCxXD0EzMlWs6pIS2VjN41dv1HfZuaAwUj1IQPrDzaTmZuFxWwhONSfF18dg5OzgKurA84uQ6vg5MC7kz9mRbYGYWBgkOzsdOIT5lBRXU7n2XauX79Ax6Uedv1aR/7mPNRpUZgtbfjOccN5rICLiwMuLgLOzkPu6OzA62+NRa1OQHj48E8yl6uZHzgVmdSNxARf1OoFaFRBpCXPQZPiT1JiOC0trcyd74PrCKAYOzoKTJw4FpU6CUF88owMDbMD3AkK9iRwoQdBi2YSHOJhn9/o6NnIZGGYmpqQhi/ivQ/ewNFJwOUxzMFJYNzLDkyf8REpqQqE3t47KBTLcHefhp+/O17ek/H0+gxfv8+RSNzw9nJDMn8u9Q0NzJUE4Ok1jUnvTMB1zJDCl15xZPIX7zPTYypx8TEIN27coLi4CLl8CRqNGpVKgVqjQKVaRmpqCikpyWRlZdBqNpOekY5SqSA9XYVSKUe+LJ7UNDkqVSqJSxaTn69DuHjxIleuXOHs2bOYLWY6rFYsJ05gtdpob2/n1KlT9rjt5Elsp09js9loa2vDbLZgs53m5Kl2zpzp5OrVq1y6dBnh/Pnz9PT0YLVaMTWZ7FCDwWBXdPz4cVpaWuzNra2tWCwnsFgs9lx9fb29fqy52Z4XGSJL6OrqQnRRoZg4d+7ck/XpeGSuu7v7SSz2DnP+AqUJULWkC+ruAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img07"
+        title="UnitySubstance_img07"
+        src="/static/8ace04dd318f0609606120e5eb447027/b0122/UnitySubstance_img07.png"
+        srcset="/static/8ace04dd318f0609606120e5eb447027/e9ff0/UnitySubstance_img07.png 180w,
+/static/8ace04dd318f0609606120e5eb447027/f21e7/UnitySubstance_img07.png 360w,
+/static/8ace04dd318f0609606120e5eb447027/b0122/UnitySubstance_img07.png 416w"
+        sizes="(max-width: 416px) 100vw, 416px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+</li>
+<li>
+<p><strong>Specular</strong></p>
+<ul>
+<li>큐브맵이 광원정보를 포함하고 있을 수도 있고 아닐 수도 있으므로, 큐브맵은 제외한 채로 스펙큘러 계산을 해 준다.</li>
+<li>어차피 스펙큘러는 프로퍼티에서 제어 가능</li>
+<li>유니티 스탠다드 셰이더의 GGX 구현이 섭스턴스에 비해 좀 과한 구석이 있으므로 적당히 감쇠하여 계산</li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 559px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 59.44444444444444%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAMCAYAAABiDJ37AAAACXBIWXMAAA7DAAAOwwHHb6hkAAADIElEQVQoz02S/0/UdRzHPz/wJyD81g/SLEstDHGZm+hhBkLSKdFCs/VLuO5uded98b5xIGXJ11vJtyKLEkWg8DMNEE/YjXU6XIWrBXmSDELNo90Z9/Xz+dyj3TUYz+2593PP9+v13Gt7vQRRFNFoNBj0erQaDUajEYPBgE77v9ZqtUxPT7OQgJ8exZmJwlQgzs0/HzE5H2TqH5lfg0l+WZJYjCgINpsNQRB4csNTvPPuMZx1p9AZbezZV0JmZmb6z+O5xlQMxEWFJnGCKusnmE820tnzHaJvisuzQcS/JH4PyQg1NS6eeXYT3/QOcHvGz2JgiZu3f6N7cASNyUF2djbjY2PcA+r7RilRv4nmAwuff9XD7Nw8iViEuft/c3VhmTvLCkJ1dTXHdO8z5rvF/IMHpHB/KcDAiIcz3w6S/1IBnmujTMdBfbSKisoj2Go/ZNgzgcIKFCYXAsz8KyE0NjbiqK3j0vAoM7N3CEdD3J27y0XxMp+e7aH0UCVer5cb9x5SWLQftbqU93Qaevu/R5Lk1Uj/wwD+UAyhoaEB/XE9HV90cv7iOa4MDXLuQjdN7iY+bqinuPRAOvDHP+bYoypg765tVKiLOWHRc8PnRZKiQAxxeITRiUkEl8vFofLXOF1fh8tlo+6kA6fTkm6odlrIzX2e657r9A6KFBUV8uLWDRTs2MzBA3uxGrX0X+ji6g/9OFw2+gb6UkupJSdnPScsBmpcVhx2I3arAbtVz+HK11m3Lis94Zdn2zn6dgW7d24lb/MT7Nz2NGXFu9BWvYXhuI5XK8r4uqcbweFwpE8jFbq/ZB+Hj7xBeXkZ27fnkZWVRUZGBuPj4zQ3f0TBy7vZoVKxJXcLGzfm8ELec6iKVbxysIj8wnzautoQhoaGMJlM2O12zGZz+rVYLJhMZpxOZ9rz+/38fMtLR2cbLa3ttLR1cNp9hlPNbtztn9Ha1Yq7vQXfpA9hZUvh5TDhSJhkUkGWFSLRKAlZYi0iyxHi0RhSPMbjxyEikShSIkEwGEJKxNM1gqIoSJK0SlmWSXkppnSKyWRy1VuhtKZurf4PEZC4oAfdj6MAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img08"
+        title="UnitySubstance_img08"
+        src="/static/13dc51514d4a7b312ef41f5b65632d28/a65ce/UnitySubstance_img08.png"
+        srcset="/static/13dc51514d4a7b312ef41f5b65632d28/e9ff0/UnitySubstance_img08.png 180w,
+/static/13dc51514d4a7b312ef41f5b65632d28/f21e7/UnitySubstance_img08.png 360w,
+/static/13dc51514d4a7b312ef41f5b65632d28/a65ce/UnitySubstance_img08.png 559w"
+        sizes="(max-width: 559px) 100vw, 559px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+</li>
+<li>
+<p><strong>선형보간, 비 선형 보간</strong></p>
+<ul>
+<li>보간의 3항은 아래 4가지 중 하나를 선택
+<ul>
+<li><strong>선형 (Linear)</strong> : 제일 많이 씀.</li>
+<li><strong>제곱 (Pow)</strong> : Pow를 그대로 쓰면 무거우므로 직접 횟수만큼 곱해준다. 앞쪽에 가중치</li>
+<li><strong>제곱근 (Sqrt)</strong> : 뒤쪽 값에 가중치를 두고 싶을 때</li>
+<li><strong>스무스스텝 (SmoothStep)</strong> : 중간값보다 양쪽 끝에 가중치를 두고 싶을 때</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>유니티 씬 세팅</strong></p>
+<ul>
+<li>컬러스페이스 감마 (추후에 리니어로도 전환)</li>
+<li>HDR 세팅 - 그래픽스 세팅, 퀄리티 세팅, 카메라, 포스트 프로세싱</li>
+<li>라이트는 한개만</li>
+<li>Environment Lighting (ambient) 값은 0.5 이하로 적당히</li>
+<li>Environment Reflections 값은 0.5가 적절. 1로하면 너무 밝아진다.</li>
+<li>씬 세팅을 이상하게 하면 스탠다드 셰이더는 특히 굉장히 보기 흉해지니 주의</li>
+</ul>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 595px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 116.1111111111111%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAXCAYAAAALHW+jAAAACXBIWXMAAA7DAAAOwwHHb6hkAAADbUlEQVQ4y41Ua1PaUBTM//9aP9qxLVgB5aGBII8g8goEwlteGkBAEEZnHP3udvbExI6d1jKzc8lN7mbPnj1RhsMharUaTNNEo9HAZDLBzc2Nh+vra9i2LSvvuevv4N5oNMJ2u4WSz+dxcHAAn88Hv9+PVCqFXC4nCMdU/AwEcXh4KPuFQgF8/iO4n0wm0Wq1oFBZLBaDqqqy6RKWSiXoukPM/WKxKJUYhoFqterBqBqyf3l5icFgAKVerwvh6empHCRxOp0WAr6dhDwghysVGBXjHcY7qJLlK5RJsmAwKGTRaBTZbFYIM5kMzs7OZHVt+IgLrrou/8fjsaOQinjILfni4kJKcBW6PhF80UfQHp4RQnp4fHyMk5MTJBIJUUS4pFTLkuqm6ZRtGH+A+8VCwSFsNptSaigUgqZpKJfL8ka+OZk+RzgSQTwex/n5uShlRWbNlJgJak7cqL7f7zuEVBQIBISU/1kmCfWcjqSmifJ0Ki0v+9iMqlGVfVbETCuWZUkjjo6ORAnV0keWSxJeE7zn2sFU8IwL3tf1rARcmc/nknJOw93dHTabDdbrNRaLhTcty+USo/FEwGjwHp9drVYCPj+bL3C33kChTNZPb3q9nmA6nQoR8+dc2whHYwgEQ9IkqmfUdF2HntUlOvG4hnrDgsKDNJt+uBGwGg10e30YpoX5bArbniKuqgiHw+IVy9/7soev+/vw+3zw/fDh+7dvaFoWFJbLDvJBNoMR6LTbaLW7KNcsLJcL0JZINIpg6E1hPu+dYVMICpHRo3cVjtRbnprNlgx5q91Bo9nB7e0cs9nMmyIScQgikYj3wSBI7hHSE/rF9jNGk/EYV8Mxao02VqslZrO5kLgfDv4X/3RdzlIQ9yWHLJkjR0Imnddsf/9qgFy+gNFwKNf0jSNKv6nGHUOuMinFoqNwt9tJZNhZRuDx8REPDw/Y7bYYj0aY2rbEhqPJ8LPsTDYLVY0jEScSXlO73S4U/Mfv+flZ5p1fJE1LIKZq0JIp5N8aSVB9p9OB8vr6in+Bv5eXF5lblja4ukKr00On25NRY5lc6R8rUT4jowVsVrvdFlLas9msZaLu7+9lSgja9fT09PeSXUJ6zOyxw5wmek3Sfr/3lghnHKmS4/gpIRXyA8IU8DNF41leqcKx7HvzzoRQ8S83uxbmUUwQKQAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img09"
+        title="UnitySubstance_img09"
+        src="/static/fe47742e9d72518351ac1b9977c9ecec/3dd3e/UnitySubstance_img09.png"
+        srcset="/static/fe47742e9d72518351ac1b9977c9ecec/e9ff0/UnitySubstance_img09.png 180w,
+/static/fe47742e9d72518351ac1b9977c9ecec/f21e7/UnitySubstance_img09.png 360w,
+/static/fe47742e9d72518351ac1b9977c9ecec/3dd3e/UnitySubstance_img09.png 595w"
+        sizes="(max-width: 595px) 100vw, 595px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+</li>
+<li>
+<p><strong>텍스쳐 병합</strong></p>
+<ul>
+<li>Albedo의 알파채널에 Roughness를 넣는다.</li>
+<li>PBR Texture 안에 AO, Metallic, Normal.xy를 넣는다. Normal.z는 셰이더 안에서 계산.</li>
+<li>이렇게 하면 총 5장의 텍스쳐를 2장으로 줄일 수 있다.
+<ul>
+<li>텍스쳐 샘플링 수가 줄어들어 퍼포먼스 이득. 또한 메모리 사용량을 확 줄일 수 있다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="구현-결과" style="position:relative;"><a href="#%EA%B5%AC%ED%98%84-%EA%B2%B0%EA%B3%BC" aria-label="구현 결과 permalink" class="anchor before"><svg aria-hidden="true" focusable="false" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>구현 결과</h3>
+<ul>
+<li>
+<p><strong>섭스턴스와 아웃풋 비교 01</strong></p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 47.22222222222222%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAA7DAAAOwwHHb6hkAAACXElEQVQoz22Q20vTARTH9w/1Ui9BCqkk2boQZRlBIWg9qKl4mc7p0sS8RaLipRRDU0cYKmWKgVPnpSRsmdaYefnN7Te3ue23TZmb2z6xXz52Hs7DgfM95/NRfPxzzMCCidaRabpmBWbcxxiELaaMRhalAOvA8JdltB3tTGxv4wOIRuOdk5MTvJLE0dERkUhEnikWHBKLpk0ah/UMrW7zed/L/E8j09/WmN+zMm2zcedxFpm52RS3NGMPh+XF2Gmgy+XCHwgQPT2i0H+dYmhynPLGWp63VdMz2kdVUxHPGgrQjXfRMzHGjYw0lLcvcTU9hdV1I/+ejBIMBnEduPD7/YTDYWKxGAr9pxe8bMhCXfGAxrr7lFRlotI8RFWaQV19PpqafK6lp3I+8QypNxMxrBhOAyP4/H7cbjc+n0/Gjh9RHBzsY7EKCFYBqyjgdO9jdzvYc4g4PU4cLpEtqxWzxcLvrU3EhWWCOxYZ+X+lmNyJ0jE2R3u/jm79DktHMLVmZHDiA0suF2bg/fdVWvrfMCfacERjxEIhGS+OKUkSh4eHsk8ZeWB2kdyiXApLcqjpfs27H79Qa1Wo1EW09r9ixi6SdF3JRWUKnbo+tg8DhEMhgsdB2d2usIvD6ZSR404VvW87ySl+QkF5CarqUuo7mlBr1VQ+VdPc1kz36AgJyQkkpSVS31KLYWWJQCCAx+PB6XQiCAKiKMouvV4vCl2fmsrKR5Rp8tBq7pGdd4vCshzUmgLKK3LIL84kSZnMuQtnuXL3Mr2DPUheCZtow2w2s7GxgclkYlcQsNvt/AU7r0YvVehsIgAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img10"
+        title="UnitySubstance_img10"
+        src="/static/7b11edbf1fd726ae51044e42e0da1d17/37523/UnitySubstance_img10.png"
+        srcset="/static/7b11edbf1fd726ae51044e42e0da1d17/e9ff0/UnitySubstance_img10.png 180w,
+/static/7b11edbf1fd726ae51044e42e0da1d17/f21e7/UnitySubstance_img10.png 360w,
+/static/7b11edbf1fd726ae51044e42e0da1d17/37523/UnitySubstance_img10.png 720w,
+/static/7b11edbf1fd726ae51044e42e0da1d17/302a4/UnitySubstance_img10.png 1080w,
+/static/7b11edbf1fd726ae51044e42e0da1d17/73caa/UnitySubstance_img10.png 1110w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+</li>
+<li>
+<p><strong>섭스턴스와 아웃풋 비교 02</strong></p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 41.66666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAA7DAAAOwwHHb6hkAAACHklEQVQozx3HW09SAQDAcb5NW0891tp6UWdbYjG13Ax1aquZTfOGzul6SbeWYQ4SUvESxOXcuN8P54CACh4Ewta3+Td9+u1n0jSRRNJNOLxHLLKLKO0Rk+1Ikpu4/B357g4U4TsR2UlU3CEsu4kJ3xADDmKCHTGwi/R7GyXkwKRlj0iIWyQVO3rKQUy0o6ddxBUneuaATOInhbQHNXVILn3MWeEXas5HRfehZr1UiwGKeT+lgp+yLmBqtG4oVWvcWjOatG/+Ubtq0O78pW40aDRbNNttrgyDdqfDZe2SZqvJ5eWt13c3jCvq9RqNawPTzNJbBqwWJmfGsIy8YGF9nkHrEMsby0xMTzK7MsfC2gKjb8ZY39ygb6CPpU82evt7eTc/TXdfN6/Gh+l9/hTzoBmTIns5OXIiBD3IkhdZPEUSfSiyj7ASRFECRCIiougnGlcICX5iiTAhIYgckRDEEHJYvFNSJExiPMBBwMWJcIhP8SAkAoRix8TVMOG0l3w5RUqTUCsJihcp1EqUequMWlZodKpo51GMP2foF3Hq7SKmoZEuHnfd40nPfXrMD3hmeUT/y4dYp8wMj3fxYXGUqfcWZpdHWVybYM5mZfOrjVnba77srDO/amVre4WPq2N83rZhqlR18vkkaiFNtayRO3BRjIiUKwXOL0qUtAxZl5O0+wf5oJfM0T7FQprKeREtnyTn2SfpdpI/9aBnk/wHw9DLy5VU014AAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img11"
+        title="UnitySubstance_img11"
+        src="/static/0443a1b3e807ed35547ca929d3a26830/37523/UnitySubstance_img11.png"
+        srcset="/static/0443a1b3e807ed35547ca929d3a26830/e9ff0/UnitySubstance_img11.png 180w,
+/static/0443a1b3e807ed35547ca929d3a26830/f21e7/UnitySubstance_img11.png 360w,
+/static/0443a1b3e807ed35547ca929d3a26830/37523/UnitySubstance_img11.png 720w,
+/static/0443a1b3e807ed35547ca929d3a26830/302a4/UnitySubstance_img11.png 1080w,
+/static/0443a1b3e807ed35547ca929d3a26830/4ad3a/UnitySubstance_img11.png 1152w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
+<em>▲ BaseColor = 1, Metallic = 1</em></p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 40.55555555555556%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAB/klEQVQozz2QW28SUQCE95eZmGjEGMRqm1oBG6EtIrVpNdb0xdtPMKmJD0YjXdhdEEphuSzs2bNnL2yhEm38P58pJj5MvmRmMg+jOfKMlq3THZjYjslQnDIcW4hwiCOaBOcuwu+gpiOCxEGGPaZziZBt4plkLFr40QjHbSGUjTbxmvT6XxmOdaTfYOI1CIImUrUJoxbR1CaM28RJlzjpEScdprMh06RDnAwI4xbTpI+v2ktqQaiw+zZSSTxfogKF8FxUqHCFi/Q9PCkQUiy9iTtGKm9JFfi4YrLM/cAnikO03Zdl8jtZsoWHPMiuUNrfJrOeXjK9docn5ces5u6TLW6wtVvgVvoGpYNtrqeusfW8QCpzk1xxg9XsCpulPFq316F68o1avYpl1Wk0DQyzTuOHQd2sYTXqmGYNw9SxGga6XqXZsjjRq9QNnZqhY1p19FoVq2GiXZ3t+Ke4wRny6q/5BBGdkSw8ZNxl/lsRzAacLwTJwiW6GPHzMiCc9Vn8iQjObS4uFfF8xOyXh1Y5eETxWYbc1m0KlTSlvXXyOyn2X2+SL6U4fFOiWMlwcLTJ3mGO8os1jt6X2d67x9GHCsXduxy+e0ppf5VXb3fQhDfC7rexB6d4crSU9McIb4hUY9xJH/vTR3qfj+l//0L38zETp/cvE0Ok7/zvXm39Bb/G0dSZqH1CAAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img12"
+        title="UnitySubstance_img12"
+        src="/static/bdb9f21e307e8f7a5a9c9d468ff0006e/37523/UnitySubstance_img12.png"
+        srcset="/static/bdb9f21e307e8f7a5a9c9d468ff0006e/e9ff0/UnitySubstance_img12.png 180w,
+/static/bdb9f21e307e8f7a5a9c9d468ff0006e/f21e7/UnitySubstance_img12.png 360w,
+/static/bdb9f21e307e8f7a5a9c9d468ff0006e/37523/UnitySubstance_img12.png 720w,
+/static/bdb9f21e307e8f7a5a9c9d468ff0006e/302a4/UnitySubstance_img12.png 1080w,
+/static/bdb9f21e307e8f7a5a9c9d468ff0006e/1132d/UnitySubstance_img12.png 1158w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
+<em>▲ BaseColor = 0.5, Metallic = 0</em></p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 41.66666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAA7DAAAOwwHHb6hkAAACNUlEQVQozx2Ha09SAQBA+Q31odlqc0YPwydm02YPbctw07Yyc+IszQ/WqLVeJm3OVIxUBEVREIPBvRdBFDNzqV9aknDhXh5urfVrTosPZ+cczf5eGI93FK9nBI97mBnbIN4lM58mB3E5XmGxvMBpe4llzITV8pzJ8QHeD/Zht5oYetOPzfKUodePGHn3kIkPJjRyPEY0OMq3dTt7X2ZZD02xv+1iTZpmd2uBiDjNzqaLWGSW2No82+tOwqKd3S03EcnJ9y030dAcmxEn25vLaH7/+cuPeIKUmiugZPPIaQU1d0RKUVGzucKnFAUlk0FOpVAzGZKyTFpJk5STpNIpkskk2WwWTc/jLrQVZ9DVXOBshRZ9g57zleeoa6zjor6Uy9dqKa8tQ1ejo6q+kpLSYnSXdJwqOYm2TEtR8QlOa09xvOgY5foyNHu7OywtOvD7PUiiH0n0IUkBRMGHKAYQBD+hkFBoSQoiCAHEkIgoCUirIlJILFiQRDZiG2hWhHnejjzDYjNjsZuxOob56DBjX5xg1j2Kc3kS12crnsAMnoANr/AfB8vBKVaEORZWxlnyTTHnHsMvzaMZMHWhry+h6XY1TYYqGpurudlSheFOA63tV2i9d4N2YxMd3c10dN/C2Gegs6eFrl4Dxt427nZe576xmbb2q/Q/eYAmf5ThMPGTpBwnl1NIhCXkna/k8gr5vIqqJDhclTjw+/gVixJflVASB+SOMqjJOHEhwIEY5DAaJpNK8A96oac3h47oTgAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img13"
+        title="UnitySubstance_img13"
+        src="/static/9d65d371862ff70fc28472c236d81d6e/37523/UnitySubstance_img13.png"
+        srcset="/static/9d65d371862ff70fc28472c236d81d6e/e9ff0/UnitySubstance_img13.png 180w,
+/static/9d65d371862ff70fc28472c236d81d6e/f21e7/UnitySubstance_img13.png 360w,
+/static/9d65d371862ff70fc28472c236d81d6e/37523/UnitySubstance_img13.png 720w,
+/static/9d65d371862ff70fc28472c236d81d6e/302a4/UnitySubstance_img13.png 1080w,
+/static/9d65d371862ff70fc28472c236d81d6e/5a3c9/UnitySubstance_img13.png 1169w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
+<em>▲ BaseColor = 0.5, Metallic = 1</em></p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 41.66666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAA7DAAAOwwHHb6hkAAACLklEQVQoz03J3UtTARjH8WOGzs2XEu2yO2+kSCeGEJYvc05J0nJp2lLLOV9q5dLNliRpSZRKKDhRCbUpVuqFrTyeaYKC6c5xynzZpD/mGy6iLr58eH6PMDXtosJUQmt7Pc2PTdRZbmO11VBde5M2Rz23KotoeVRF1b0SauvLqW80UmYs5KG1mjKjHktTBcYKAzU1pViaTAhrawsMDNj56O5javIto2M9TM/0M+zq5vOXIQaHXuB29zM69poPE++YnOpjeOQVs58GcY30MjPzntHxN0xM9DM760JQ/H4WFhcRJYllrxdpdRVR+quEd3WVZa+EtOINKy6LSF6JJXEJURL/uCzi+e5hfWMd4c5dI6fUAvFJajSJKuKTNcQlqUk4F0tcopqE5Fg0Z1RozsagTlChiosiOvY0UZpIImMiiIwWiIgWEASBlNQUhFAoyI81L5ubGyjKNrK8haL48Pl+Isu+8C3L2//lC6co8j8VGZ/s4+BgH8E13ofJXIbVXsuTjvtY7XXYnj+gtaOBzp5mWh1mnN0ttHc24uhqxtFlwfasAWd3I23Ok62BNudJZl72PkWw2c1c0J4nO/8iOfo0rlxNJbfwEtd0GRSXZpGdl0bR9UzyCtLRGTLRF2eQo9NSdCOLfP1lCgxacvK15OrSKa80IASDh/j9Mrt7OxwGdtmZnyewsc7xryCh4yP2tzaR3dP4PV/D7a6sEAwdhH9HgV2UuTmUhXn83zwcBfb4DZ2RkiA961R9AAAAAElFTkSuQmCC'); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img14"
+        title="UnitySubstance_img14"
+        src="/static/53f851a57287c7861ff2e896cd717f7a/37523/UnitySubstance_img14.png"
+        srcset="/static/53f851a57287c7861ff2e896cd717f7a/e9ff0/UnitySubstance_img14.png 180w,
+/static/53f851a57287c7861ff2e896cd717f7a/f21e7/UnitySubstance_img14.png 360w,
+/static/53f851a57287c7861ff2e896cd717f7a/37523/UnitySubstance_img14.png 720w,
+/static/53f851a57287c7861ff2e896cd717f7a/302a4/UnitySubstance_img14.png 1080w,
+/static/53f851a57287c7861ff2e896cd717f7a/04784/UnitySubstance_img14.png 1174w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
+<em>▲ BaseColor = 0, Metallic = 0</em></p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 41.66666666666667%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAICAYAAAD5nd/tAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAB90lEQVQozy2Pa2/SABSG+ckmGo3R6AcXY7bpnAq7MTfYhLgL64oD2tIrtxZIgLFLhhswWxhQ5C88hs4Pb845z/t8OSF/cs943GU46HDfbzOduvS6DWazIb1uk+nUC/hodBek3zvn79QLHN//w32vxXjcZ+Dd4PsuIde9pNut47otBoNzRqNrXHcu3+G5TXz/Fs87x5/cMBxe8fBwwWTym8GgxWRyizt3Jh08r81s1idkOzaCICDJEqJ4iq7rpNNpDMNATIvkctmAZbMZLMviOHVMoVAgdZLCNE1yUg5JyqEoCqZpEMprMrF4lIOjBIvL7xHTxyyvfCB9JrCyukTy5x6xve1gz+REnj1/giSf8eLlU35lBCLrX9jYChPf/85ufJtQteYgnKbIqzK6oWIVdFQtj2lpGKaGaeloeh4lLwWdLP+fioRhqui6iqYpaLpCpVIi1GgXqbd0nEaeSj1H87KEURa4uW1glE+4uHYo1bI0LqzAK9cytK9tLFvkqlOnWD2jeVmk1tS46tQI7SXDRGNLRLYWiEQX2N3/zEr4NQepbT59e0XycIOvkTfsxD+ytbMYeInDdVbX3nJ0skN48x2JgzWisWXEzI/5yxVUTca0VGy7iOOUmDPbKVKr21TKJlYygR6PUThNBf28q1bLj87ctR/vef4BX48HUy0aNcYAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img15"
+        title="UnitySubstance_img15"
+        src="/static/386c8ca06bbf6de2b33bfb195e68b2cc/37523/UnitySubstance_img15.png"
+        srcset="/static/386c8ca06bbf6de2b33bfb195e68b2cc/e9ff0/UnitySubstance_img15.png 180w,
+/static/386c8ca06bbf6de2b33bfb195e68b2cc/f21e7/UnitySubstance_img15.png 360w,
+/static/386c8ca06bbf6de2b33bfb195e68b2cc/37523/UnitySubstance_img15.png 720w,
+/static/386c8ca06bbf6de2b33bfb195e68b2cc/302a4/UnitySubstance_img15.png 1080w,
+/static/386c8ca06bbf6de2b33bfb195e68b2cc/96220/UnitySubstance_img15.png 1165w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
+<em>▲ BaseColor = 1, Metallic = 0</em></p>
+</li>
+<li>
+<p><strong>섭스턴스와 아웃풋 비교 03</strong></p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 45.55555555555556%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAACXBIWXMAAA7DAAAOwwHHb6hkAAACcUlEQVQoz1WJa09SAQBA7/9oay17Y0oyRSFBUVGBMIqHpJZPwBWTwBKNSHLT7GVqRlppWqm50jJbH2quxxotDdd6CPdC9U9Om1tufTg7ZzvC5OIr+u9NEBkaxOP30T86yvDjZ8wsLREMVdMVqaDJU4SjVkO4r4rzl21MTPfgaMjl1JlS7LUabE4V7WE9Yw/OIURnn9AY8JKTvwdVnoyjdiPd0XGm5p8yPuIiEjZjMis4alHT2V7KwqMWFuf7CLWX0dKip8pWxBGrhpGrVhbmOhFuPZzCUmsjU76Hw3YTKq0Cs9POzPM5ooMu9OVyyoxaTrgclFfkMjns5uObMQI+M+VGNa2+ZtzeRmqdGt4uDSBErvSgUGayY9828tQH0JQoMR7Wc3dqhNM+G3n5O1GqZVSYDmIwKPCfrODp7ADOY2Voi7Mp1udjdRqwW/OZvHMe4ergRZo9DmTy3WTs3oJKk02w28/96VEuRWo4ZJIjk29n7/6t1NdpGR+u5+FEH22eYgwmJTJ5BgWFWQT9lTx5FEa4cbuHUK8XtU5JgTYHnUFDV6+P2+PX6L1godqahepgJrnKXTTUFXIlYmEsGqLxeBYWiwJdaQ7FJTmcbtVybySAMBTt4WJ/G27vCXxnWwgEPXT3tnFn4jrnOmpoPK6j2lGOx1XJSXclkQ4H0ZsRahwqmpuMuNxHONVahdelJzpwFkFKJUmK66ytrbKy8okv8c+I4jqplIQoJojHV4jFPrC6GttAEn+STokkEj/4urbC+5cviL1bZj3xjZSUREgmRSQp9R+pVHrT6fQv0un0Zv97Gy1KfH+9TOJLnPTvP0iSxF/O/7246mMwiwAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img16"
+        title="UnitySubstance_img16"
+        src="/static/ba200d919a5a971219b8a0a6097bd255/37523/UnitySubstance_img16.png"
+        srcset="/static/ba200d919a5a971219b8a0a6097bd255/e9ff0/UnitySubstance_img16.png 180w,
+/static/ba200d919a5a971219b8a0a6097bd255/f21e7/UnitySubstance_img16.png 360w,
+/static/ba200d919a5a971219b8a0a6097bd255/37523/UnitySubstance_img16.png 720w,
+/static/ba200d919a5a971219b8a0a6097bd255/302a4/UnitySubstance_img16.png 1080w,
+/static/ba200d919a5a971219b8a0a6097bd255/22c86/UnitySubstance_img16.png 1143w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span>
+<span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 55.00000000000001%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAALCAYAAAB/Ca1DAAAACXBIWXMAAA7DAAAOwwHHb6hkAAACt0lEQVQoz5WS3U+SARTG33+iy/6AtrauWuuui1Zb3WS12czWbMuVq9AyZWWSofFl8aGAChVODA0JkpZpS8pCBGbAK+8LURiC13rlV1z8mm/roosuerZnv7Od55xzc4RqtcrW1hYbGxsKd3Z22NzcZHt7W+Guq9Wf7CrzZRbfsJbJgA3fSC+jHh2hgBmPV4PT3YKY/Yywtr5GKpUikUiQyWQoFAqIokgqnSaZTBJbiLG+vqYs9I/quXhmLzevHKKh/iC1p/fTcGEfp2r3cPiIwESoD4H/0Oy0F83tk5h1DTzoqEPdUoO2sxZ1x3EuXTnAx08vEaLxD0jfFvlaFJEKaZbyaZZyIouZFIlUkvlkjLlYjO/lNN/LMQqlKMVynEJpnnwxSqEUQy7OsfT1PdK3KILL8xDv+GM+zPtYSAV5PfOU8IwHf8jFiM+O84kJ+2Avkfgg8awL6YcfsehFLD4nvvSMhDRMIjvMguhhNuFA0Bub8I0/ZHLKRHRxgDfvewlM6ghPPyI8ZeWZ9y6PLLcIhDXMRDuIxLuZSxp4F71H4K2KqUgH0586GQ+rCL5tQzAYrzLkbmc6YmMqYsThvoHNfp1Q2MiLV51Y7Nfo6r7KWLAd/2QzY6HrzMb0jAdVOFznmXjdTCSuZXSiCYv9PIJafQ69oZFAUEfgVQ/annqcQ62M+u/R1X2O9junaWmtx2itw2A9hVZXg8V+FrPzDHe7jtGlP0H/YB1Gaw1qzVGEIXcPz30mgiErLvd9LLY2xvxGXE8eYO1rR29SYXNo6BtoxWRupN+hwjnUjHWgCZP5Mk9H2ui3t6AzNWIwNyJUVitUKhXknKz8nyRLSi3LssJSqcTKSlnx6mqF5eVl0ukMmczvrCRJZLOS0i+vlBEkWSabzZLL5cjn8wr/5d0jf3K/s3nyufxfc78Apcun5b9RR8wAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img17"
+        title="UnitySubstance_img17"
+        src="/static/b528def12e3669aeb85c9b68bc259bf9/37523/UnitySubstance_img17.png"
+        srcset="/static/b528def12e3669aeb85c9b68bc259bf9/e9ff0/UnitySubstance_img17.png 180w,
+/static/b528def12e3669aeb85c9b68bc259bf9/f21e7/UnitySubstance_img17.png 360w,
+/static/b528def12e3669aeb85c9b68bc259bf9/37523/UnitySubstance_img17.png 720w,
+/static/b528def12e3669aeb85c9b68bc259bf9/302a4/UnitySubstance_img17.png 1080w,
+/static/b528def12e3669aeb85c9b68bc259bf9/51800/UnitySubstance_img17.png 1196w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+</li>
+<li>
+<p><strong>메테리얼 미리보기</strong></p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 62.77777777777778%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAYAAACpUE5eAAAACXBIWXMAAA7DAAAOwwHHb6hkAAACFElEQVQ4y4WTb2/aQAzG8/n3AfYZeDESwlJKyF3uklDQIAvVKJ0YFCS28udNw9pOGqHwTDY9CpqmRbJ80jk/P7bPFgDs9/u/zHzmvFwuUS6XkWUZ0jRFr9dDv9/HYDDA19tbdDqfsc7XsHa7Hf71EcsA8zxHrVaD7/sIggBaa0RRhGaziW7axd38Do+/HmHRJWWhbGTD4RCj0QjD4TdcX39BURRHYL1eZxiBlFJ8VlqhFbcwcSZ4Xj3D8jyPLygzBVEwZc96GSbTCTabzREopWQLw/DNVIg4iHHz/gZP8ydYlUoFQgiWHscxQ5tXTXQ+dTAdTc8UUnLXdTmeYOQpgZAC4koi/5nDojLMJSkNGgFkIpF+SHH/7h7F71fgQ86warXKEKqEBOgoQhgqRDriGIsazb1Q6lCCDCGVhPIUMj9DsX1T6LoVOI7NUIo/VKTRCCQirTnGsm2bp2dUsgUCIhRod9vYFtsj0HFr+HjROCjTmo2AUipopfBACh3HQaNxCEqSBMmrj+IY7VbrrIe2XUG57LA67p0IuDohJM9gvV7DKpVKPOFDgICgSfo+RO0ScZKcAS88j2Mpuem58aSWgePxGLPZDIvFAov5nP3y+w8sZjOsVivsXl6OQHoRZPQzQagyYzQkBuI/3+mmUHto0gQkSP2yzorppVAbeCi0emS8w6fenE+ABKO3aNaOPA3TbA4p/AP8r4WRlW9ghgAAAABJRU5ErkJggg=='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img18"
+        title="UnitySubstance_img18"
+        src="/static/43ba5d644e5b74834e1af3e86ca338ad/37523/UnitySubstance_img18.png"
+        srcset="/static/43ba5d644e5b74834e1af3e86ca338ad/e9ff0/UnitySubstance_img18.png 180w,
+/static/43ba5d644e5b74834e1af3e86ca338ad/f21e7/UnitySubstance_img18.png 360w,
+/static/43ba5d644e5b74834e1af3e86ca338ad/37523/UnitySubstance_img18.png 720w,
+/static/43ba5d644e5b74834e1af3e86ca338ad/7ae9c/UnitySubstance_img18.png 972w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<ul>
+<li>최종 구현 된 모습
+<ul>
+<li>텍스쳐만 넣으면 옵션 건드릴 필요없이 <red>알아서 모두 계산</red>된다.</li>
+<li>옵션을 조절하고 싶다면 PBR Setting을 체크하면 상세 옵션이 나타나게 구현
+<ul>
+<li>(<red>C#으로 ShaderGUI Editor 스크립트 구현</red>) : 이렇게 하면 GPU Instancing 항목이 나오지 않으므로 추가 처리가 필요함</li>
+</ul>
+</li>
+<li>체크해제하면 다시 좌측처럼 되고 변경한 값들은 다시 1로 고정됨</li>
+<li>Using … Reflection 처리들은 최적화를 위한 처리들. 별 차이 없는 경우 계산하지 않게</li>
+<li>기본값은 모두 1로 맞춰놓음. 초기값이 헷갈리는 경우를 대비</li>
+<li>섀도우와 하프램버트, IBL Blur를 제외하고는 모든 값을 0~2 사이에서 제어하게 맞춰둠</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>프로퍼티 설명</strong></p>
+<ul>
+<li><strong>Roughness Amount :</strong> 러프니스 값 조절 ( 디버그용. 기본값 0 )</li>
+<li><strong>Metallic Amount :</strong> 메탈릭 값 조절 ( 디버그용. 기본값 1 )</li>
+<li><strong>Use Optimize :</strong> 각 리플렉션을 계산할 것인가 ( 최적화 )</li>
+<li><strong>Use PBR Setting :</strong> PBR 커스텀 세팅을 사용 할 것인가
+<ul>
+<li><strong>Normal Strength :</strong> Normal의 강도 제어</li>
+<li><strong>Shadow Amount :</strong> Cast Shadow &#x26; Receive Shadow의 강도</li>
+<li><strong>Half Lambert Amount :</strong> 하프램버트 정도. 0일때는 램버트, 1일때는 하프램버트</li>
+<li><strong>Diffuse Boost :</strong> Diffuse Reflection을 보정할 수 있는 전체 보정값</li>
+<li><strong>Fresnel Power :</strong> 프레넬 영역 제어</li>
+<li><strong>Fresnel Intensity :</strong> 프레넬 밝기 제어</li>
+<li><strong>GGX Specular :</strong> 미세분포함수로 GGX를 사용. 디폴트는 Blinn-Phong</li>
+<li><strong>Specular Glossiness :</strong> 스펙큘러 번들거림 제어</li>
+<li><strong>Specular Intensity :</strong> 스펙큘러 밝기 제어</li>
+<li><strong>IBL Exposure :</strong> CubeMap Reflection 밝기 제어</li>
+<li><strong>IBL Blur Amount :</strong> CubeMap Reflection 흐려짐 제어</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>커스텀 서피스 셰이더의 워크플로우</strong></p>
+<p><span
+      class="gatsby-resp-image-wrapper"
+      style="position: relative; display: block; margin-left: auto; margin-right: auto; max-width: 720px; "
+    >
+      <span
+    class="gatsby-resp-image-background-image"
+    style="padding-bottom: 37.222222222222214%; position: relative; bottom: 0; left: 0; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAHCAYAAAAIy204AAAACXBIWXMAAA7DAAAOwwHHb6hkAAABN0lEQVQoz42Ry0rDQBSG+/57wY0uVSwK2tqiCze+gLeFShU1NW1iZpLmTDLJTNJPIl4qInjgcO7f4j89gOVy2QWaZkmiUqyt+cu6Va0zjLF8nLHK6HXJZ1HXOXH8RGUT6krhfY5zgvcLGp/S+AzvhTSbURYxda3eZ23jv6C9T5jzwmu0hUq2yc0xSTqkKA+oyj5SDFnICQsZY2SXwvRZ5CNUOiaXfay9+wC238DaZcSzNcL5DnfxhMvwligbYWWdx/iM6/kDt9EVebZJpje4mV1wGdwzVadU9vw30HlDEvVJ9S5lOcKYIdYe4t0hZTnAmCOKYoiru94AkQGZHlCYPSo7+QauCppXhkASpkbxYhShaALRhKZzRdC5aKaiiSQmeL3Bu5K2bX9quPqY/5prHaF5/vHlDvgGZ7UVtqLmTuAAAAAASUVORK5CYII='); background-size: cover; display: block;"
+  ></span>
+  <img
+        class="gatsby-resp-image-image"
+        alt="UnitySubstance_img19"
+        title="UnitySubstance_img19"
+        src="/static/815ec2afda5cf8fe70b7b5f904b91269/37523/UnitySubstance_img19.png"
+        srcset="/static/815ec2afda5cf8fe70b7b5f904b91269/e9ff0/UnitySubstance_img19.png 180w,
+/static/815ec2afda5cf8fe70b7b5f904b91269/f21e7/UnitySubstance_img19.png 360w,
+/static/815ec2afda5cf8fe70b7b5f904b91269/37523/UnitySubstance_img19.png 720w"
+        sizes="(max-width: 720px) 100vw, 720px"
+        style="width:100%;height:100%;margin:0;vertical-align:middle;position:absolute;top:0;left:0;"
+        loading="lazy"
+        decoding="async"
+      />
+    </span></p>
+<ul>
+<li>버텍스 셰이더는 생략 (필요하다면 꺼내 쓸 수 있음)</li>
+<li>픽셀 셰이더는 Surf 함수와 Lighting 함수로 나뉘어진다.</li>
+<li>Surf에서는 텍스쳐 샘필링 및 노멀 Z계산, 메탈릭 디퓨즈 계산</li>
+<li>다른 Reflection 처리는 전부 Lighting 함수로 넘겨서 계산</li>
+</ul>
+</li>
+<li>
+<p><strong>분기, 전처리</strong></p>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp">CGPROGRAM
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">surface surf PBR fullforwardshadows nolightmap noforwardadd nometa nolppv noshadowmask nodynlightmap</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">shader_feature __ _USEPBRSETTING_ON</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">shader_feature __ _USEGGXSPECULAR_ON</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">shader_feature __ _USEFRESNEL_ON</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">shader_feature __ _USESPECULAR_ON</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">pragma</span> <span class="token expression">shader_feature __ _USEIBL_ON</span></span></code></pre></div>
+<div class="gatsby-highlight" data-language="cpp"><pre class="language-cpp"><code class="language-cpp"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">_USEPBRSETTING_ON</span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">else</span></span>
+		<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_NormalStrength</span> <span class="token expression"><span class="token number">1</span></span></span>
+		<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_LambertToHalf</span> <span class="token expression"><span class="token number">1</span></span></span>
+		<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_FresnelPower</span> <span class="token expression"><span class="token number">1</span></span></span>
+		<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_FresnelIntensity</span> <span class="token expression"><span class="token number">1</span></span></span>
+		<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_SpecularGloss</span> <span class="token expression"><span class="token number">1</span></span></span>
+		<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_SpecularIntensity</span> <span class="token expression"><span class="token number">1</span></span></span>
+		<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_IblExposure</span> <span class="token expression"><span class="token number">1</span></span></span>
+		<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_IblBlurAmount</span> <span class="token expression"><span class="token number">1</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span></code></pre></div>
+<ul>
+<li>필요한 옵션을 적당히 넣으면 된다. Lightmap이 필요하면 해당 옵션을 지운다든지</li>
+<li>전처리로 인한 성능향상은 생각보다 크지 않다</li>
+<li>각종 최적화용 분기 따로 만들어 둠</li>
+<li>편의용 분기도 따로 만들어 둠 ( 옵션을 사용하지 않으면 기본값으로 자동으로 돌아감 )</li>
+</ul>
+</li>
+<li>
+<p><strong>Surf 함수에서 해야 하는 일</strong></p>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl"><span class="token keyword">void</span> <span class="token function">suf</span> <span class="token punctuation">(</span>Input IN<span class="token punctuation">,</span> <span class="token keyword">inout</span> SurfaceOutputPBR o<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+		<span class="token keyword">half4</span> MainTex <span class="token operator">=</span> <span class="token function">tex2D</span><span class="token punctuation">(</span>_MainTex<span class="token punctuation">,</span> IN<span class="token punctuation">.</span>uv_MainTex<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">half4</span> PBRTex <span class="token operator">=</span> <span class="token function">tex2D</span><span class="token punctuation">(</span>_PBRTex<span class="token punctuation">,</span> In<span class="token punctuation">.</span>uv_MainTex<span class="token punctuation">)</span><span class="token punctuation">;</span>                  <span class="token comment">// 텍스쳐 샘플링</span>
+		o<span class="token punctuation">.</span>Metallic <span class="token operator">=</span> PBRTex<span class="token punctuation">.</span>b <span class="token operator">*</span> _MetallicAmount<span class="token punctuation">;</span>                       <span class="token comment">// _MetallicAmount 프로퍼티로 제어 가능하게 세팅</span>
+		o<span class="token punctuation">.</span>Smoothness <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> MainTex<span class="token punctuation">.</span>a<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> _RoughnessAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token comment">// 스무스니스는 러프니스 반전값으로 사용</span>
+		o<span class="token punctuation">.</span>Occlusion <span class="token operator">=</span> PBRTex<span class="token punctuation">.</span>r<span class="token punctuation">;</span>
+		o<span class="token punctuation">.</span>Albedo <span class="token operator">=</span> MainTex<span class="token punctuation">.</span>rgb <span class="token operator">*</span> _Color<span class="token punctuation">.</span>rgb<span class="token punctuation">;</span>
+		o<span class="token punctuation">.</span>LumaAlbedo <span class="token operator">=</span> <span class="token function">Luminance</span><span class="token punctuation">(</span>o<span class="token punctuation">.</span>Albedo<span class="token punctuation">)</span><span class="token punctuation">;</span>                            <span class="token comment">// float3 Albedo를 float값으로 계산해놓음</span>
+
+		<span class="token keyword">float3</span> unpackedNormal<span class="token punctuation">;</span>
+		unpackedNormal<span class="token punctuation">.</span>xy <span class="token operator">=</span> PBRTex<span class="token punctuation">.</span>ga <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>                         <span class="token comment">// Normal XY를 -1 ~ 1 값으로 리매핑</span>
+		unpackedNormal<span class="token punctuation">.</span>z <span class="token operator">=</span> <span class="token function">sqrt</span><span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> <span class="token function">saturate</span><span class="token punctuation">(</span><span class="token function">dot</span><span class="token punctuation">(</span>unpackedNormal<span class="token punctuation">.</span>xy<span class="token punctuation">,</span> unpackedNormal<span class="token punctuation">.</span>xy<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// Normal XY 값으로 Z를 구한다</span>
+		o<span class="token punctuation">.</span>Normal <span class="token operator">=</span> unpackedNormal <span class="token operator">*</span> <span class="token keyword">float3</span><span class="token punctuation">(</span>_NormalStrength<span class="token punctuation">,</span> _NormalStrength<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>             <span class="token comment">// 노멀 강도 조절하는 옵션 추가</span>
+
+		<span class="token comment">// 메탈릭에 따른 디퓨즈 감소현상. 어두워지는 부분이라 Surf에서 구현. 러프니스 영향도 함께 받도록 구현</span>
+		o<span class="token punctuation">.</span>Albedo <span class="token operator">=</span> o<span class="token punctuation">.</span>Albedo <span class="token operator">*</span> _DiffuseBoost <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.75</span><span class="token punctuation">,</span> <span class="token number">1.25</span><span class="token punctuation">,</span> o<span class="token punctuation">.</span>Smoothness<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.2</span><span class="token punctuation">,</span> <span class="token number">0.05</span><span class="token punctuation">,</span> o<span class="token punctuation">.</span>Smoothness<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sqrt</span><span class="token punctuation">(</span>o<span class="token punctuation">.</span>Metallic<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre></div>
+<ul>
+<li>실질적인 리플렉션 구현은 Lighting 함수 안에 배치. Surf에서는
+<ul>
+<li>텍스쳐 샘플링 및 서피스 아웃풋 연결</li>
+<li>노멀 z를 구하고 노멀 강도 조절하는 프로퍼티 연결</li>
+<li>메탈릭 속성을 띄면 프레넬이 증가하며 Diffuse반사가 거의 없어지는 부분 처리 ( Lighting 함수에서 계산하면 충분히 어두워지지 않는다)</li>
+<li>러프니스 값에 따라 디퓨즈 영향이 바뀌는 부분은 그냥 <red>눈으로 맞춤</red></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Lighting 함수에서 해야 할 일들</strong></p>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl"><span class="token keyword">half4</span> <span class="token function">LightingPBR</span> <span class="token punctuation">(</span>SurfaceOutputPBR s<span class="token punctuation">,</span> <span class="token keyword">half3</span> lightDir<span class="token punctuation">,</span> <span class="token keyword">half3</span> viewDir<span class="token punctuation">,</span> <span class="token keyword">half</span> atten<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+		<span class="token keyword">half4</span> c<span class="token punctuation">;</span>
+		flaot3 halfVector <span class="token operator">=</span> <span class="token function">normalize</span><span class="token punctuation">(</span>lightDir <span class="token operator">+</span> viewDir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float</span> ndotl <span class="token operator">=</span> <span class="token function">dot</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span>Normal<span class="token punctuation">,</span> lightDir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float</span> ndoth <span class="token operator">=</span> <span class="token function">dot</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span>Normal<span class="token punctuation">,</span> halfVector<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float</span> ndotv <span class="token operator">=</span> <span class="token function">dot</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span>Normal<span class="token punctuation">,</span> viewDir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float</span> halfLambert <span class="token operator">=</span> ndotl <span class="token operator">*</span> <span class="token number">0.5</span> <span class="token operator">+</span> <span class="token number">0.5</span><span class="token punctuation">;</span>
+		<span class="token keyword">float</span> fresnelSrc <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> <span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> ndotv<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+		<span class="token keyword">float</span> smoothness <span class="token operator">=</span> s<span class="token punctuation">.</span>Smoothness<span class="token punctuation">;</span>
+		<span class="token keyword">float</span> sqrtSmoothness <span class="token operator">=</span> <span class="token function">sqrt</span><span class="token punctuation">(</span>smoothness<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float</span> metallic <span class="token operator">=</span> s<span class="token punctuation">.</span>Metallic<span class="token punctuation">;</span>
+		<span class="token keyword">float</span> occlusion <span class="token operator">=</span> s<span class="token punctuation">.</span>Occlusion<span class="token punctuation">;</span>
+		<span class="token keyword">float</span> lumaAlbedo <span class="token operator">=</span> s<span class="token punctuation">.</span>LumaAlbedo
+
+		<span class="token punctuation">.</span>
+		<span class="token punctuation">.</span>
+		<span class="token punctuation">.</span></code></pre></div>
+<ul>
+<li>디퓨즈 계산을 위한 <code class="language-text">ndotl</code>, 스펙큘러 계산을 위한 <code class="language-text">ndoth</code>, 프레넬 계산을 위한 <code class="language-text">ndotv</code>를 미리 구해둔다.</li>
+<li><code class="language-text">SurfaceOutputPBR</code>으로부터 넘어온 값을 미리 변수에 담아둠.</li>
+</ul>
+</li>
+<li>
+<p><strong>Lighting 함수 - Diffuse Reflection</strong></p>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl"><span class="token comment">// Diffuse Reflection</span>
+c<span class="token punctuation">.</span>rgb <span class="token operator">=</span> <span class="token function">lerp</span><span class="token punctuation">(</span>s<span class="token punctuation">.</span>Albedo <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> ndotl<span class="token punctuation">)</span><span class="token punctuation">,</span> halfLambert<span class="token punctuation">,</span> _HalfLambert<span class="token punctuation">)</span>
+				<span class="token operator">*</span> <span class="token number">1.4</span> <span class="token operator">*</span> _LightColor0<span class="token punctuation">.</span>rgb<span class="token punctuation">,</span> s<span class="token punctuation">.</span>Albedo <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.75</span><span class="token punctuation">,</span> <span class="token number">1.75</span><span class="token punctuation">,</span> lumaAlbedo<span class="token punctuation">)</span><span class="token punctuation">,</span> metallic<span class="token punctuation">)</span> 
+				<span class="token operator">*</span> occlusion <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> atten<span class="token punctuation">,</span> _ShadowAmount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 비금속은 디퓨즈 계산. 금속은 디퓨즈 계산 안함</span>
+<span class="token comment">// atten을 넣어야 셀프 섀도우 발생. </span>
+<span class="token comment">// 섀도우 어마운트 값을 내리면 1이 곱해지게 되어 섀도우가 없어진다.</span></code></pre></div>
+<ul>
+<li>난반사는 <code class="language-text">ndotl</code>을 이용한 <red>램버트모델</red>로 구현</li>
+<li>하지만 섭스 셰이더를 눈으로 봤을때는 <red>하프램버트</red>에 가까움</li>
+<li>눈으로 봤을 때 비슷하니 하프램버트로 구현하되 램버트와 보간 가능하도록 설정</li>
+<li>어차피 만들어두면 음영이 강하게 지는 낮시간대 / 음영이 약한 밤 시간대 제어를 할 수 있으니 프로퍼티로 빼둠</li>
+<li>Surf 함수에선 금속성 때문에 어두워지는 처리만 해 주었다면, Lighting 함수에서는 Lambert 디퓨즈 리플렉션 계산을 해준다</li>
+<li>Shadow 보간 처리도 해준다.</li>
+</ul>
+</li>
+<li>
+<p><strong>Lighting 함수 - CubeMap Reflection</strong></p>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">	<span class="token comment">// Cubemap Reflection</span>
+	<span class="token keyword">float4</span> hdrReflection <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">_USEIBL_ON</span></span>
+	<span class="token keyword">float3</span> reflectedDir <span class="token operator">=</span> <span class="token function">reflect</span><span class="token punctuation">(</span><span class="token function">normalize</span><span class="token punctuation">(</span><span class="token operator">-</span>viewDir<span class="token punctuation">)</span><span class="token punctuation">,</span> s<span class="token punctuation">.</span>normal<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment">// 리플렉트벡터 구함</span>
+	<span class="token keyword">float4</span> reflection <span class="token operator">=</span> <span class="token function">UNITY_SAMPLE_TEXCUBE_LOD</span><span class="token punctuation">(</span>unity_SpecCube0<span class="token punctuation">,</span> relfecedDir<span class="token punctuation">,</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> _IblBlurAmount<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> sqrtSmoothness<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment">// 큐브맵 샘플링</span>
+	<span class="token comment">// 러프니스가 증가할수록 Texcube의 LOD단계가 증가함. 0일때 가장 선명함. sqrtSmoothness를 쓴 이유는 블러 값이 천천히 진행되도록 하기 위함. (반전이라 sqrt가 초반가중치)</span>
+	<span class="token comment">// _IblBlurAmount -1을 해준 이유는 인스펙터 초기값을 1로 맞추기 위함.</span>
+	hdrReflection<span class="token punctuation">.</span>rgb <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token function">DecodeHDR</span><span class="token punctuation">(</span>reflection<span class="token punctuation">,</span> unity_SpecCube0_HDR<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">10</span> <span class="token operator">*</span> _IblExposure <span class="token operator">*</span> occlusion<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment">// HDR소스는 HDR디코딩을 해 주엉야 색이 제대로 나온다</span>
+	<span class="token comment">// 오클루전은 큐브맵에만 곱해주면 프레넬에서는 따로 곱해줄 필요 없음</span>
+	<span class="token keyword">float3</span> metalRefl <span class="token operator">=</span> hdrReflection<span class="token punctuation">.</span>rgb <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.02</span><span class="token punctuation">,</span> <span class="token number">0.75</span><span class="token punctuation">,</span> <span class="token function">pow</span><span class="token punctuation">(</span>lumaAlbedo<span class="token punctuation">,</span> <span class="token number">2.2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment">// 금속성일 때 리플렉션</span>
+	<span class="token keyword">float3</span> nonNetalRefl <span class="token operator">=</span> hdrReflection<span class="token punctuation">.</span>rgb <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.05</span><span class="token punctuation">,</span> <span class="token number">0.025</span><span class="token punctuation">,</span> <span class="token function">sqrt</span><span class="token punctuation">(</span><span class="token function">sqrt</span><span class="token punctuation">(</span>lumaAlbedo<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 비금속일 때 리플렉션</span>
+	<span class="token keyword">float</span> finalRefl <span class="token operator">=</span> <span class="token function">lerp</span><span class="token punctuation">(</span>nonMetalRefl<span class="token punctuation">,</span> metalRefl<span class="token punctuation">,</span> metallic<span class="token punctuation">)</span><span class="token punctuation">;</span>                            <span class="token comment">// 금속 / 비금속 처리</span></code></pre></div>
+<ul>
+<li>러프니스가 강해지면서 리플렉션이 블러리하게 보이는 것은 멀티 샘플링이 아니라 <red>밉맵(LOD)</red>을 활용</li>
+<li>리니어하게 하면 블러 단계가 초반에 확 일어나므로 <code class="language-text">sqrtSmoothness</code>를 이용 (Roughness는 Smoothness의 반전값이라 sqrt가 초반가중치)</li>
+<li>큐브맵이 HDR소스라면 HDR디코딩을 해야 색이 제대로 나온다.</li>
+<li>편의를 위해 메탈 / 논메탈로 나누어 계산. 논메탈은 나중에 어두운 거친 표면 표현때 또 쓰임</li>
+<li>애매한 부분은 <red>눈으로 맞춤</red></li>
+</ul>
+</li>
+<li>
+<p><strong>Lighting 함수 - Fresnel</strong></p>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">	<span class="token keyword">float3</span> finalFresnel<span class="token punctuation">;</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">_USEFRESNEL_ON        </span><span class="token comment">// shader_feature로 분기</span></span>
+	<span class="token comment">// fresnel</span>
+	<span class="token keyword">float3</span> fresnel <span class="token operator">=</span> <span class="token function">pow</span><span class="token punctuation">(</span>fresnelSrc<span class="token punctuation">,</span> _FresnelPower <span class="token operator">*</span> <span class="token number">5</span><span class="token punctuation">)</span> <span class="token operator">*</span> hdrReflection<span class="token punctuation">.</span>rgb <span class="token operator">*</span> <span class="token number">0.375</span><span class="token punctuation">;</span>
+	<span class="token keyword">float3</span> metalFresnel <span class="token operator">=</span> fresnel <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0.22</span><span class="token punctuation">,</span> smoothness<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.2</span><span class="token punctuation">,</span> <span class="token number">0.05</span><span class="token punctuation">,</span> smoothness<span class="token punctuation">)</span><span class="token punctuation">,</span> lumaAlbedo<span class="token punctuation">)</span> <span class="token operator">*</span> _FresnelIntnsity<span class="token punctuation">;</span>
+	<span class="token comment">// 금속일때는 베이스컬러가 어두워질수록 프레넬이 없어짐</span>
+	<span class="token keyword">float3</span> nonMetalFresnel <span class="token operator">=</span> fresnel <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.2</span><span class="token punctuation">,</span> <span class="token number">0.05</span><span class="token punctuation">,</span> lumaAlbedo<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.4</span><span class="token punctuation">,</span> <span class="token number">0.6</span><span class="token punctuation">,</span> smoothness<span class="token punctuation">)</span> <span class="token operator">*</span> _FresnelIntensity<span class="token punctuation">;</span>
+	finalFresnel <span class="token operator">=</span> <span class="token function">lerp</span><span class="token punctuation">(</span>nonMetalFresnel<span class="token punctuation">,</span> metalFresnel<span class="token punctuation">,</span> <span class="token function">smoothstep</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> metallic<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span>atten<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0.5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">else</span></span>
+	finalFresnel <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span></code></pre></div>
+<ul>
+<li><code class="language-text">1-NdotV</code> 계산 (<code class="language-text">fresnelSrc</code>)에 <code class="language-text">Pow</code>를 3정도 주고 (프로퍼티에서 0~6까지 조절가능하도록) 그냥 허옇게 더해지는 것이 아니므로 큐브맵 리플렉션을 곱해준다.</li>
+<li>금속 / 비금속일 때, 베이스컬러가 어두울 때 밝을 때에 따라 예외 상황이 많음</li>
+<li>위의 숫자들은 각 상황별로 <red>눈으로 맞추면서 조절</red></li>
+<li>아예 제어하기 쉽게 금속성 프레넬과 비금속성 프레넬 두 가지로 나눠서 구현</li>
+<li>마지막 atten과 1을 0.5로 보간한 것은 그림자 부분에서 프레넬이 너무 밝게 나와서 이상해지는 문제를 해결하기 위해 암부에 보정값을 넣은 것</li>
+</ul>
+</li>
+<li>
+<p><strong>Lighting 함수 - Specular</strong></p>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">		<span class="token comment">// Specular</span>
+		<span class="token keyword">float3</span> specularLight<span class="token punctuation">;</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">_USESPECULAR_ON</span></span>
+	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">if</span> <span class="token expression">_USEGGXSPECULAR_ON    </span><span class="token comment">// shader_feature로 분기</span></span>
+		<span class="token keyword">float</span> NdotH_2 <span class="token operator">=</span> ndoth <span class="token operator">*</span> ndoth<span class="token punctuation">;</span>
+		<span class="token keyword">float</span> roughness_2 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> smoothness<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> smoothness<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">float</span> FinalGGX <span class="token operator">=</span> roughness_2 <span class="token operator">/</span> <span class="token function">pow</span><span class="token punctuation">(</span>NdotH_2 <span class="token operator">*</span> <span class="token punctuation">(</span>roughness_2 <span class="token operator">-</span> <span class="token number">1.0</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token number">2.0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// UnityStandardBRDF 구현과 동일</span>
+		specularLight <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token function">pow</span><span class="token punctuation">(</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> FinalGGX<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">/</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> smoothness <span class="token operator">+</span> <span class="token number">0.00001</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.2</span><span class="token punctuation">,</span> <span class="token number">0.4</span><span class="token punctuation">,</span> smoothness<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">0.1</span> <span class="token operator">*</span> _SpecularGloss<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> _SpecularIntensity <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">/</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> smoothness <span class="token operator">+</span> <span class="token number">0.00001</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.4</span><span class="token punctuation">,</span> <span class="token number">0.2</span><span class="token punctuation">,</span> sqrtSmoothness<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.3</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> lumaAlbedo<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.1</span><span class="token punctuation">,</span> <span class="token number">0.2</span><span class="token punctuation">,</span> metallic<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">else</span>                    <span class="token comment">// Blinn-Phong</span></span>
+		specularLight <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token function">pow</span><span class="token punctuation">(</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> ndoth<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">64</span> <span class="token operator">/</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> smoothness <span class="token operator">+</span> <span class="token number">0.00001</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.002</span><span class="token punctuation">,</span> <span class="token number">0.1</span><span class="token punctuation">,</span> sqrtSmoothness<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.01</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token function">sqrt</span><span class="token punctuation">(</span>lumaAlbedo<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> metallic<span class="token punctuation">)</span> <span class="token operator">*</span> _SpecularGloss<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> _SpecularIntensity <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">/</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> smoothness <span class="token operator">+</span> <span class="token number">0.00001</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0.6</span><span class="token punctuation">,</span> smoothness<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.3</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">,</span> metallic<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token comment">// 스펙큘러 파워가 올라갈수록 인텐시티도 같이 올라가게 하여 에너지 보존을 구현. Albedo가 밝을때는 스펙큘러도 함께 밝아지는 것도 구현</span>
+
+	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span>
+		specularLight <span class="token operator">=</span> specularLight <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token function">Luminance</span><span class="token punctuation">(</span>_LightColor0<span class="token punctuation">.</span>rgb<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>_LightColor0<span class="token punctuation">.</span>rgb<span class="token punctuation">)</span> <span class="token operator">*</span> s<span class="token punctuation">.</span>Albdeo<span class="token punctuation">,</span> metallic<span class="token punctuation">)</span> <span class="token operator">*</span> occlusion<span class="token punctuation">;</span>
+		<span class="token comment">// 금속 - 비금속 스펙큘러 컬러 처리</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">else</span></span>
+	specularLight <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span></code></pre></div>
+<ul>
+<li>스펙큘러는 성능에 따라 두 가지 옵션 중 선택가능하게
+<ol>
+<li>Blinn-Phong</li>
+<li>GGX</li>
+</ol>
+</li>
+<li>금속 / 비금속에 따라 스펙큘러 컬러 달라지는 것을 적용</li>
+<li>유니티(감마) 스탠다드 GGX 코드는 섭스턴스에 비해서 좀 과하므로 감쇠계산을 추가해줌</li>
+<li>라이트로 인한 스펙큘러가 거의 티가 나지 않을때는 최적화 옵션으로 꺼주면 된다</li>
+</ul>
+</li>
+<li>
+<p><strong>Lighting 함수 - Specular : Conservation of Energy</strong></p>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl">specularLight <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token function">pow</span><span class="token punctuation">(</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> ndoth<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">64</span> <span class="token operator">/</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> smoothness <span class="token operator">+</span> <span class="token number">0.00001</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.002</span><span class="token punctuation">,</span> <span class="token number">0.1</span><span class="token punctuation">,</span> sqrtSmoothness<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.01</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token function">sqrt</span><span class="token punctuation">(</span>lumaAlbedo<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> metallic<span class="token punctuation">)</span> <span class="token operator">*</span> _SpecularGloss<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> _SpecularIntensity <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">/</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> smoothness <span class="token operator">+</span> <span class="token number">0.00001</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0.6</span><span class="token punctuation">,</span> smoothness<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">0.3</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">,</span> metallic<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre></div>
+<ul>
+<li><code class="language-text">1 / (1 - smoothness)</code>를 해주어 Roughness 수치를 낮게 가져갈수록 스펙큘러 영역이 아주 작은 부분까지 줄어들도록 구현</li>
+<li>스펙큘러 글로스니스가 올라갈수록 인텐시티도 같이 올라간다 (에너지 보존 구현)</li>
+<li>Roughness나 Metallic에 따른 보정값 계산 (눈으로 맞춤)</li>
+</ul>
+</li>
+<li>
+<p><strong>Lighting 함수 - Roughness (Smoothness) 기반 병합</strong></p>
+<div class="gatsby-highlight" data-language="hlsl"><pre class="language-hlsl"><code class="language-hlsl"><span class="token comment">// 최종 합성</span>
+c<span class="token punctuation">.</span>rgb <span class="token operator">+=</span> <span class="token punctuation">(</span>finalFresnel <span class="token operator">+</span> specularLight<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0.25</span><span class="token punctuation">,</span> lumaAlbedo<span class="token punctuation">)</span><span class="token punctuation">;</span>                                                 <span class="token comment">// 베이스컬러가 밝을수록 라이팅은 감소. ibl 빼고 다 계산해둠</span>
+
+c<span class="token punctuation">.</span>rgb <span class="token operator">=</span> <span class="token function">lerp</span><span class="token punctuation">(</span>c<span class="token punctuation">.</span>rgb <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">1.2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> smoothness<span class="token punctuation">)</span> <span class="token operator">+</span> nonmetalRefl <span class="token operator">*</span> <span class="token function">leerp</span><span class="token punctuation">(</span><span class="token number">0.5</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> lumaAlbedo<span class="token punctuation">)</span><span class="token punctuation">,</span>                            <span class="token comment">// 스무스니스 정도에 따라 난반사 양 조절</span>
+				finalRefl<span class="token punctuation">.</span>rgb <span class="token operator">*</span> <span class="token function">lerp</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0.25</span><span class="token punctuation">,</span> lumaAlbedo<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>specularLight <span class="token operator">+</span> finalFresnel <span class="token operator">+</span> c<span class="token punctuation">.</span>rgb <span class="token operator">*</span> <span class="token number">0.5</span><span class="token punctuation">)</span> <span class="token operator">*</span> smoothness<span class="token punctuation">)</span><span class="token punctuation">,</span>     <span class="token comment">// 이 부분은 딱히 이론이 없음. 눈에 보이는 대로</span>
+				smoothness <span class="token operator">*</span> smoothness<span class="token punctuation">)</span><span class="token punctuation">;</span>                                                                                    <span class="token comment">// 스무스니스 정도에 따라 리픅렉션 정도를 제어한다 정도로 생각하면 될 듯</span></code></pre></div>
+<ul>
+<li>1항은 IBL을 제외하고 전부 계산. (러프니스가 1일때이므로 IBL이 나오지 않음)</li>
+<li>2항은 IBL 위주로 계산</li>
+<li>어두운 비금속의 살짝 밝아지는 표현을 위해 <code class="language-text">nonmetalRefl * leerp(0.5, 0, lumaAlbedo)</code>계산을 추가로 해줌</li>
+<li>3항에서 두번 곱하는 것은 1항에 가중치를 두기 위함</li>
+<li>위 코드는 최적화 여지가 좀 더 있음</li>
+</ul>
+</li>
+</ul>
+<hr>
+<div class="table-of-contents">
+<ul>
+<li><a href="#%EC%9C%A0%EB%8B%88%ED%8B%B0-pbr">유니티 PBR</a></li>
+<li><a href="#%EA%B0%84%EB%8B%A8-pbr-%EA%B0%9C%EB%85%90">간단 PBR 개념</a></li>
+<li><a href="#%EB%9D%BC%EC%9D%B4%ED%8C%85-%EB%AA%A8%EB%8D%B8">라이팅 모델</a></li>
+<li><a href="#%EC%BB%A4%EC%8A%A4%ED%85%80-pbr-%EA%B5%AC%ED%98%84-%EC%A4%80%EB%B9%84">커스텀 PBR 구현 준비</a></li>
+<li><a href="#%EA%B5%AC%ED%98%84-%EA%B2%B0%EA%B3%BC">구현 결과</a></li>
+</ul>
+</div></div></div><div class="post-navigator"><div class="post-navigator-card-wrapper"></div><div class="post-navigator-card-wrapper"><a class="post-card next" href="/Study/Unity_DevWeekURP/"><div class="direction">다음 글</div><div class="title">Dev Week - URP 셰이더 뜯어보기</div></a></div></div></main><footer class="page-footer-wrapper"><p class="page-footer">© <!-- -->2025<!-- --> <a href="https://github.com/JuNyangYee" target="_blank" rel="noreferrer">문준형</a> powered by<a href="https://github.com/zoomKoding/zoomkoding-gatsby-blog" target="_blank" rel="noreferrer"> zoomkoding-gatsby-blog</a></p></footer><div class="dark-mode-button-wrapper"><button class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium dark-mode-button css-1yxmbwk" tabindex="0" type="button"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeLarge dark-mode-icon css-6flbmm" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="DarkModeIcon"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"></path></svg></button></div></div></div><div id="gatsby-announcer" style="position:absolute;top:0;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0" aria-live="assertive" aria-atomic="true"></div></div><script id="gatsby-script-loader">/*<![CDATA[*/window.pagePath="/Study/UnityCustomPbr/";window.___webpackCompilationHash="eb1047ddc9d85611a4a8";/*]]>*/</script><script id="gatsby-chunk-mapping">/*<![CDATA[*/window.___chunkMapping={"polyfill":["/polyfill-1f5de005935b6fd7f7d3.js"],"app":["/app-47f2df10d7ba545e5bcc.js"],"component---cache-caches-gatsby-plugin-offline-app-shell-js":["/component---cache-caches-gatsby-plugin-offline-app-shell-js-73c5afff140dec503f6c.js"],"component---src-pages-404-js":["/component---src-pages-404-js-140d27e8ab899178a69e.js"],"component---src-pages-about-js":["/component---src-pages-about-js-be9cb455a3670e264fec.js"],"component---src-pages-index-js":["/component---src-pages-index-js-9750c5d54c92528f3454.js"],"component---src-templates-blog-template-js":["/component---src-templates-blog-template-js-c96d6a0093bc660a0480.js"],"component---src-templates-category-template-js":["/component---src-templates-category-template-js-e1c39933037bd68f3a48.js"]};/*]]>*/</script><script src="/polyfill-1f5de005935b6fd7f7d3.js" nomodule=""></script><script src="/app-47f2df10d7ba545e5bcc.js" async=""></script><script src="/framework-fc03f0a1c01e8ca1f8d7.js" async=""></script><script src="/webpack-runtime-9226067529632ff06ecf.js" async=""></script></body></html>
