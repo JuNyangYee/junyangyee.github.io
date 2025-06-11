@@ -7,17 +7,21 @@ tags:
 categories: STUDY
 ---
 
+
 **모바일에서 사용 가능한 유니티 커스텀 섭스턴스 PBR 쉐이더 만들기**  
-> NDC 2019 발표를 보면서 단순 정리한 내용입니다.  
+> 군생활 중, NDC 2019 발표를 보면서 단순 정리한 내용입니다.  
 > 노션에 작성했던 내용을 블로그로 옮겨 작성해, 가독성에 문제가 있을 수 있습니다.
 >  
-> *※주의 : 본 내용은 아주 기술적인 이야기는 아니며, 기술보다는 꼼수를 이용한 문제해결 이야기입니다.*
+> *※주의 : 본 내용은 아주 기술적인 이야기는 아니며, 기술보다는 꼼수를 이용한 문제해결 이야기입니다.*  
+> *약 38:35 정도까지 작성되었습니다.* 
 
 <div style="position: relative; width: 100%; padding-bottom: 56.25%">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/hC62O9NGXEw?si=-eYCun2EHZMbX3gR" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen style="position: absolute; width:100%; height: 100%;"></iframe>
 </div>
 
-*[▶ NDC Replay - 발표 자료 링크](http://ndcreplay.nexon.com/NDC2019/sessions/NDC2019_0006.html#k%5B%5D=pbr)*
+<div style="margin-top: 12px"> </div>
+
+[▶ NDC Replay - 발표 자료 링크](http://ndcreplay.nexon.com/NDC2019/sessions/NDC2019_0006.html#k%5B%5D=pbr)
 
 ---
 
@@ -179,22 +183,22 @@ categories: STUDY
 - **각 엔진들의 PBR 구현 라이팅 모델**
     - PBR에 대해서 알아보려면 라이팅모델에 대한 이해가 필수
     - Unity Legacy
-        ```glsl
+        ```hlsl
         Disney Diffuse + Cook Torrance (GGX, Smith, Schlick) Specular
         
         Lambertian Diffuse + Simplified Cook Torrance (GGX, Simplified KSK and Schlick) Specular
         ```
     - Unity SRP LW
-        ```glsl
+        ```hlsl
         Lambertian Diffuse + Simplified Cook Torrance (GGX, Simplified KSK and Schlick) Specular
         ```
     - Unity SRP HD
-        ```glsl
+        ```hlsl
         기본적으로 Disney (or Lambert) Diffuse + (Anisotropic)GGX Specular
         인데 GI, 랜더패스 등과 엮여있음
         ```
     - Unreal
-        ```glsl
+        ```hlsl
         Disney Diffuse + Cook Torrance (GGX, Smith, Schlick) Specular
         ```
 
@@ -225,7 +229,7 @@ categories: STUDY
     - 가장 기본이 되는 실시간 디퓨즈 라이팅 모델
         - 모든 방향으로 동일하게 난반사를 한다는 전제하에, 빛의 입사각만 고려한 모델
         - **물체 표면의 노멀**과 **빛의 방향**과의 내적 (Dot Production)을 이용하여 난반사 (Diffuse) 계산
-        ```glsl
+        ```hlsl
         float4 frag(v2f i) : SV_Target
         {
         		float4 col = tex2D(_MainTex, i.texcoord);
@@ -243,12 +247,12 @@ categories: STUDY
         - a값 (러프니스)이 0일때는 램버트와 동일
         - 러프니스가 증가하면서 **램버트의 반전값**과 **1-NdotV : 림라이트같은 모양**를 곱해준 값으로 보간해준다.  
             (빛이 퍼지는 것을 표현)
-        ```glsl
+        ```hlsl
         Lerp ( Lambert, Pow ((1-Lambert) * (1-NdotV/2), 2), Roughness)
         ```
         - 즉, 러프니스가 올라갈수록 램버트의 영향력은 줄어들고 1-NdotV의 영향을 받게 된다.
         - 정통으로 구현하면 굉장히 복잡. 근사치를 사용하여 최적화한 구현.
-        ```glsl
+        ```hlsl
         half ComputeOrenNayerLighting(half3 normal, half3 lgithDir, half3 viewDir, half roughness)
         {
         		half NdotL = dot(lightDir, normal);
@@ -266,7 +270,7 @@ categories: STUDY
         - 램버트 방식은 관찰자의 위치가 고려되지 않았는데 이것을 고려해서 계산하는 방식. 러프니스도 함께 고려한다.
         - 러프니스도 고려하여 계산 : 러프니스가 올라가면 Oren-Nayer처럼 빛이 퍼지는 효과가 나타난다.
         - 계산량이 많아지므로 아무래도 무겁다.
-        ```glsl
+        ```hlsl
         half DisneyDiffuse(half NdotV, half NdotL, half LdotH, half perceptualRoughness)
         {
         		half fd90 = 0.5 + 2 * LdotH * LdotH * perceptualRoughness;
@@ -284,11 +288,11 @@ categories: STUDY
 
 - **Reflection Model - 퐁 Phong**
     - 퐁 반사 모델
-        - 빛의 방향과 시선 반사 백터와의 내적 (Dot Product)을 이용하여 스펙큘러 계산
-        - 반사 백터 = -V + 2 * dot(N, V) * N (벡터의 투영을 이용하여 계산)
+        - <green>빛의 방향</green>과 <red>시선 반사 백터</red>와의 내적 (Dot Product)을 이용하여 스펙큘러 계산
+        - <red>반사 백터</red> = -V + 2 * dot(N, V) * N (벡터의 투영을 이용하여 계산)
         - 빛이 앞에 있을 때 정반사, 뒤에 있을 때 림 라이트 느낌을 낸다 (실제 빛과 비슷) - 물리적 정확성과 계산효율의 절충 모형
         
-        ```glsl
+        ```hlsl
         fixed4 frag(v2f i) : SV_Target
         {
         		fixed4 col = tex2D(_MainTex, i.texcoord);
@@ -303,11 +307,11 @@ categories: STUDY
 
 - **Reflection Model - 블린 퐁 Blinn-Phong**
     - 빌린 퐁 스펙큘러 모델 - 퐁에서 간략화!
-        - <span style="color: green;">물체 표면의 노멀</span>과 <span style="color: red;">빛의 방향 + 카메라 방향 (하프벡터)</span>과의 내적을 이용하여 스펙큘러 계산
+        - <green>물체 표면의 노멀</green>과 <red>빛의 방향 + 카메라 방향 (하프벡터)</red>과의 내적을 이용하여 스펙큘러 계산
         - 계산은 간략화 되었지만 퐁과 비교하면 광원이 휙 도는 부분 (하프벡터때문)이 거슬림
         - 퐁과 블린퐁은 모두 러프니스는 고려하지 않음
         
-        ```glsl
+        ```hlsl
         fixed4 frag(v2f i) : SV_Target
         {
         		fixed4 col = tex2D(_MainTex, i.texcoord);
@@ -324,8 +328,8 @@ categories: STUDY
 - **Reflection Model - 쿡 토런스 Cook-Torrance**
     - 쿡 토런스 모델 - 표면의 Roughness를 고려한 리플렉션 모델
         - 공식 = 미세분포함수 * 기하감쇠 * 프레넬 / NdotV
-        - **미세분포함수 (D)** - 미세면의 분포함수. 주로 베크만 방식이나 GGX 방식을 사용한다 (스펙큘러의 **모양**을 계산 - Roughness를 이용하여 계산)
-        - **기하감쇠계수 (G)** - 미세면에 입사한 빛이 다른 미세면에 그림자를 만드는 효과. (스펙큘러의 **퍼짐**을 계산 - 대부분 게임 엔진에선 Smith 방식을 사용)
+        - **미세분포함수 (D)** - 미세면의 분포함수. 주로 베크만 방식이나 GGX 방식을 사용한다 (스펙큘러의 <red>**모양**</red>을 계산 - Roughness를 이용하여 계산)
+        - **기하감쇠계수 (G)** - 미세면에 입사한 빛이 다른 미세면에 그림자를 만드는 효과. (스펙큘러의 <red>**퍼짐**</red>을 계산 - 대부분 게임 엔진에선 Smith 방식을 사용)
         - **프레넬 (F)** - 측면에서 봤을 때 반사율이 높아지며 밝아지는 효과. 원래는 꽤 복잡한 계산이지만 근사로 구해도 별 차이 없음 (쉬릭스 방식)
     - 결국 기하감쇠계수 (G)는 스미스 방식, 프레넬(F)는 쉬릭스 근사.
     - 미세면(MicroSurface)의 D (Distribution - 분포)만 어떤 방식으로 계산하느냐에 따라 결과가 달라진다.
@@ -333,7 +337,7 @@ categories: STUDY
         - GGX 분포 - 가장 큰 분산을 생성하며 금속의 정반사 표현을 사실적으로 하고 싶을 때 사용.
     - Beckmann이든 GGX든 결국 코드 보면 거칠기 (Roughness)를 이용해서 얼마나 스펙큘러를 falloff 시킬 것인지 계산하는 것.
     
-    ```glsl
+    ```hlsl
     inline half GGXTerm (half NdotH, half roughness)
     {
     		half a2 = roughness * roughness;
@@ -390,18 +394,18 @@ categories: STUDY
     - 왜 스탠다드가 아니라 커스텀 서피스 셰이더인가?
         - 스탠다드는 감마에서 베이스컬러 재현력 떨어지고, 전체적으로 허옇게 나옴
         - 퍼포먼스 제어 가능 - 전처리, 멀티 컴파일과 셰이더피쳐를 이용하여 퍼포먼스 제어
-        - 무엇보다 **고치기 힘듦**
+        - 무엇보다 <red>**고치기 힘듦**</red>
     - 왜 프레그먼트가 아니라 커스텀 서피스 셰이더인가?
         - 다양한 환경에 대응하기 쉬움 (라이팅함수가 따로 있어서 포워드뿐 아니라 디퍼드까지 대응 가능)
         - 포스트 프로세싱과도 잘 붙음 - 프레그먼트는 분기별로 세팅을 잘 해주지 않으면 블룸 제어가 어려움
-        - 무엇보다 **만들기 쉬움!!** - 아무리 좋아봤자 어려워서 만들지 못하면 도루묵
+        - 무엇보다 <red>**만들기 쉬움!!**</red> - 아무리 좋아봤자 어려워서 만들지 못하면 도루묵
 
 - **내맘대로 계산하기 편하게 커스텀**
     - 라이팅모델 공식들을 다 대입하는 것도 좋으나 섭스턴스와 다르게 보이면 말짱 꽝
     - 이론을 베이스로 작업하되, 계산하기 쉽게 나눈다.
         - Diffuse : 섭스턴스 구현을 따라서 Lambert 방식으로 구현 (모바일 친화적)
         - Reflection : Specular / Cubemap (Metal / NonMetal) / Fresnel (Metal / NonMetal)
-    - PBR에서는 큐브맵이 라이팅 그 자체가 되지만 커스텀에서는 리플렉션을 계산하기 쉽게 성분을 나눠주도록 한다.
+    - PBR에서는 큐브맵이 라이팅 그 자체가 되지만 커스텀에서는 리플렉션을 계산하기 쉽게 <red>성분을 나눠주도록 한다.</red>
     - Lerp의 직관성을 위해 Roughness보다 Smoothness로 계산하고 추후에 반전하여 사용.
         - 표면의 거칠기가 높아질수록 리플렉션이 0에 가까워지니  
             `Lerp(0, 1, Roughenss);`보다 `Lerp(0, 1, Smoothness);`가 직관적이다.  
@@ -473,9 +477,9 @@ categories: STUDY
     ![UnitySubstance_img18](UnitySubstance_img18.png)
 
     - 최종 구현 된 모습
-        - 텍스쳐만 넣으면 옵션 건드릴 필요없이 **알아서 모두 계산**된다.
+        - 텍스쳐만 넣으면 옵션 건드릴 필요없이 <red>알아서 모두 계산</red>된다.
         - 옵션을 조절하고 싶다면 PBR Setting을 체크하면 상세 옵션이 나타나게 구현
-            - (**C#으로 ShaderGUI Editor 스크립트 구현**) : 이렇게 하면 GPU Instancing 항목이 나오지 않으므로 추가 처리가 필요함
+            - (<red>C#으로 ShaderGUI Editor 스크립트 구현</red>) : 이렇게 하면 GPU Instancing 항목이 나오지 않으므로 추가 처리가 필요함
         - 체크해제하면 다시 좌측처럼 되고 변경한 값들은 다시 1로 고정됨
         - Using … Reflection 처리들은 최적화를 위한 처리들. 별 차이 없는 경우 계산하지 않게
         - 기본값은 모두 1로 맞춰놓음. 초기값이 헷갈리는 경우를 대비
@@ -541,7 +545,7 @@ categories: STUDY
 
 - **Surf 함수에서 해야 하는 일**
     
-    ```glsl
+    ```hlsl
     void suf (Input IN, inout SurfaceOutputPBR o)
     {
     		half4 MainTex = tex2D(_MainTex, IN.uv_MainTex);
@@ -566,11 +570,11 @@ categories: STUDY
         - 텍스쳐 샘플링 및 서피스 아웃풋 연결
         - 노멀 z를 구하고 노멀 강도 조절하는 프로퍼티 연결
         - 메탈릭 속성을 띄면 프레넬이 증가하며 Diffuse반사가 거의 없어지는 부분 처리 ( Lighting 함수에서 계산하면 충분히 어두워지지 않는다)
-        - 러프니스 값에 따라 디퓨즈 영향이 바뀌는 부분은 그냥 **눈으로 맞춤**
+        - 러프니스 값에 따라 디퓨즈 영향이 바뀌는 부분은 그냥 <red>눈으로 맞춤</red>
 
 - **Lighting 함수에서 해야 할 일들**
     
-    ```glsl
+    ```hlsl
     half4 LightingPBR (SurfaceOutputPBR s, half3 lightDir, half3 viewDir, half atten)
     {
     		half4 c;
@@ -596,7 +600,7 @@ categories: STUDY
 
 - **Lighting 함수 - Diffuse Reflection**
     
-    ```glsl
+    ```hlsl
     // Diffuse Reflection
     c.rgb = lerp(s.Albedo * lerp(max(0, ndotl), halfLambert, _HalfLambert)
     				* 1.4 * _LightColor0.rgb, s.Albedo * lerp(0.75, 1.75, lumaAlbedo), metallic) 
@@ -607,8 +611,8 @@ categories: STUDY
     // 섀도우 어마운트 값을 내리면 1이 곱해지게 되어 섀도우가 없어진다.
     ```
     
-    - 난반사는 `ndotl`을 이용한 **램버트모델**로 구현
-    - 하지만 섭스 셰이더를 눈으로 봤을때는 **하프램버트**에 가까움
+    - 난반사는 `ndotl`을 이용한 <red>램버트모델</red>로 구현
+    - 하지만 섭스 셰이더를 눈으로 봤을때는 <red>하프램버트</red>에 가까움
     - 눈으로 봤을 때 비슷하니 하프램버트로 구현하되 램버트와 보간 가능하도록 설정
     - 어차피 만들어두면 음영이 강하게 지는 낮시간대 / 음영이 약한 밤 시간대 제어를 할 수 있으니 프로퍼티로 빼둠
     - Surf 함수에선 금속성 때문에 어두워지는 처리만 해 주었다면, Lighting 함수에서는 Lambert 디퓨즈 리플렉션 계산을 해준다
@@ -616,7 +620,7 @@ categories: STUDY
 
 - **Lighting 함수 - CubeMap Reflection**
     
-    ```glsl
+    ```hlsl
     	// Cubemap Reflection
     	float4 hdrReflection = 1;
 
@@ -632,15 +636,15 @@ categories: STUDY
     	float finalRefl = lerp(nonMetalRefl, metalRefl, metallic);                            // 금속 / 비금속 처리
     ```
     
-    - 러프니스가 강해지면서 리플렉션이 블러리하게 보이는 것은 멀티 샘플링이 아니라 **밉맵**을 활용
+    - 러프니스가 강해지면서 리플렉션이 블러리하게 보이는 것은 멀티 샘플링이 아니라 <red>밉맵(LOD)</red>을 활용
     - 리니어하게 하면 블러 단계가 초반에 확 일어나므로 `sqrtSmoothness`를 이용 (Roughness는 Smoothness의 반전값이라 sqrt가 초반가중치)
     - 큐브맵이 HDR소스라면 HDR디코딩을 해야 색이 제대로 나온다.
     - 편의를 위해 메탈 / 논메탈로 나누어 계산. 논메탈은 나중에 어두운 거친 표면 표현때 또 쓰임
-    - 애매한 부분은 **눈으로 맞춤**
+    - 애매한 부분은 <red>눈으로 맞춤</red>
 
 - **Lighting 함수 - Fresnel**
     
-    ```glsl
+    ```hlsl
     	float3 finalFresnel;
 
     #if _USEFRESNEL_ON        // shader_feature로 분기
@@ -659,13 +663,13 @@ categories: STUDY
     
     - `1-NdotV` 계산 (`fresnelSrc`)에 `Pow`를 3정도 주고 (프로퍼티에서 0~6까지 조절가능하도록) 그냥 허옇게 더해지는 것이 아니므로 큐브맵 리플렉션을 곱해준다.
     - 금속 / 비금속일 때, 베이스컬러가 어두울 때 밝을 때에 따라 예외 상황이 많음
-    - 위의 숫자들은 각 상황별로 **눈으로 맞추면서 조절**
+    - 위의 숫자들은 각 상황별로 <red>눈으로 맞추면서 조절</red>
     - 아예 제어하기 쉽게 금속성 프레넬과 비금속성 프레넬 두 가지로 나눠서 구현
     - 마지막 atten과 1을 0.5로 보간한 것은 그림자 부분에서 프레넬이 너무 밝게 나와서 이상해지는 문제를 해결하기 위해 암부에 보정값을 넣은 것
 
 - **Lighting 함수 - Specular**
     
-    ```glsl
+    ```hlsl
     		// Specular
     		float3 specularLight;
 
@@ -699,7 +703,7 @@ categories: STUDY
 
 - **Lighting 함수 - Specular : Conservation of Energy**
     
-    ```glsl
+    ```hlsl
     specularLight = (pow(max(0, ndoth), (64 / (1 - smoothness + 0.00001)) * lerp(0.002, 0.1, sqrtSmoothness) * lerp(4, lerp(0.01, 2, sqrt(lumaAlbedo)), metallic) * _SpecularGloss)) * _SpecularIntensity * (1 / (1 - smoothness + 0.00001)) * lerp(0, 0.6, smoothness) * lerp(0.3, 16, metallic);
     ```
     
@@ -709,7 +713,7 @@ categories: STUDY
 
 - **Lighting 함수 - Roughness (Smoothness) 기반 병합**
     
-    ```glsl
+    ```hlsl
     // 최종 합성
     c.rgb += (finalFresnel + specularLight) * lerp(1, 0.25, lumaAlbedo);                                                 // 베이스컬러가 밝을수록 라이팅은 감소. ibl 빼고 다 계산해둠
     
